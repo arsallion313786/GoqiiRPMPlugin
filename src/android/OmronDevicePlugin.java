@@ -49,15 +49,6 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 this.omronCallbackContext.sendPluginResult(result);
                 return true;
 
-            case "isBluetoothEnabled":
-                isBluetoothEnabled(callbackContext); // Synchronous, uses its own callback
-                return true;
-
-            case "openBluetoothSettings":
-                openBluetoothSettings();
-                callbackContext.success("Bluetooth settings opened."); // Synchronous
-                return true;
-
             case "startScanning":
                 if (omronDeviceWrapper == null) {
                     callbackContext.error("Plugin not initialized.");
@@ -165,40 +156,6 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
         callbackContext.success("OmronDeviceWrapper initialized successfully.");
     }
 
-    private void isBluetoothEnabled(CallbackContext callbackContext) {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
-            callbackContext.error("This device does not support Bluetooth.");return;
-        }
-
-        // Check if we are running on Android 12 (API 31) or higher
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            // For Android 12+, we must have the BLUETOOTH_CONNECT permission to check the adapter state.
-            // We use Cordova's permission checker.
-            if (cordova.hasPermission(android.Manifest.permission.BLUETOOTH_CONNECT)) {
-                // If we have the permission, it's safe to check the status.
-                PluginResult result = new PluginResult(PluginResult.Status.OK, bluetoothAdapter.isEnabled());
-                callbackContext.sendPluginResult(result);
-            } else {
-                // If we DO NOT have the permission, we cannot know the real status.
-                // It's safer to assume it's disabled and let the user handle it.
-                // Returning 'false' prevents the app from crashing.
-                Log.w("OmronDevicePlugin", "Missing BLUETOOTH_CONNECT permission on Android 12+. Cannot check Bluetooth status; returning false.");
-                PluginResult result = new PluginResult(PluginResult.Status.OK, false);
-                callbackContext.sendPluginResult(result);
-            }
-        } else {
-            // For Android 11 (API 30) and older, the old method is still safe to use.
-            PluginResult result = new PluginResult(PluginResult.Status.OK, bluetoothAdapter.isEnabled());
-            callbackContext.sendPluginResult(result);
-        }
-    }
-
-
-    private void openBluetoothSettings() {
-        Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
-        this.cordova.getActivity().startActivity(intent);
-    }
 
     // +------------------------------------------------------------+
     // |           Omron SDK Callback Implementations               |
