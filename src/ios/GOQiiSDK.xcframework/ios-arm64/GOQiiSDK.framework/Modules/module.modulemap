@@ -1,0 +1,11 @@
+framework module GOQiiSDK {
+  umbrella header "GOQiiSDK.h"
+  export *
+
+  module * { export * }
+}
+
+module GOQiiSDK.Swift {
+  header "GOQiiSDK-Swift.h"
+  requires objc
+}

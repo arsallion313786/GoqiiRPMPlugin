@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+       id="com.goqii.goqiiplugin"
+       version="1.0.0">
+   
+   <name>GoqiiPlugin</name>
+   <description>Cordova plugin to integrate Goqii SDK</description>
+   <license>MIT</license>
+   
+   <js-module name="GoqiiPlugin" src="www/goqiiplugin.js">
+       <clobbers target="cordova.plugins.GoqiiPlugin" />
+   </js-module>
+
+   <platform name="ios">
+       <config-file target="config.xml" parent="/*">
+           <feature name="GoqiiPlugin">
+               <param name="ios-package" value="GoqiiPlugin" />
+               <preference name="UseSwiftLanguageVersion" value="5.0" />
+           </feature>
+           <feature name="OmronDevicePlugin">
+               <param name="ios-package" value="OmronDevicePlugin" />
+               <preference name="UseSwiftLanguageVersion" value="5.0" />
+           </feature>
+       </config-file>
+       <framework src="src/ios/GOQiiSDK.xcframework" custom="true" embed="true"/>
+       <source-file src="src/ios/GoqiiPlugin.swift" />
+       <source-file src="src/ios/OmronDevicePlugin.swift" />
+       <!-- Add Bluetooth Permissions to Info.plist -->
+       <preference name="Blue_Tooth_Permission" default="App requires Bluetooth access to communicate with fitness devices." />
+       <config-file target="*-Info.plist" parent="NSBluetoothAlwaysUsageDescription">
+           <string>$Blue_Tooth_Permission</string>
+       </config-file>
+       
+       
+       <preference name="Blue_Tooth_Permission_Peripheral" default="App requires Bluetooth access to communicate with fitness devices." />
+       <config-file target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
+           <string>$Blue_Tooth_Permission_Peripheral</string>
+       </config-file>
+   </platform>
+
+   <platform name="android">
+       <config-file target="res/xml/config.xml" parent="/*">
+           <feature name="GoqiiPlugin">
+               <param name="android-package" value="com.goqii.goqiiplugin.GoqiiPlugin" />
+           </feature>
+           <feature name="OmronDevicePlugin">
+               <param name="android-package" value="com.goqii.goqiiplugin.OmronDevicePlugin" />
+           </feature>
+       </config-file>
+<!--        <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest">-->
+<!--            <manifest xmlns:tools="http://schemas.android.com/tools"/>-->
+<!--        </edit-config>-->
+       <config-file target="AndroidManifest.xml" parent="/*">
+           <uses-feature
+               android:name="android.hardware.bluetooth_le"
+               android:required="true" />
+               <uses-permission android:name="android.permission.BLUETOOTH" />
+               <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+               <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+               <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+           <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+       </config-file>
+       <lib-file src="src/android/goqii-sdk.aar" />
+       <source-file src="src/android/GoqiiPlugin.java" target-dir="src/com/goqii/goqiiplugin" />
+       <source-file src="src/android/OmronDevicePlugin.java" target-dir="src/com/goqii/goqiiplugin" />
+       <framework src="src/android/goqiiplugin.gradle" custom="true" type="gradleReference"/>
+       <framework src="com.fasterxml.jackson.core:jackson-core:2.9.0" />
+       <framework src="com.fasterxml.jackson.core:jackson-annotations:2.9.0" />
+       <framework src="com.fasterxml.jackson.core:jackson-databind:2.9.0" />
+       <framework src="com.google.code.gson:gson:2.8.5" />
+<!--       <config-file target="res/values/colors.xml" parent="/*">-->
+<!--             <color name="white">#FFFFFF</color>-->
+<!--          </config-file>-->
+       <resource-file src="src/android/res/values/colors.xml" target="res/values/colors.xml" />
+<!--       <dependency id="cordova-plugin-android-permissions" url="https://github.com/NeoLSN/cordova-plugin-android-permission.git" version="1.1.5"/>-->
+<!--       <dependency id="cordova-plugin-device" url="https://github.com/apache/cordova-plugin-device"/>-->
+   </platform>
+</plugin>

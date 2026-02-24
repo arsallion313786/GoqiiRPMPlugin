@@ -1,0 +1,4251 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target x86_64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name GOQiiSDK
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import CommonCrypto
+import CoreBluetooth
+import CoreData
+import CryptoKit
+import Foundation
+@_exported import GOQiiSDK
+import HealthKit
+import ImageIO
+import MapKit
+import MobileCoreServices
+import Swift
+import UIKit
+import WebKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+extension GOQiiSDK.BloodPressureData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.BloodPressureData
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.BloodPressureData]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.BloodPressureData]?
+  @objc dynamic public func toBloodPressure() -> GOQiiSDK.BloodPressure
+  @objc dynamic public class func deleteAllBloodPressureData()
+}
+@_hasMissingDesignatedInitializers @objc public class RNNetworkManager : GOQiiSDK.AFHTTPSessionManager {
+  @objc public class func initNetworkManager()
+  @objc public class func requestPostDataWithMethodEndPoint(_ methodEndpoint: Swift.String, withParam param: Foundation.NSDictionary, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class GlucoseData {
+  @objc deinit
+}
+@objc public protocol GlucoBLEProtocol {
+  @objc optional func BLEactivated(state: Swift.Bool)
+  @objc optional func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @objc optional func BLEready(RACPcharacteristic: CoreBluetooth.CBCharacteristic)
+  @objc optional func BLESyncCompleted()
+  @objc optional func glucoMeterConnected(device: CoreBluetooth.CBPeripheral)
+  @objc optional func glucoMeterDisconnected()
+  @objc optional func glucoMeterConnectError(errorStr: Swift.String)
+  @objc optional func removeprevRequestDevice()
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class GlucoMeterBLE : ObjectiveC.NSObject {
+  @objc public func setDelegate(delegate: any GOQiiSDK.GlucoBLEProtocol)
+  @objc public func startBLE()
+  @objc public func scan()
+  @objc public func scanWithUUID(_ glucometerUUID: Swift.String)
+  @objc public func connect(peripheral: CoreBluetooth.CBPeripheral)
+  @objc public func doWrite(peripheral: CoreBluetooth.CBPeripheral, characteristic: CoreBluetooth.CBCharacteristic, message: [Swift.UInt8])
+  @objc public func sync(seq: Swift.Int, glucometer: CoreBluetooth.CBPeripheral, RACP: CoreBluetooth.CBCharacteristic)
+  @objc public func syncCountourNext(glucometer: CoreBluetooth.CBPeripheral, RACP: CoreBluetooth.CBCharacteristic)
+  @objc deinit
+}
+extension GOQiiSDK.GlucoMeterBLE : CoreBluetooth.CBCentralManagerDelegate {
+  @objc dynamic public func centralManagerDidUpdateState(_ central: CoreBluetooth.CBCentralManager)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDiscover peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Any], rssi RSSI: Foundation.NSNumber)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didConnect peripheral: CoreBluetooth.CBPeripheral)
+  @objc dynamic public func removeprevRequestDevice()
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDisconnectPeripheral peripheral: CoreBluetooth.CBPeripheral, error: (any Swift.Error)?)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didFailToConnect peripheral: CoreBluetooth.CBPeripheral, error: (any Swift.Error)?)
+}
+extension GOQiiSDK.GlucoMeterBLE : CoreBluetooth.CBPeripheralDelegate {
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverServices error: (any Swift.Error)?)
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverCharacteristicsFor service: CoreBluetooth.CBService, error: (any Swift.Error)?)
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateValueFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
+}
+extension GOQiiSDK.DetailActivityData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DetailActivityData
+  @objc dynamic public class func getSumOfSteps(forLogDate logDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getAll(withStartDate startDate: Swift.String, endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DetailActivityData]?
+}
+@available(iOS 10.0, *)
+extension CoreData.NSManagedObject {
+  public enum Options {
+    case limit(Swift.Int)
+    case predicate(Foundation.NSPredicate)
+    case sortDescriptors([Foundation.NSSortDescriptor])
+  }
+  public class func getAll<T>(ofType type: T.Type, fromContext context: CoreData.NSManagedObjectContext) -> [T]? where T : CoreData.NSManagedObject
+  public class func getData<T>(ofType type: T.Type, withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [T]? where T : CoreData.NSManagedObject
+  public class func deleteData<T>(ofType type: T.Type, withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> Swift.Bool where T : CoreData.NSManagedObject
+  public class func getDataCount<T>(ofType type: T.Type, withOptions options: [CoreData.NSManagedObject.Options], fromContext context: CoreData.NSManagedObjectContext) -> Foundation.NSNumber? where T : CoreData.NSManagedObject
+}
+@_inheritsConvenienceInitializers @objc public class BodyTemperatureViewModel : ObjectiveC.NSObject {
+  public var isRefreshing: ((Swift.Bool) -> Swift.Void)?
+  public var didReceiveData: (([GOQiiSDK.BodyTemperatureData]) -> Swift.Void)?
+  public var didReceivePlayerNameData: (([GOQiiSDK.BodyTemperatureData]) -> Swift.Void)?
+  public var noDataRecieved: (() -> Swift.Void)?
+  @objc public func sendDataToServer()
+  @objc public class func getJSONString(completion: @escaping (_ data: Swift.String) -> ())
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class CacheManager : ObjectiveC.NSObject {
+  @objc public static let sharedInstance: GOQiiSDK.CacheManager
+  @objc public func getEncryptedString(_ dataDict: Swift.Dictionary<Swift.String, Swift.String>) -> Swift.String
+  @objc public func getDecryptedString(_ encryptedString: Swift.String) -> Swift.String
+  @objc public func decrypNewvalue(encData: Foundation.Data) -> Foundation.Data
+  @objc public func removeCacheData(forkey key: Swift.String)
+  @objc public func removeHomeCellCacheData(forKey key: Swift.String)
+  @objc public func keyChainSetUp()
+  @objc public func initValues()
+  @objc public func setAPIsetup(_ isLoginWithStagging: Swift.Bool)
+  @objc public func getValue(_ keys: Swift.String) -> Swift.String?
+  @objc public func setValue(_ keys: Swift.String, value: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class GoqiiNetworkManager : GOQiiSDK.AFHTTPSessionManager {
+  @objc public class func initNetworkManager()
+  @objc deinit
+}
+@objc public protocol OmronBluetoothManagerDelegate {
+  @objc func didInitialize(isSuccessfully: Swift.Bool)
+  @objc func didFindDevice(isSuccessfully: Swift.Bool)
+  @objc func didConnectDevice(isSuccessfully: Swift.Bool, macId: Swift.String)
+  @objc func didDisconnectDevice(isSuccessfully: Swift.Bool)
+  @objc func didReceiveBloodPressureData(_ data: [Swift.String : Any])
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class OmronBluetoothManager : ObjectiveC.NSObject, CoreBluetooth.CBCentralManagerDelegate, CoreBluetooth.CBPeripheralDelegate {
+  @objc public static let sharedInstance: GOQiiSDK.OmronBluetoothManager
+  @objc public var delegate: (any GOQiiSDK.OmronBluetoothManagerDelegate)?
+  @objc public func centralManagerDidUpdateState(_ central: CoreBluetooth.CBCentralManager)
+  @objc public func initaliseBle()
+  @objc public func startScanning()
+  @objc public func connectAndSync()
+  @objc public func disconnect()
+  @objc public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDiscover peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Any], rssi RSSI: Foundation.NSNumber)
+  @objc public func centralManager(_ central: CoreBluetooth.CBCentralManager, didConnect peripheral: CoreBluetooth.CBPeripheral)
+  public func isBloodPressureDevicePresent() -> Swift.Bool
+  @objc public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDisconnectPeripheral peripheral: CoreBluetooth.CBPeripheral, error: (any Swift.Error)?)
+  @objc public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverServices error: (any Swift.Error)?)
+  @objc public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverCharacteristicsFor service: CoreBluetooth.CBService, error: (any Swift.Error)?)
+  @objc public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateValueFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class TrackerRouter : ObjectiveC.NSObject {
+  @objc public class func fetchUserInfo(_ methodEndpoint: Foundation.NSString, mobile: Foundation.NSString = "", and encUserId: Foundation.NSString = "", completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc public class func sendTokenToServer(_ methodEndpoint: Foundation.NSString, withParam: Foundation.NSDictionary, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc public class func postGlucoseData(_ methodEndpoint: Swift.String, param: Swift.String, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc public class func unlinkGlucoMeter(_ apiNameStr: Swift.String, glucoUUID: Swift.String, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc public class func disconnect(_ methodEndpoint: Foundation.NSString, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc public class func fetchAppList(_ keyword: Foundation.NSString = "", forFlow flow: Foundation.NSString = "", forApplication application: Foundation.NSString = "", completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc public class func getRequestWithoutSSL(_ methodEndpoint: Foundation.NSString, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @available(iOS 10.0, *)
+@objc public class CoreDataManager : ObjectiveC.NSObject {
+  @objc public static let shared: GOQiiSDK.CoreDataManager
+  @objc public var background: CoreData.NSManagedObjectContext {
+    @objc get
+  }
+  @objc public var parentContext: CoreData.NSManagedObjectContext {
+    @objc get
+    @objc set
+  }
+  @objc public var main: CoreData.NSManagedObjectContext {
+    @objc get
+    @objc set
+  }
+  @objc public func getAutoIncremenet() -> Swift.Int64
+  @objc public var persistentContainer: CoreData.NSPersistentContainer {
+    @objc get
+    @objc set
+  }
+  @objc public func saveContext(_ context: CoreData.NSManagedObjectContext? = nil)
+  @objc deinit
+}
+extension GOQiiSDK.SleepBandData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.SleepBandData
+  @objc dynamic public func mapValues(fromDictionary dictionary: [Swift.String : Any])
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.SleepBandData]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.SleepBandData]?
+  @objc dynamic public class func getDataWithLimit(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: Foundation.NSSortDescriptor? = nil, limits: Swift.Int = 1, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.SleepBandData]?
+  @objc dynamic public class func getSingleData(withPredicate predicate: Foundation.NSPredicate? = nil, inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.SleepBandData?
+  @objc dynamic public class func getRecentSleepBandDataByLogDate(fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.SleepBandData?
+  @objc dynamic public class func getSumTotalSleepBandData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, expressionName2: Swift.String, expressionName3: Swift.String, expressionName4: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getDistinctData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getMaxMinData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, expressionName2: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public func toSleepBandActivity() -> GOQiiSDK.DeviceSleepV3
+  @objc dynamic public class func convertSleepBandActivityToDict(_ data: GOQiiSDK.DeviceSleepV3) -> Foundation.NSDictionary
+  @objc dynamic public class func deleteAllSleepBandData()
+}
+extension GOQiiSDK.DailyDeviceActivityData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DailyDeviceActivityData
+  @objc dynamic public func mapValues(fromDictionary dictionary: [Swift.String : Any])
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DailyDeviceActivityData]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DailyDeviceActivityData]?
+  @objc dynamic public class func getDataWithLimit(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: Foundation.NSSortDescriptor? = nil, limits: Swift.Int = 1, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DailyDeviceActivityData]?
+  @objc dynamic public class func getSingleData(withPredicate predicate: Foundation.NSPredicate? = nil, inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DailyDeviceActivityData?
+  @objc dynamic public class func getRecentDailyDeviceDataByLogDate(fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DailyDeviceActivityData?
+  @objc dynamic public class func getSumTotalSteps(logdate firstDate: Swift.String, secondDate: Swift.String, expressionName: Swift.String, expressionName2: Swift.String, expressionName3: Swift.String = "", fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func delete(withPredicate predicate: Foundation.NSPredicate? = nil, fromContext context: CoreData.NSManagedObjectContext)
+  @objc dynamic public class func convertDailyDeviceActivityToDict(_ data: GOQiiSDK.DailyActivity) -> Foundation.NSDictionary
+  @objc dynamic public class func convertDailyDeviceActivityToDictForAppleHealth(_ data: GOQiiSDK.DailyActivity) -> Foundation.NSDictionary
+  @objc dynamic public func toDailyActivity() -> GOQiiSDK.DailyActivity
+  @objc dynamic public class func deleteAllDailyDeviceActivityData()
+}
+extension GOQiiSDK.PaceData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.PaceData
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.PaceData]?
+  @objc dynamic public class func deleteAllRecords()
+}
+extension GOQiiSDK.BodyTemperatureData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.BodyTemperatureData
+  @objc dynamic public class func getAverageTemperatureForSleepLogDates(withStartDate startDate: Swift.String, endDate: Swift.String, player: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func updateStatusOldAll()
+  @objc dynamic public class func deleteAllBodyTemperatureData()
+}
+public struct PPGEntry {
+}
+public class SmartwatchParser {
+  public init()
+  public func parsePPGData(from hexString: Swift.String) -> [GOQiiSDK.PPGEntry]
+  public func printData(recived parsedEntries: [GOQiiSDK.PPGEntry])
+  public func printTimeStamp(from hexString: Swift.String)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class AJCryptoWrapper : ObjectiveC.NSObject {
+  @objc public class func setupAJCrypto()
+  @objc public class func encryptData(_ clearTextData: Foundation.Data) -> Foundation.Data
+  @objc public class func decryp(encData: Foundation.Data) -> Foundation.Data
+  @objc public class func rsaEncrypt(_ publicKey: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class GQNetworkManager : GOQiiSDK.AFHTTPSessionManager {
+  @objc public class func initNetworkManager()
+  @objc public class func requestPostDataWithMethodEndPoint(_ methodEndpoint: Swift.String, withParam param: Foundation.NSDictionary, completion: @escaping (_ data: Foundation.NSDictionary?, _ error: (any Swift.Error)?) -> ())
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class OneTouchB59XManager : ObjectiveC.NSObject, CoreBluetooth.CBCentralManagerDelegate, CoreBluetooth.CBPeripheralDelegate {
+  public static let shared: GOQiiSDK.OneTouchB59XManager
+  @objc override dynamic public init()
+  @objc public func centralManagerDidUpdateState(_ central: CoreBluetooth.CBCentralManager)
+  @objc public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDiscover peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Any], rssi RSSI: Foundation.NSNumber)
+  @objc public func centralManager(_ central: CoreBluetooth.CBCentralManager, didConnect peripheral: CoreBluetooth.CBPeripheral)
+  @objc public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverServices error: (any Swift.Error)?)
+  @objc public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverCharacteristicsFor service: CoreBluetooth.CBService, error: (any Swift.Error)?)
+  @objc public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateValueFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
+  @objc public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDisconnectPeripheral peripheral: CoreBluetooth.CBPeripheral, error: (any Swift.Error)?)
+  @objc deinit
+}
+@objc public protocol GlucoBLEManagerProtocol {
+  @objc optional func BLEactivated(state: Swift.Bool)
+  @objc optional func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @objc optional func BLEready(RACPcharacteristic: CoreBluetooth.CBCharacteristic)
+  @objc optional func BLESyncCompleted()
+  @objc optional func glucoMeterConnected(device: CoreBluetooth.CBPeripheral)
+  @objc optional func glucoMeterDisconnected()
+  @objc optional func glucoMeterData(_ data: [Any])
+  @objc optional func glucoMeterConnectError(errorStr: Swift.String)
+  @objc optional func removeprevRequestDevice()
+}
+@_inheritsConvenienceInitializers @objc public class GlucoBLEManager : ObjectiveC.NSObject, GOQiiSDK.GlucoBLEProtocol {
+  @objc public static let shared: GOQiiSDK.GlucoBLEManager
+  @objc public var glucoBleManagerDelegate: (any GOQiiSDK.GlucoBLEManagerProtocol)?
+  @objc override dynamic public init()
+  @objc public func BLEactivated(state: Swift.Bool)
+  @objc public func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @objc public func BLEready(RACPcharacteristic: CoreBluetooth.CBCharacteristic)
+  @objc public func BLESyncCompleted()
+  @objc public func connect(peripheral: CoreBluetooth.CBPeripheral)
+  @objc public func glucoMeterConnectError(errorStr: Swift.String)
+  @objc public func glucoMeterConnected(device: CoreBluetooth.CBPeripheral)
+  @objc public func glucoMeterDisconnected()
+  @objc public func startScanning()
+  @objc public func startBLE()
+  @objc public func connectToSavedGlucometerDevice()
+  @objc public func connectAndSaveGlucometerDevice(_ uuidString: Swift.String)
+  @objc public func getGlucoUUID() -> Swift.String
+  @objc public func uploadGlucometerData(_ results: [Any]!)
+  @objc public func removeprevRequestDevice()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class BloodPressure : ObjectiveC.NSObject {
+  @objc public var l_activityId: Swift.Int
+  @objc public var bpId: Swift.Int
+  @objc public var userId: Swift.Int
+  @objc public var activityId: Swift.Int
+  @objc public var systolic: Swift.Int
+  @objc public var diastolic: Swift.Int
+  @objc public var heartRate: Swift.Int
+  @objc public var heartRateData: Swift.String?
+  @objc public var logType: Swift.String?
+  @objc public var status: Swift.String?
+  @objc public var logDate: Swift.String?
+  @objc public var isDeleted: Swift.String?
+  @objc public var createdTime: Swift.String?
+  @objc public var logDateTime: Swift.String?
+  @objc public var ID1: Swift.Int
+  @objc public var ID2: Swift.Int
+  @objc override dynamic public init()
+  @objc deinit
+}
+@available(iOS 10.0, *)
+extension GOQiiSDK.HeartRateData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], shouldCheckHeartRateAndGroupId: Swift.Bool = false, inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.HeartRateData
+  @objc dynamic public class func getRecentHeartRateDataByCreatedTime(fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.HeartRateData?
+  @objc dynamic public class func getRecentHeartRateDataByCreatedTime(withGroupId groupId: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.HeartRateData?
+  @objc dynamic public class func getLastHeartRateDataByLogDate(logDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.HeartRateData?
+  @objc dynamic public class func getLatestHrDataWith(logDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext, completion: @escaping (_ data: GOQiiSDK.HeartRateData?) -> ())
+  @objc dynamic public class func getLatestHrData(fromContext context: CoreData.NSManagedObjectContext, completion: @escaping (_ data: GOQiiSDK.HeartRateData?) -> ())
+  @objc dynamic public class func getRecentHeartRateDataByLogDate(fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.HeartRateData?
+  @objc dynamic public class func getAllHeartRateBetweenLogDates(withStartDate startDate: Swift.String, endDate: Swift.String) -> [GOQiiSDK.HeartRateData]?
+  @objc dynamic public class func getMinMaxHeartRate(forGroupId groupId: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String]?
+  @objc dynamic public class func getMinMaxAvgHeartRate(forGroupId groupId: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String]?
+  @objc dynamic public class func getMinMaxAvgHRForTime(withStartDate startDate: Swift.String, endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String]?
+  @objc dynamic public class func getAverageHeartRate(forCreatedTime createdTime: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getAverageHeartRateWithSlots(forCreatedTime createdTime: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getAverageHeartRateForTime(withStartDate startDate: Swift.String, endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getAverageHeartRateForCreatedTime(withStartDate startDate: Swift.String, endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getAllGroupedByGroupId(fromContext context: CoreData.NSManagedObjectContext) -> [[Swift.String : Any]]?
+  @objc dynamic public class func getRecordCount(withGroupId groupId: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getNewRecordCount(fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getDistinctGroupIdsOfNewRecords(fromContext context: CoreData.NSManagedObjectContext) -> [[Swift.String : Any]]?
+  @objc dynamic public class func updateMultipleData(withPredicate predicate: Foundation.NSPredicate, propertiesToUpdate: [Swift.String : Swift.String], inContext context: CoreData.NSManagedObjectContext)
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.HeartRateData]?
+  @objc dynamic public class func updateStatusOldAll()
+  @objc dynamic public class func deleteAllHeartRateData()
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class WebVC : UIKit.UIViewController {
+  @objc @_Concurrency.MainActor @preconcurrency public var urlToLoad: Swift.String
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidLoad()
+  @objc @_Concurrency.MainActor @preconcurrency public func loadWebView()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc extension GOQiiSDK.WebVC : WebKit.WKUIDelegate, WebKit.WKNavigationDelegate {
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func webView(_ webView: WebKit.WKWebView, createWebViewWith configuration: WebKit.WKWebViewConfiguration, for navigationAction: WebKit.WKNavigationAction, windowFeatures: WebKit.WKWindowFeatures) -> WebKit.WKWebView?
+  @objc @_Concurrency.MainActor @preconcurrency dynamic public func showActivityIndicator(show: Swift.Bool)
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func webView(_ webView: WebKit.WKWebView, didFinish navigation: WebKit.WKNavigation!)
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func webView(_ webView: WebKit.WKWebView, didStartProvisionalNavigation navigation: WebKit.WKNavigation!)
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func webView(_ webView: WebKit.WKWebView, didFail navigation: WebKit.WKNavigation!, withError error: any Swift.Error)
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func webView(_ webView: WebKit.WKWebView, decidePolicyFor navigationAction: WebKit.WKNavigationAction, decisionHandler: @escaping (WebKit.WKNavigationActionPolicy) -> Swift.Void)
+  @objc @_Concurrency.MainActor @preconcurrency dynamic public func downloadCertificate(base64String: Swift.String)
+  @objc @_Concurrency.MainActor @preconcurrency dynamic public func image(_ image: UIKit.UIImage, didFinishSavingWithError error: (any Swift.Error)?, contextInfo: Swift.UnsafeRawPointer)
+  @objc @_Concurrency.MainActor @preconcurrency dynamic public func showAlertWith(title: Swift.String, message: Swift.String)
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class GlucoMeterMakeSureCell : UIKit.UITableViewCell {
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func awakeFromNib()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @available(iOS 3.0, *)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@available(iOS 10.0, *)
+extension GOQiiSDK.SPO2Data {
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.SPO2Data
+  @objc dynamic public func mapValues(fromDictionary dictionary: [Swift.String : Any])
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.SPO2Data]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.SPO2Data]?
+  @objc dynamic public class func deleteData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> Swift.Bool
+  @objc dynamic public class func updateDataBasedOnResponse(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext)
+  @objc dynamic public class func getAverageSpO2BetweenLogDates(withStartDate startDate: Swift.String, endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getAverageSpO2ForLogDate(_ date: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getRecentSpO2Data(date: Swift.String) -> GOQiiSDK.SPO2Data?
+  @objc dynamic public class func getAllSpO2BetweenLogDates(withStartDate startDate: Swift.String, endDate: Swift.String) -> [GOQiiSDK.SPO2Data]?
+  @objc dynamic public class func updateStatusOldAll()
+  @objc dynamic public class func getLastSPO2Data() -> GOQiiSDK.SPO2Data?
+  @objc dynamic public class func getMaxLogDateTime(fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getJSONString() -> Swift.String
+  @objc dynamic public class func getJSONString(completion: @escaping (_ data: Swift.String) -> ())
+  @objc dynamic public class func batchInserts(SpO2Values: [[Swift.String : Any]])
+  @objc dynamic public class func deleteAllSPO2Data()
+}
+@_inheritsConvenienceInitializers @objc public class UploadFileS3BucketHelper : ObjectiveC.NSObject {
+  @objc public func sendRequest(_ filePaths: Foundation.NSArray, _ fileQuantity: Swift.String, _ fileType: Swift.String, _ moduleType: Swift.String, _ isDelete: Swift.Bool, completion: @escaping (_ data: GOQiiSDK.CompletionResultType) -> ())
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objcMembers @objc public class SDKManager : ObjectiveC.NSObject {
+  @objc public static let sharedInstance: GOQiiSDK.SDKManager
+  @objc override dynamic public init()
+  @objc public func initialize()
+  @objc public func navigateToHome(_ vc: UIKit.UIViewController)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class DemoVC : UIKit.UIViewController {
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers public class VerioFlexBLEManager : ObjectiveC.NSObject {
+  public var onRecord: ((Swift.Int, Foundation.Date, Swift.Int) -> Swift.Void)?
+  public var onComplete: (() -> Swift.Void)?
+  public var onError: ((Swift.String) -> Swift.Void)?
+  public var centralManager: CoreBluetooth.CBCentralManager!
+  public var verioPeripheral: CoreBluetooth.CBPeripheral?
+  @objc override dynamic public init()
+  public func startScanning()
+  @objc deinit
+}
+extension GOQiiSDK.VerioFlexBLEManager : CoreBluetooth.CBCentralManagerDelegate, CoreBluetooth.CBPeripheralDelegate {
+  @objc dynamic public func centralManagerDidUpdateState(_ central: CoreBluetooth.CBCentralManager)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDiscover peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Any], rssi RSSI: Foundation.NSNumber)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didConnect peripheral: CoreBluetooth.CBPeripheral)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didFailToConnect peripheral: CoreBluetooth.CBPeripheral, error: (any Swift.Error)?)
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDisconnectPeripheral peripheral: CoreBluetooth.CBPeripheral, error: (any Swift.Error)?)
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverServices error: (any Swift.Error)?)
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didDiscoverCharacteristicsFor service: CoreBluetooth.CBService, error: (any Swift.Error)?)
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateNotificationStateFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
+  @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateValueFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
+}
+extension GOQiiSDK.PhoneActivityData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.PhoneActivityData
+  @objc dynamic public class func saveOrUpdateWithoutDistinctCreatedTime(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.PhoneActivityData
+  @objc dynamic public class func getPhoneActivityData(withLocalActivityId localActivityId: Swift.String? = nil, serverActivityId: Swift.String? = nil, createTime: Swift.String? = nil, fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.PhoneActivityData?
+  @objc dynamic public func mapValues(fromDictionary dictionary: [Swift.String : Any], forUpdate update: Swift.Bool)
+  @objc dynamic public func mapValues(fromDeviceExercise deviceExercise: GOQiiSDK.DeviceExerciseV3)
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.PhoneActivityData]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.PhoneActivityData]?
+  @objc dynamic public class func getMaxActivityId(fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getSumOfDuration(forLogDate logDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getSumOfDuration(fromStartDate startDate: Swift.String, toEndDate endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getSumOfCaloriesBurnt(forLogDate logDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getSumOfCaloriesBurnt(fromStartDate startDate: Swift.String, toEndDate endDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getNewRecordCount(fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func getOfflineDeletedRecordCount(fromContext context: CoreData.NSManagedObjectContext) -> Swift.String?
+  @objc dynamic public class func updateStatusOfInProgressDataToNew(inContext context: CoreData.NSManagedObjectContext)
+  @objc dynamic public class func deleteDataIsDeleted(fromContext context: CoreData.NSManagedObjectContext)
+  @objc dynamic public class func getNewActivitiesWithServerImage(completionHandler: @escaping (_ activities: [GOQiiSDK.PhoneActivityData]?) -> Swift.Void)
+  @objc dynamic public class func getActivity(withLocalActivityId localActivityId: Swift.String? = nil, serverActivityId: Swift.String? = nil, fromContext context: CoreData.NSManagedObjectContext? = nil) -> GOQiiSDK.PhoneActivityData?
+  @objc dynamic public class func deleteAllPhoneActivityData()
+}
+extension GOQiiSDK.DeviceActivityData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DeviceActivityData
+  @objc dynamic public func mapValues(fromDictionary dictionary: [Swift.String : Any])
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DeviceActivityData]?
+  public class func getData(withOptions options: [CoreData.NSManagedObject.Options], fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DeviceActivityData]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DeviceActivityData]?
+  @objc dynamic public class func getDataCount(withPredicate predicate: Foundation.NSPredicate? = nil, fromCotext context: CoreData.NSManagedObjectContext) -> Foundation.NSNumber?
+  @objc dynamic public class func getDataWithLimit(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: Foundation.NSSortDescriptor? = nil, limits: Swift.Int = 1, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.DeviceActivityData]?
+  @objc dynamic public class func getSingleData(withPredicate predicate: Foundation.NSPredicate? = nil, inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DeviceActivityData?
+  @objc dynamic public class func getRecentDailyDeviceDataByLogDate(fromContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.DeviceActivityData?
+  @objc dynamic public class func getAvgSleepDeviceData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getSumTotalDeviceData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, expressionName2: Swift.String, expressionName3: Swift.String, expressionName4: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getDistinctData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getMaxData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getMinData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func getMaxMinData(withPredicate predicate: Foundation.NSPredicate? = nil, expressionName: Swift.String, expressionName2: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func delete(withPredicate predicate: Foundation.NSPredicate? = nil, fromContext context: CoreData.NSManagedObjectContext)
+  @objc dynamic public class func deleteAllRecords()
+  @objc dynamic public class func getdistinctDeviceData(_ fromDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext) -> [Swift.String : Any]?
+  @objc dynamic public class func updateStatusAll(status: Swift.String, logDate: Swift.String, fromContext context: CoreData.NSManagedObjectContext)
+  public func getDate(_ stringDate: Swift.String) -> Foundation.NSDate
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class EndPointAPIManager : ObjectiveC.NSObject {
+  @objc public static let shared: GOQiiSDK.EndPointAPIManager
+  @objc public func mapEndpoints(data: Foundation.NSDictionary)
+  @objc public func saveEndPointData(_ data: Foundation.NSDictionary)
+  @objc public func loadCacheEndPoint()
+  @objc deinit
+}
+extension GOQiiSDK.GPSBandData {
+  @discardableResult
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.GPSBandData
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.GPSBandData]?
+}
+extension GOQiiSDK.ECGData {
+  @objc dynamic public class func initOrUpdate(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> GOQiiSDK.ECGData
+  @objc dynamic public class func isECGDataExists(dictionary: [Swift.String : Any], inContext context: CoreData.NSManagedObjectContext) -> Swift.Bool
+  @objc dynamic public func mapValues(fromDictionary dictionary: [Swift.String : Any])
+  @objc dynamic public class func getAll(fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.ECGData]?
+  public class func getData(withOptions options: [CoreData.NSManagedObject.Options], fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.ECGData]?
+  @objc dynamic public class func getData(withPredicate predicate: Foundation.NSPredicate? = nil, sortDescriptors: [Foundation.NSSortDescriptor]? = nil, fromContext context: CoreData.NSManagedObjectContext) -> [GOQiiSDK.ECGData]?
+  @objc dynamic public class func deleteAllECGData()
+}
+@_inheritsConvenienceInitializers @objc public class GPSModel : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class GlucoMeterSetupVC : UIKit.UIViewController {
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc extension GOQiiSDK.GlucoMeterSetupVC : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func tableView(_ tableView: UIKit.UITableView, heightForRowAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGFloat
+}
+extension GOQiiSDK.GlucoMeterSetupVC : GOQiiSDK.GlucoBLEManagerProtocol {
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func BLEactivated(state: Swift.Bool)
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func BLESyncCompleted()
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public func glucoMeterConnected()
+  @_Concurrency.MainActor @preconcurrency @objc dynamic public func glucoMeterDisconnected()
+}
+@_inheritsConvenienceInitializers @objc(AppNotificationsData) public class AppNotificationsData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.AppNotificationsData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.AppNotificationsData>
+  @objc @NSManaged dynamic public var action: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityCreater: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var category: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var clicked: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentBy: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_notificationLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var notificationLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var redirectAction: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var subCategory: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var text: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userName: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.AppNotificationsData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(BloodPressureData) public class BloodPressureData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.BloodPressureData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.BloodPressureData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var diastolic: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heartRate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heartRateData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var systolic: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.BloodPressureData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(BodyTemperatureData) public class BodyTemperatureData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.BodyTemperatureData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.BodyTemperatureData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isSelf: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var otherName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var temperature: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.BodyTemperatureData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(CauseSupportData) public class CauseSupportData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.CauseSupportData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.CauseSupportData>
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var causeId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var causeSupportId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var donatedKarma: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var donationText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var karmaId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likes: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.CauseSupportData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(ChatBotMessageData) public class ChatBotMessageData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.ChatBotMessageData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.ChatBotMessageData>
+  @objc @NSManaged dynamic public var answerFai: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var clanId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var expireTimestamp: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var image: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isBookmark: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isDelivered: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isFromPush: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isInput: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isLike: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var itemType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var jsonData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localTimestamp: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var message: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var messageId: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var messageTimestamp: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var senderType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.ChatBotMessageData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(ChatMessageData) public class ChatMessageData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.ChatMessageData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.ChatMessageData>
+  @objc @NSManaged dynamic public var id: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var image: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isDelivered: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isLiked: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var message: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var messageStatus: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var mqttId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reaction: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var referenceMessage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var senderId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var senderName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var type: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var friend: GOQiiSDK.ChatUserData? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.ChatMessageData : Swift.Identifiable {
+  public typealias ID = Foundation.Date?
+}
+@_inheritsConvenienceInitializers @objc(ChatUserData) public class ChatUserData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.ChatUserData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.ChatUserData>
+  @objc @NSManaged dynamic public var authId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var authPass: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var clanId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var clanName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastMessageSenderId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastMessageText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastMessageType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var name: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var newChatCount: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var time: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var type: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastMessage: GOQiiSDK.ChatMessageData? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var messages: Foundation.NSSet? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.ChatUserData {
+  @objc(addMessagesObject:) @NSManaged dynamic public func addToMessages(_ value: GOQiiSDK.ChatMessageData)
+  @objc(removeMessagesObject:) @NSManaged dynamic public func removeFromMessages(_ value: GOQiiSDK.ChatMessageData)
+  @objc(addMessages:) @NSManaged dynamic public func addToMessages(_ values: Foundation.NSSet)
+  @objc(removeMessages:) @NSManaged dynamic public func removeFromMessages(_ values: Foundation.NSSet)
+}
+extension GOQiiSDK.ChatUserData : Swift.Identifiable {
+  public typealias ID = Swift.String?
+}
+@_inheritsConvenienceInitializers @objc(CoachChatBookmarkData) public class CoachChatBookmarkData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.CoachChatBookmarkData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.CoachChatBookmarkData>
+  @objc @NSManaged dynamic public var bookmarkImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bookmarkLocalId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bookmarkName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bookmarkServerId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bookmarkText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bookmarkType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var coachName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var conversationId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isBookmarkDeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isExpert: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var updatedTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.CoachChatBookmarkData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(CoachChatHistoryData) public class CoachChatHistoryData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.CoachChatHistoryData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.CoachChatHistoryData>
+  @objc @NSManaged dynamic public var cardAction: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardDescription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var coachId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var coachImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var coachName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var conversationId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var delay: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var expertId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var expertImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var expertName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var flagged: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var image: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isBookMarked: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isLiked: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var message: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var messageType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var repliedTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var screenNumber: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sender: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var subScreenNumber: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var text: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var time: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var timeV2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var type: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.CoachChatHistoryData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(CoachChatLikeData) public class CoachChatLikeData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.CoachChatLikeData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.CoachChatLikeData>
+  @objc @NSManaged dynamic public var chatLikeServerId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var conversationId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isChatLiked: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.CoachChatLikeData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(CoachUserDetailData) public class CoachUserDetailData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.CoachUserDetailData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.CoachUserDetailData>
+  @objc @NSManaged dynamic public var id: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var image: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var name: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var type: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.CoachUserDetailData : Swift.Identifiable {
+  public typealias ID = Swift.String?
+}
+@_inheritsConvenienceInitializers @objc(CumulativeMonthWise) public class CumulativeMonthWise : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.CumulativeMonthWise {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.CumulativeMonthWise>
+  @objc @NSManaged dynamic public var activityCumulativeCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var checkinId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitCumulativeCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var month: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var year: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.CumulativeMonthWise : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(DailyDeviceActivityData) public class DailyDeviceActivityData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.DailyDeviceActivityData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.DailyDeviceActivityData>
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cumulativeSteps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var dailyActivityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var healthKitSteps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var karmaPoint: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_dailyDeviceActivityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var otherSteps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sum96stepsv2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sum96stepsv3: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalActiveTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalCalories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalDistance: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalSteps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var type: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.DailyDeviceActivityData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(DailySkipActivityData) public class DailySkipActivityData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.DailySkipActivityData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.DailySkipActivityData>
+  @objc @NSManaged dynamic public var activityTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var dailySkipActivityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_dailySkipActivityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalCalories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalSkip: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var totalSpeed: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.DailySkipActivityData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(DetailActivityData) public class DetailActivityData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.DetailActivityData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.DetailActivityData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var calories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var descriptionString: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var distance: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logEndTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var steps: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.DetailActivityData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(DeviceActivityData) public class DeviceActivityData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.DeviceActivityData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.DeviceActivityData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var almostAwake: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var calories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var deepSleep: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var discription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var distance: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var duration: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var endTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lightSleep: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var month: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var offset: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var remSleep: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s3: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s4: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s5: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s6: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s7: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s8: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var startTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var steps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var year: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.DeviceActivityData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(ECGData) public class ECGData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.ECGData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.ECGData>
+  @objc @NSManaged dynamic public var data: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var ecgId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fullImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var hrv: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_ecgId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var mean: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pdfLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pr: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var qrs: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var qt: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var qtc: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var recordingTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var report_result: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var report_summary: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var rmssd: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sdnn: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sdsd: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var slotNo: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var thumbnailImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.ECGData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(FastTrackData) public class FastTrackData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.FastTrackData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.FastTrackData>
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var durationText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var endDate: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fastTrackId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var startDate: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.FastTrackData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(FeedActivityData) public class FeedActivityData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.FeedActivityData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.FeedActivityData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentsCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var donationText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likesCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localActivityImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localFoodImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var serverFeedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.FeedActivityData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(FoodLogData) public class FoodLogData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.FoodLogData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.FoodLogData>
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var amount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var calories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var foodImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var foodLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var healthAnalysis: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var is_deleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_foodLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastModifiedDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likes: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localFoodImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var mealType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var name: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var nutritionData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var recognitionType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var repeatCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var unit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.FoodLogData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(FrequentFoodLogData) public class FrequentFoodLogData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.FrequentFoodLogData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.FrequentFoodLogData>
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var amount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var calories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var foodImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var foodLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var healthAnalysis: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var is_deleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_foodLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastModifiedDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likes: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localFoodImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var mealType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var name: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var nutritionData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var recognitionType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var repeatCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var unit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.FrequentFoodLogData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(GeneratedfeedData) public class GeneratedfeedData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.GeneratedfeedData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.GeneratedfeedData>
+  @objc @NSManaged dynamic public var activityName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var additionalValue: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var date: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fai: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedImages: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fsn: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fssn: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fui: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var genericData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var jsonData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_generatedFeedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var like: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localFeedImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var name: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var navigationType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacy: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var subType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var tagDescription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var tagId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var videoList: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.GeneratedfeedData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(GenericPageData) public class GenericPageData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.GenericPageData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.GenericPageData>
+  @objc @NSManaged dynamic public var l_pageId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pageCache: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pageData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pageId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.GenericPageData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(GlucometerData) public class GlucometerData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.GlucometerData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.GlucometerData>
+  @objc @NSManaged dynamic public var level: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var mealType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var metric: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var serverId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var subType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var type: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var vitalType: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.GlucometerData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(GoActvityLogData) public class GoActvityLogData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.GoActvityLogData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.GoActvityLogData>
+  @objc @NSManaged dynamic public var address: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var goqiiCash: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var intensity: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastCheckInTime: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lattitude: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var longitude: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var name: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var photoReference: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var placeId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var placeType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var radius: Swift.Double {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var radiusColor: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.GoActvityLogData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(GoqiiRewardPointData) public class GoqiiRewardPointData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.GoqiiRewardPointData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.GoqiiRewardPointData>
+  @objc @NSManaged dynamic public var actionCode: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var animationType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var displayType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var eventId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var rewardPoints: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var skipLimit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var targetVal: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.GoqiiRewardPointData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(GPSBandData) public class GPSBandData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.GPSBandData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.GPSBandData>
+  @objc @NSManaged dynamic public var elevation: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_gpsDataId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lat: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lng: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.GPSBandData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(HabitCheckinsData) public class HabitCheckinsData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.HabitCheckinsData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.HabitCheckinsData>
+  @objc @NSManaged dynamic public var checkinId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cumulativecheckins: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var current_streak: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var followed_days: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var longest_streak: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var month: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderValue: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var total_days: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var year: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.HabitCheckinsData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(HealthRecordData) public class HealthRecordData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.HealthRecordData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.HealthRecordData>
+  @objc @NSManaged dynamic public var attachmentId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentFor: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentTypeRel: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fileLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fileName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localFileLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var recordId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sharedWithGoqii: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.HealthRecordData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(HeartRateData) public class HeartRateData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.HeartRateData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.HeartRateData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var groupId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heartRate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isVisible: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logFrom: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.HeartRateData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(HRVStressData) public class HRVStressData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.HRVStressData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.HRVStressData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var hrvValue: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityid: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var stressValue: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.HRVStressData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(InsuranceRecordData) public class InsuranceRecordData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.InsuranceRecordData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.InsuranceRecordData>
+  @objc @NSManaged dynamic public var attachmentId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Foundation.Date? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentFor: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var documentType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var expiryDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fileLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var fileName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var insuranceDocId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var insuranceFrom: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var insurerBrand: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localFileLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localHealthRecordId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminder: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sharedWithGoqii: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var startDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.InsuranceRecordData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(PaceData) public class PaceData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.PaceData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.PaceData>
+  @objc @NSManaged dynamic public var distMode: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var kmCovered: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lat: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lng: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var perKmDuration: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.PaceData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(PhoneActivityData) public class PhoneActivityData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.PhoneActivityData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.PhoneActivityData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var caloriesBurnt: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentsCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var discription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var distance: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var duration: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var durationSec: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var endTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var gpsData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var gpsDerivedData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heartData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var intensity: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var is_deleted: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isCommentByMe: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isLikeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var jsonData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likesCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localActivityImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logFrom: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pointData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var shareLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var simplifiedData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var startTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var steps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var unit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.PhoneActivityData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(PlayOfflineData) public class PlayOfflineData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.PlayOfflineData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.PlayOfflineData>
+  @objc @NSManaged dynamic public var analyticsItems: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var category: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var downloadedURL: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var downloadIdentifier: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var duration: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var enableHR: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var energyPointMultiplier: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isSubsCribed: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isVideoDownloaded: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isVideoViewed: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isWorkout: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var itemType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var onTap: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var profileId: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var shareArena: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var shareOutside: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var shareText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var showSuggestions: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var streamerImageUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var streamerName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var streamUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var thumbnail: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var title: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var videoDescription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var videoearlyexitrating: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var videoId: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var videostarrating: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var videoType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var workoutRoutine: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var workoutType: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.PlayOfflineData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(RealTimeTemperatureHRData) public class RealTimeTemperatureHRData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.RealTimeTemperatureHRData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.RealTimeTemperatureHRData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var calories: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heartRate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityid: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var steps: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var temperature: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.RealTimeTemperatureHRData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(ReminderData) public class ReminderData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.ReminderData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.ReminderData>
+  @objc @NSManaged dynamic public var activityType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var daysOfWeek: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var endDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var iconType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_reminderId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var notificationType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var onStatus: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderActivityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderBy: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderEndTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderOccurrences: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var repeatingDays: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var repeatInterval: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var startDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var uid: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.ReminderData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(SkipDetailData) public class SkipDetailData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.SkipDetailData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.SkipDetailData>
+  @objc @NSManaged dynamic public var endlogDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_skipDetail_Id: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var skipdetail_Id: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var skips: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.SkipDetailData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(SleepBandData) public class SleepBandData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.SleepBandData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.SleepBandData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var activityType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var almostAwake: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var deepSleep: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var descriptionCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var discription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lightSleep: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logEndTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s3: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s4: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s5: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s6: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s7: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var s8: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.SleepBandData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(SleepLogData) public class SleepLogData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.SleepLogData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.SleepLogData>
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var awakeTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var duration: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_sleepLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likes: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var minutesAsleep: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var rating: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sleepLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sleptTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var timeInBed: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.SleepLogData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(SmartcardData) public class SmartcardData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.SmartcardData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.SmartcardData>
+  @objc @NSManaged dynamic public var actionUrlIos: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var additionId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var allowSocial: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var allowSwiping: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var analyticsItems: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var apiParam: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardActionColor1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardActionColor2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardActionText1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardActionText2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardActionType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardBackgroundColor: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardDescription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardDescriptionColor: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardExpiry: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardIconUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardImageBackground: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardImageType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardImageUrl: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardLayoutType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardPosition: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardShareDescription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardSubTitle: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardTitle: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardTitleColor: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cardVisibility: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var iosSQL: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isBlocker: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isOfflinePossible: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isServerValidationRequired: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isVisibleHourSet: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_userCardId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastVerifiedAtDateTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var minCardVersion: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var minimalVerificatonHours: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var navigateDismiss: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var nextAvailable: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var onCardTap: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var onClickAction1: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var onClickAction2: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var priority: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var repeatAfter: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var screenNumber: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var shareImageFlag: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var showCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var subPriority: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var subScreenNumber: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var thisCardLinkedTo: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userCardId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var validationBitValue: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var validationRequired: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var visibleHours: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.SmartcardData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(SPO2Data) public class SPO2Data : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.SPO2Data {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.SPO2Data>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityid: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var spo2Value: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.SPO2Data : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(TargetCompleteData) public class TargetCompleteData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.TargetCompleteData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.TargetCompleteData>
+  @objc @NSManaged dynamic public var activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var amount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentsCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var discription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var displayText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var feedId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_activityId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likesCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var localImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var targetTotal: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var targetType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var unit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var urlImage: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.TargetCompleteData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(UserHabitCheckinData) public class UserHabitCheckinData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.UserHabitCheckinData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.UserHabitCheckinData>
+  @objc @NSManaged dynamic public var checkinId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cumulativecheckins: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var cumulativecheckinsForNotDone: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var current_streak: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var followed_days: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var longest_streak: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var month: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var reminderValue: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var total_days: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var year: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.UserHabitCheckinData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(UserHabitsData) public class UserHabitsData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.UserHabitsData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.UserHabitsData>
+  @objc @NSManaged dynamic public var category: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var current_streak: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var endDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var followed_days: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var followerCount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitDescription: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitIdApi: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitLink: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var habitTitle: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var lastUpdatedTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var longest_streak: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var progressStatus: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var showDiscussionTab: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var showFollowersCard: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var sortId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var startDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var total_days: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.UserHabitsData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(UserTargetData) public class UserTargetData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.UserTargetData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.UserTargetData>
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_targetId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var targetId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userCaloriesTarget: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userSkipTarget: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userSleepTarget: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userStepsTarget: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userWaterTarget: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userWeightTarget: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.UserTargetData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(WaterLogData) public class WaterLogData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.WaterLogData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.WaterLogData>
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var amount: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var heightAspectRatio: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var imageWidth: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var isdeleted: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_waterLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likes: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var quantity: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var unit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var waterLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.WaterLogData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}
+@_inheritsConvenienceInitializers @objc(WeightLogData) public class WeightLogData : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+extension GOQiiSDK.WeightLogData {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<GOQiiSDK.WeightLogData>
+  @objc @NSManaged dynamic public var activityText: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bmi: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bmr: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bodyFat: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var bone: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var boneMuscle: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var change: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var comment: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var commentByMe: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var createdTime: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var gain: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var hip: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var is_deleted: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var l_weightLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likeByMe: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var likes: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var logDate: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var moisture: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var muscle: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var privacyType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var protein: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var resistance: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var scaleData: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var skeletalMuscle: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var source: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var status: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var targetWeight: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var visceralFat: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var waist: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var waistHipUnit: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var weight: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var weightLogId: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var weightUnit: Swift.String? {
+    @objc get
+    @objc set
+  }
+}
+extension GOQiiSDK.WeightLogData : Swift.Identifiable {
+  public typealias ID = Swift.ObjectIdentifier
+}

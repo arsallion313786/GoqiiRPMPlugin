@@ -1,0 +1,13 @@
+{
+  "name": "goqiiplugin",
+  "version": "1.0.0",
+  "description": "Cordova plugin to integrate Goqii SDK",
+  "cordova": {
+    "id": "com.goqii.goqiiplugin",
+    "platforms": ["android", "ios"]
+  },
+  "keywords": ["cordova", "plugin", "goqii"],
+  "author": "Your Name",
+  "license": "MIT"
+}
+
