@@ -168,6 +168,9 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             try {
                 JSONObject deviceObj = new JSONObject();
                 deviceObj.put("macId", device.getAddress());
+                deviceObj.put("deviceName", device.getLocalName());
+                deviceObj.put("model", device.getModelName());
+                deviceObj.put("deviceName", String.valueOf(device.getRssi()));
                 resultArray.put(deviceObj);
             } catch (JSONException e) {
                 // Log and ignore the faulty device
