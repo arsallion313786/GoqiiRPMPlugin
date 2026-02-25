@@ -29,7 +29,7 @@ class OmronDevicePlugin: CDVPlugin {
         // Asynchronous initialization status will be sent via the persistent event callback.
         OmronBluetoothManager.sharedInstance.initaliseBle()
         
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Omron SDK initialization process started.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Omron SDK initialization process started.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -46,7 +46,7 @@ class OmronDevicePlugin: CDVPlugin {
         ]
         
         // Use setKeepCallback(true) to keep this channel open.
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: payload)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: payload)
         pluginResult?.setKeepCallbackAs(true)
         self.commandDelegate.send(pluginResult, callbackId: self.eventCallbackContext)
     }
@@ -58,10 +58,10 @@ class OmronDevicePlugin: CDVPlugin {
 
         if bluetoothManager.state == .poweredOn {
             OmronBluetoothManager.sharedInstance.startScanning()
-            let pluginResult = CDVPluginResult(status: .ok, messageAs: "Scan command issued.")
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Scan command issued.")
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
         } else {
-            let pluginResult = CDVPluginResult(status: .error, messageAs: "Bluetooth is not enabled.")
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: "Bluetooth is not enabled.")
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
         }
     }
@@ -72,7 +72,7 @@ class OmronDevicePlugin: CDVPlugin {
         guard isCallbackRegistered(command.callbackId) else { return }
         
         OmronBluetoothManager.sharedInstance.connectAndSync()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Connect & Sync command issued.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Connect & Sync command issued.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -80,7 +80,7 @@ class OmronDevicePlugin: CDVPlugin {
     func disconnect(command: CDVInvokedUrlCommand) {
         print("🔵 disconnect called")
         OmronBluetoothManager.sharedInstance.disconnect()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Device disconnected successfully.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Device disconnected successfully.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -88,7 +88,7 @@ class OmronDevicePlugin: CDVPlugin {
     func isBloodPressureDeviceLinked(command: CDVInvokedUrlCommand) {
         print("🔵 isBloodPressureDeviceLinked called")
         let isLinked = OmronBluetoothManager.sharedInstance.isBloodPressureDevicePresent()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: isLinked)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isLinked)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -98,7 +98,7 @@ class OmronDevicePlugin: CDVPlugin {
     func unlink(command: CDVInvokedUrlCommand) {
         print("🔵 unlink called (executes disconnect)")
         OmronBluetoothManager.sharedInstance.disconnect()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Device unlinked successfully.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Device unlinked successfully.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -112,7 +112,7 @@ class OmronDevicePlugin: CDVPlugin {
         }
         
         let payload: [String: Any] = ["event": eventName, "data": data]
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: payload)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: payload)
         pluginResult?.setKeepCallbackAs(true) // Keep the callback alive
         self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
@@ -125,7 +125,7 @@ class OmronDevicePlugin: CDVPlugin {
         }
 
         let payload: [String: Any] = ["event": "error", "data": errorMessage]
-        let pluginResult = CDVPluginResult(status: .error, messageAs: payload)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: payload)
         pluginResult?.setKeepCallbackAs(true) // Keep the callback alive
         self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
@@ -135,7 +135,7 @@ class OmronDevicePlugin: CDVPlugin {
         if self.eventCallbackContext == nil {
             let errorMessage = "Callback not registered. Call registerCallback() first."
             print("❌ \(errorMessage)")
-            let pluginResult = CDVPluginResult(status: .error, messageAs: errorMessage)
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: errorMessage)
             self.commandDelegate.send(pluginResult, callbackId: commandCallbackId)
             return false
         }
