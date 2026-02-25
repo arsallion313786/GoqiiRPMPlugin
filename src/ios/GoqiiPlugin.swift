@@ -185,7 +185,7 @@ func BLEactivated(state: Bool) {
     if let callbackId = initializeSDKCallbackId {
         let deviceInfo = ["BLEState": "\(state)"]
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: deviceInfo)
-            pluginResult??.setKeepCallbackAs(true)
+            pluginResult?.setKeepCallbackAs(true)
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
         
     }
