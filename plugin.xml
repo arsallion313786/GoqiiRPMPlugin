@@ -30,7 +30,11 @@
        <config-file target="*-Info.plist" parent="NSBluetoothAlwaysUsageDescription">
            <string>$Blue_Tooth_Permission</string>
        </config-file>
-       
+
+           <!-- Swift Language and Build Settings Preferences -->
+    <preference name="SwiftVersion" value="5.0" />
+    <preference name="deployment-target" value="13.0" />
+    <preference name="ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES" value="$(inherited)" />
        
        <preference name="Blue_Tooth_Permission_Peripheral" default="App requires Bluetooth access to communicate with fitness devices." />
        <config-file target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
