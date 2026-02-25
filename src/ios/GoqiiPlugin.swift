@@ -70,7 +70,7 @@ func searchGlucometer(command: CDVInvokedUrlCommand) {
     GlucoBLEManager.shared.startBLE()
 
     let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["data": "Searching for Glucometers..."])
-        pluginResult.setKeepCallbackAs(true)
+        pluginResult?.setKeepCallbackAs(true)
         self.commandDelegate!.send(pluginResult, callbackId: command.callbackId)
     
 }
@@ -185,7 +185,7 @@ func BLEactivated(state: Bool) {
     if let callbackId = initializeSDKCallbackId {
         let deviceInfo = ["BLEState": "\(state)"]
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: deviceInfo)
-            pluginResult.setKeepCallbackAs(true)
+            pluginResult??.setKeepCallbackAs(true)
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
         
     }
@@ -245,7 +245,7 @@ func BLEfoundPeripheral(device: CBPeripheral, rssi: Int, mac: String) {
             "rssi": "\(rssi)"
         ]
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: deviceInfo)
-            pluginResult.setKeepCallbackAs(true)
+            pluginResult?.setKeepCallbackAs(true)
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
         
     }
@@ -266,13 +266,13 @@ func glucoMeterData(_ data: [Any]) {
     if let callbackId = dataCallbackId {
         print("💡 Sending data callback with dataCallbackId")
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["data": "\(data)"])
-            pluginResult.setKeepCallbackAs(true)
+            pluginResult?.setKeepCallbackAs(true)
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
         
     }else if let callbackId = initGoqiiGlucometerSettingsCallbackId{
         print("💡 Sending data callback with initGoqiiGlucometerSettingsCallbackId")
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["data": "\(data)"])
-            pluginResult.setKeepCallbackAs(true)
+            pluginResult?.setKeepCallbackAs(true)
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
         
     }
@@ -291,7 +291,7 @@ func glucoMeterData(_ data: [Any]) {
         }
 
     let result = CDVPluginResult(status: .error, messageAs: ["error":errorStr])
-    result.setKeepCallbackAs(true) // Optional: Keep the callback active
+    result?.setKeepCallbackAs(true) // Optional: Keep the callback active
     self.commandDelegate?.send(result, callbackId: callbackId)
     }
 }
