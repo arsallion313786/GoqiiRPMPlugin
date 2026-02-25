@@ -15,11 +15,11 @@
        <config-file target="config.xml" parent="/*">
            <feature name="GoqiiPlugin">
                <param name="ios-package" value="GoqiiPlugin" />
-               <preference name="UseSwiftLanguageVersion" value="5.0" />
+               <!-- <preference name="UseSwiftLanguageVersion" value="5.0" /> -->
            </feature>
            <feature name="OmronDevicePlugin">
                <param name="ios-package" value="OmronDevicePlugin" />
-               <preference name="UseSwiftLanguageVersion" value="5.0" />
+               <!-- <preference name="UseSwiftLanguageVersion" value="5.0" /> -->
            </feature>
        </config-file>
        <framework src="src/ios/GOQiiSDK.xcframework" custom="true" embed="true"/>
