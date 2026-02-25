@@ -36,6 +36,7 @@
        <config-file target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
            <string>$Blue_Tooth_Permission_Peripheral</string>
        </config-file>
+       <dependency id="cordova-plugin-add-swift-support-arslan" url="https://github.com/arsallion313786/cordova-plugin-add-swift-support"  version="1.0.0" />   
    </platform>
 
    <platform name="android">
