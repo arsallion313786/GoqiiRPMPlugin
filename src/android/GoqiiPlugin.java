@@ -152,13 +152,14 @@ public class GoqiiPlugin extends CordovaPlugin {
         callbackContext.success("MAC ID set successfully.");
     }
 
-    private boolean executeSdkAction(kotlinx.coroutines.Runnable action, CallbackContext callbackContext) {
+    private boolean executeSdkAction(java.lang.Runnable action, CallbackContext callbackContext) {
         if (glucometerManager == null) {
             callbackContext.error("SDK not initialized. Please call initialize() first.");
             return true; // Still return true as we've handled the action
         }
-        action.run();
-        callbackContext.success("Action " + action.toString() + " initiated.");
+        // Execute the action on a background thread to avoid blocking the main UI thread.
+        cordova.getThreadPool().execute(action);
+        callbackContext.success("Action initiated.");
         return true;
     }
 
