@@ -1,219 +1,215 @@
 package com.goqii.goqiiplugin;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.goqii.goqiisdk.GlucometerManager;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.goqii.goqiisdk.GlucometerManager;
-import android.text.TextUtils;
 
 public class GoqiiPlugin extends CordovaPlugin {
     private static final String TAG = "GoqiiPlugin";
     private GlucometerManager glucometerManager;
-    private CallbackContext lastCommandCallback;
+    private CallbackContext eventCallback; // Single, persistent callback for async events
+
+    private enum EventType {
+        INITIALIZED,
+        DEVICE_FOUND,
+        DEVICE_LINKED,
+        DEVICE_UNLINKED,
+        LINK_FAILED,
+        UNLINK_FAILED,
+        SYNC_COMPLETE,
+        DEVICE_NOT_FOUND,
+        DEVICE_NOT_PAIRED,
+        ERROR
+    }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Log.d(TAG, "execute: action = " + action);
-        if(action != null && !action.equals("isGlucometerLinked") && !action.equals("setGlucometerMacId")){
-            lastCommandCallback = callbackContext;
+        switch (action) {
+            case "initialize":
+                initialize(callbackContext);
+                return true;
+            case "registerEventListener":
+                // This will be our single point of contact for all async events
+                this.eventCallback = callbackContext;
+                return true;
+            case "searchGlucometer":
+                return executeSdkAction(glucometerManager::startScan, callbackContext);
+            case "connectGlucometer":
+                return executeSdkAction(glucometerManager::linkDevice, callbackContext);
+            case "syncGlucometer":
+                return executeSdkAction(glucometerManager::syncGlucometer, callbackContext);
+            case "unlinkGlucometer":
+                return executeSdkAction(glucometerManager::unpairDevice, callbackContext);
+            case "isGlucometerLinked":
+                isGlucometerLinked(callbackContext);
+                return true;
+            case "setGlucometerMacId":
+                setGlucometerMacId(args.getString(0), callbackContext);
+                return true;
+            default:
+                return false;
         }
-        if (action.equals("initializeSDK")) {
-            initializeGlucometer();
-            return true;
-        } else if (action.equals("searchGlucometer")) {
-            glucometerManager.startScan();
-            return true;
-        } else if (action.equals("unlinkGlucometer")) {
-            glucometerManager.unpairDevice();
-            return true;
-        } else if (action.equals("syncGlucometer")) {
-            glucometerManager.syncGlucometer();
-            return true;
-        } else if (action.equals("connectGlucometer")) {
-            glucometerManager.linkDevice();
-            return true;
-        } if(action.equals("isGlucometerLinked")){
-            String mac = glucometerManager.getGlucometerMac();
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, !TextUtils.isEmpty(mac));
-            callbackContext.sendPluginResult(pResult);
-            return true;
-        }else if(action.equals("setGlucometerMacId")){
-            if(args != null && args.length() != 0){
-                String localMac = glucometerManager.getGlucometerMac();
-                if(TextUtils.isEmpty(args.getString(0))){
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Pass MAC ID");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        callbackContext.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    return true;
-                }else if(!TextUtils.isEmpty(localMac) && !localMac.equals(args.getString(0))){
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Pass previously linked MAC ID");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        callbackContext.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    return true;
-                }else {
-                    glucometerManager.setGlucometerMacId(args.getString(0));
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "MAC ID set successfully");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result.toString());
-                        callbackContext.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    return true;
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
-    /*
-     * Initialize the Glucometer SDK
-     */
-    public void initializeGlucometer() {
-        Context context = cordova.getActivity();
-        if(glucometerManager == null) {
+    private void initialize(CallbackContext callbackContext) {
+        if (glucometerManager != null) {
+            callbackContext.success("SDK already initialized.");
+            return;
+        }
+
+        cordova.getThreadPool().execute(() -> {
+            Context context = cordova.getActivity().getApplicationContext();
             glucometerManager = new GlucometerManager(context, new GlucometerManager.GlucometerListener() {
                 @Override
+                public void onDeviceFound(String macId, String deviceName) {
+                    sendEvent(EventType.DEVICE_FOUND, "macId", macId, "name", deviceName);
+                }
+
+                @Override
                 public void onDeviceLinked(String macId, String deviceName) {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("macId", macId);
-                        result.put("message", "Device Linked");
-                        result.put("name", deviceName);
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result.toString());
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    sendEvent(EventType.DEVICE_LINKED, "macId", macId, "name", deviceName);
                 }
 
                 @Override
                 public void onDeviceUnlinked(String macId) {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Device Unlinked");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result.toString());
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    sendEvent(EventType.DEVICE_UNLINKED, "macId", macId);
                 }
 
                 @Override
                 public void onDeviceLinkFailed() {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Device Link Failed");                    
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    sendEvent(EventType.LINK_FAILED);
                 }
 
                 @Override
                 public void onDeviceUnlinkFailed() {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Device Unlink Failed");
-                        // lastCommandCallback.error(result.toString());
-                        
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    sendEvent(EventType.UNLINK_FAILED);
                 }
 
                 @Override
                 public void onSyncComplete(String result) {
-                    // lastCommandCallback.success(data);
-
-                    PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                    pResult.setKeepCallback(true);
-                    lastCommandCallback.sendPluginResult(pResult); 
+                    // Assuming 'result' is a JSON string from the SDK, we parse it
+                    try {
+                        sendEvent(EventType.SYNC_COMPLETE, "data", new JSONObject(result));
+                    } catch (JSONException e) {
+                        sendErrorEvent("Failed to parse sync data.", e);
+                    }
                 }
 
                 @Override
                 public void deviceNotFound() {
-                try{  
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Device Not Found");
-                        // lastCommandCallback.error(result.toString());
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onDeviceFound(String macId, String deviceName) {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("macId", macId);
-                        result.put("name", deviceName);
-                        result.put("message", "Device Found");
-                        // lastCommandCallback.success(result.toString());
-            
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    sendEvent(EventType.DEVICE_NOT_FOUND);
                 }
 
                 @Override
                 public void deviceNotPaired() {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("message", "Device not paired please put device in the pairing mode");    
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    sendEvent(EventType.DEVICE_NOT_PAIRED);
                 }
             });
+
+            // Send an initialized event to confirm setup is complete
+            sendEvent(EventType.INITIALIZED, "isLinked", !TextUtils.isEmpty(glucometerManager.getGlucometerMac()));
+            callbackContext.success("SDK Initialized Successfully");
+        });
+    }
+
+    private void isGlucometerLinked(CallbackContext callbackContext) {
+        if (glucometerManager == null) {
+            callbackContext.error("SDK not initialized.");
+            return;
+        }
+        boolean isLinked = !TextUtils.isEmpty(glucometerManager.getGlucometerMac());
+        PluginResult result = new PluginResult(PluginResult.Status.OK, isLinked);
+        callbackContext.sendPluginResult(result);
+    }
+
+    private void setGlucometerMacId(String macId, CallbackContext callbackContext) {
+        if (glucometerManager == null) {
+            callbackContext.error("SDK not initialized.");
+            return;
         }
 
-        try{
-            JSONObject result = new JSONObject();
-            result.put("message", "Glucometer Initialized Successfully");
-            result.put("glucometerLinked", glucometerManager.getGlucometerMac());
-            // result.put("omronMac", glucometerManager.getOmronMac());
-
-            // lastCommandCallback.success(result.toString());
-
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-            pResult.setKeepCallback(true);
-            lastCommandCallback.sendPluginResult(pResult);
-        }catch(Exception e){
-            e.printStackTrace();
+        if (TextUtils.isEmpty(macId)) {
+            callbackContext.error("MAC ID cannot be empty.");
+            return;
         }
+
+        String existingMac = glucometerManager.getGlucometerMac();
+        if (!TextUtils.isEmpty(existingMac) && !existingMac.equalsIgnoreCase(macId)) {
+            callbackContext.error("A different MAC ID is already linked. Unlink first.");
+            return;
+        }
+
+        glucometerManager.setGlucometerMacId(macId);
+        callbackContext.success("MAC ID set successfully.");
+    }
+
+    private boolean executeSdkAction(kotlinx.coroutines.Runnable action, CallbackContext callbackContext) {
+        if (glucometerManager == null) {
+            callbackContext.error("SDK not initialized. Please call initialize() first.");
+            return true; // Still return true as we've handled the action
+        }
+        action.run();
+        callbackContext.success("Action " + action.toString() + " initiated.");
+        return true;
+    }
+
+    // --- Unified Event Emitter ---
+
+    private void sendEvent(EventType type, Object... keyValuePairs) {
+        JSONObject payload = new JSONObject();
+        try {
+            for (int i = 0; i < keyValuePairs.length; i += 2) {
+                String key = (String) keyValuePairs[i];
+                Object value = keyValuePairs[i + 1];
+                payload.put(key, value);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to create event payload", e);
+            sendErrorEvent("Failed to create event payload", e);
+            return;
+        }
+        sendEvent(type, payload);
+    }
+
+    private void sendEvent(EventType type, JSONObject payload) {
+        if (this.eventCallback == null) {
+            Log.w(TAG, "eventCallback is not registered. Cannot send event: " + type.name());
+            return;
+        }
+
+        try {
+            JSONObject event = new JSONObject();
+            event.put("type", type.name());
+            event.put("payload", payload);
+
+            PluginResult result = new PluginResult(PluginResult.Status.OK, event);
+            result.setKeepCallback(true); // Keep the callback alive for future events
+            this.eventCallback.sendPluginResult(result);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to construct event object", e);
+        }
+    }
+
+    private void sendErrorEvent(String message, Exception e) {
+        Log.e(TAG, message, e);
+        JSONObject errorPayload = new JSONObject();
+        try {
+            errorPayload.put("errorMessage", message);
+            if (e != null) {
+                errorPayload.put("exception", e.getMessage());
+            }
+        } catch (JSONException je) {
+            Log.e(TAG, "Failed to create error payload", je);
+        }
+        sendEvent(EventType.ERROR, errorPayload);
     }
 }
