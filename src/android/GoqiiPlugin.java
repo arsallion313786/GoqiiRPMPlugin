@@ -158,7 +158,7 @@ public class GoqiiPlugin extends CordovaPlugin {
             return true; // Still return true as we've handled the action
         }
         // Execute the action on a background thread to avoid blocking the main UI thread.
-        cordova.getThreadPool().execute(action);
+        cordova.getActivity().runOnUiThread(action);
         callbackContext.success("Action initiated.");
         return true;
     }
