@@ -67,7 +67,7 @@ public class GoqiiPlugin extends CordovaPlugin {
         }
 
         cordova.getThreadPool().execute(() -> {
-            Context context = cordova.getActivity().getApplicationContext();
+            Context context = cordova.getActivity();
             glucometerManager = new GlucometerManager(context, new GlucometerManager.GlucometerListener() {
                 @Override
                 public void onDeviceFound(String macId, String deviceName) {
