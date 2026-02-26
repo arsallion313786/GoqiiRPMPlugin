@@ -66,7 +66,6 @@ public class GoqiiPlugin extends CordovaPlugin {
             return;
         }
 
-        cordova.getThreadPool().execute(() -> {
             Context context = cordova.getActivity();
             glucometerManager = new GlucometerManager(context, new GlucometerManager.GlucometerListener() {
                 @Override
@@ -113,7 +112,7 @@ public class GoqiiPlugin extends CordovaPlugin {
                 public void deviceNotPaired() {
                     sendEvent(EventType.DEVICE_NOT_PAIRED);
                 }
-            });
+           
 
             // Send an initialized event to confirm setup is complete
             sendEvent(EventType.INITIALIZED, "isLinked", !TextUtils.isEmpty(glucometerManager.getGlucometerMac()));
