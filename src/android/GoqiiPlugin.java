@@ -42,13 +42,38 @@ public class GoqiiPlugin extends CordovaPlugin {
                 this.eventCallback = callbackContext;
                 return true;
             case "searchGlucometer":
-                return executeSdkAction(glucometerManager::startScan, callbackContext);
+                 if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.startScan();
+                callbackContext.success("Action initiated.");
+                return true;
+            
             case "connectGlucometer":
-                return executeSdkAction(glucometerManager::linkDevice, callbackContext);
+                if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.linkDevice();
+                callbackContext.success("Action initiated.");
+                return true;
             case "syncGlucometer":
-                return executeSdkAction(glucometerManager::syncGlucometer, callbackContext);
+                if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.syncGlucometer();
+                callbackContext.success("Action initiated.");
+                return true;
             case "unlinkGlucometer":
-                return executeSdkAction(glucometerManager::unpairDevice, callbackContext);
+                if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.unpairDevice();
+                callbackContext.success("Action initiated.");
+                return true;
             case "isGlucometerLinked":
                 isGlucometerLinked(callbackContext);
                 return true;
