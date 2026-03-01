@@ -243,18 +243,4 @@ public class GoqiiPlugin extends CordovaPlugin {
         }
         sendEvent(EventType.ERROR, errorPayload);
     }
-
-    private void sendErrorEvent(String message, Exception e) {
-        Log.e(TAG, message, e);
-        JSONObject errorPayload = new JSONObject();
-        try {
-            errorPayload.put("errorMessage", message);
-            if (e != null) {
-                errorPayload.put("exception", e.getMessage());
-            }
-        } catch (JSONException je) {
-            Log.e(TAG, "Failed to create error payload", je);
-        }
-        sendEvent(EventType.ERROR, errorPayload);
-    }
 }
