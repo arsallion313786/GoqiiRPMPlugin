@@ -1,4 +1,4 @@
-swift
+//swift
 import Foundation
 import GOQiiSDK
 import CoreBluetooth
