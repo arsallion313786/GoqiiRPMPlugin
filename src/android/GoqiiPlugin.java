@@ -42,13 +42,39 @@ public class GoqiiPlugin extends CordovaPlugin {
                 this.eventCallback = callbackContext;
                 return true;
             case "searchGlucometer":
-                return executeSdkAction(glucometerManager::startScan, callbackContext);
+
+                 if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.startScan();
+                callbackContext.success("Action initiated.");
+                return true;
+            
             case "connectGlucometer":
-                return executeSdkAction(glucometerManager::linkDevice, callbackContext);
+                if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.linkDevice();
+                callbackContext.success("Action initiated.");
+                return true;
             case "syncGlucometer":
-                return executeSdkAction(glucometerManager::syncGlucometer, callbackContext);
+                if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.syncGlucometer();
+                callbackContext.success("Action initiated.");
+                return true;
             case "unlinkGlucometer":
-                return executeSdkAction(glucometerManager::unpairDevice, callbackContext);
+                if (glucometerManager == null) {
+                        callbackContext.error("SDK not initialized. Please call initialize() first.");
+                        return true; // Still return true as we've handled the action
+                    }
+                glucometerManager.unpairDevice();
+                callbackContext.success("Action initiated.");
+                return true;
             case "isGlucometerLinked":
                 isGlucometerLinked(callbackContext);
                 return true;
@@ -58,68 +84,72 @@ public class GoqiiPlugin extends CordovaPlugin {
             default:
                 return false;
         }
+
     }
 
     private void initialize(CallbackContext callbackContext) {
-        if (glucometerManager != null) {
-            callbackContext.success("SDK already initialized.");
-            return;
-        }
-
-        cordova.getThreadPool().execute(() -> {
-            Context context = cordova.getActivity().getApplicationContext();
-            glucometerManager = new GlucometerManager(context, new GlucometerManager.GlucometerListener() {
-                @Override
-                public void onDeviceFound(String macId, String deviceName) {
-                    sendEvent(EventType.DEVICE_FOUND, "macId", macId, "name", deviceName);
-                }
-
-                @Override
-                public void onDeviceLinked(String macId, String deviceName) {
-                    sendEvent(EventType.DEVICE_LINKED, "macId", macId, "name", deviceName);
-                }
-
-                @Override
-                public void onDeviceUnlinked(String macId) {
-                    sendEvent(EventType.DEVICE_UNLINKED, "macId", macId);
-                }
-
-                @Override
-                public void onDeviceLinkFailed() {
-                    sendEvent(EventType.LINK_FAILED);
-                }
-
-                @Override
-                public void onDeviceUnlinkFailed() {
-                    sendEvent(EventType.UNLINK_FAILED);
-                }
-
-                @Override
-                public void onSyncComplete(String result) {
-                    // Assuming 'result' is a JSON string from the SDK, we parse it
-                    try {
-                        sendEvent(EventType.SYNC_COMPLETE, "data", new JSONObject(result));
-                    } catch (JSONException e) {
-                        sendErrorEvent("Failed to parse sync data.", e);
-                    }
-                }
-
-                @Override
-                public void deviceNotFound() {
-                    sendEvent(EventType.DEVICE_NOT_FOUND);
-                }
-
-                @Override
-                public void deviceNotPaired() {
-                    sendEvent(EventType.DEVICE_NOT_PAIRED);
-                }
-            });
-
-            // Send an initialized event to confirm setup is complete
-            sendEvent(EventType.INITIALIZED, "isLinked", !TextUtils.isEmpty(glucometerManager.getGlucometerMac()));
-            callbackContext.success("SDK Initialized Successfully");
-        });
+    if (glucometerManager != null) {
+        callbackContext.success("SDK already initialized.");
+        return;
     }
+
+    // Use runOnUiThread to prevent potential 'Looper' crashes from the SDK
+    cordova.getActivity().runOnUiThread(() -> {
+        Context context = cordova.getActivity().getApplicationContext();
+
+        // The GlucometerManager must be created and assigned here
+        glucometerManager = new GlucometerManager(context, new GlucometerManager.GlucometerListener() {
+            @Override
+            public void onDeviceFound(String macId, String deviceName) {
+                sendEvent(EventType.DEVICE_FOUND, "macId", macId, "name", deviceName);
+            }
+
+            @Override
+            public void onDeviceLinked(String macId, String deviceName) {
+                sendEvent(EventType.DEVICE_LINKED, "macId", macId, "name", deviceName);
+            }
+
+            @Override
+            public void onDeviceUnlinked(String macId) {
+                sendEvent(EventType.DEVICE_UNLINKED, "macId", macId);
+            }
+
+            @Override
+            public void onDeviceLinkFailed() {
+                sendEvent(EventType.LINK_FAILED);
+            }
+
+            @Override
+            public void onDeviceUnlinkFailed() {
+                sendEvent(EventType.UNLINK_FAILED);
+            }
+
+            @Override
+            public void onSyncComplete(String result) {
+                try {
+                    sendEvent(EventType.SYNC_COMPLETE, "data", new JSONObject(result));
+                } catch (JSONException e) {
+                    sendErrorEvent("Failed to parse sync data.", e);
+                }
+            }
+
+            @Override
+            public void deviceNotFound() {
+                sendEvent(EventType.DEVICE_NOT_FOUND);
+            }
+
+            @Override
+            public void deviceNotPaired() {
+                sendEvent(EventType.DEVICE_NOT_PAIRED);
+            }
+        }); // <-- The constructor call for GlucometerManager now ends correctly.
+
+        // NOW, call these methods after the object has been successfully created.
+        sendEvent(EventType.INITIALIZED, "isLinked", !TextUtils.isEmpty(glucometerManager.getGlucometerMac()));
+        callbackContext.success("SDK Initialized Successfully");
+    });
+}
+
 
     private void isGlucometerLinked(CallbackContext callbackContext) {
         if (glucometerManager == null) {
@@ -158,12 +188,10 @@ public class GoqiiPlugin extends CordovaPlugin {
             return true; // Still return true as we've handled the action
         }
         // Execute the action on a background thread to avoid blocking the main UI thread.
-        cordova.getThreadPool().execute(action);
+        cordova.getActivity().runOnUiThread(action);
         callbackContext.success("Action initiated.");
         return true;
     }
-
-
 
     // --- Unified Event Emitter ---
 
@@ -200,6 +228,20 @@ public class GoqiiPlugin extends CordovaPlugin {
         } catch (JSONException e) {
             Log.e(TAG, "Failed to construct event object", e);
         }
+    }
+
+    private void sendErrorEvent(String message, Exception e) {
+        Log.e(TAG, message, e);
+        JSONObject errorPayload = new JSONObject();
+        try {
+            errorPayload.put("errorMessage", message);
+            if (e != null) {
+                errorPayload.put("exception", e.getMessage());
+            }
+        } catch (JSONException je) {
+            Log.e(TAG, "Failed to create error payload", je);
+        }
+        sendEvent(EventType.ERROR, errorPayload);
     }
 
     private void sendErrorEvent(String message, Exception e) {
