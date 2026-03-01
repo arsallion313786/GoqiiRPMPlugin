@@ -1,201 +1,284 @@
+swift
 import Foundation
 import GOQiiSDK
 import CoreBluetooth
 
-@objc(OmronDevicePlugin)
-class OmronDevicePlugin: CDVPlugin {
+@objc(OmronDevicePlugin) class OmronDevicePlugin: CDVPlugin {
     
-    // Single, persistent callback context for all events, just like the Android version.
-    var eventCallbackContext: String?
+    // 1. Single callback for all asynchronous events
+    var eventCallbackId: String?
+    
     var bluetoothManager: CBCentralManager!
-
-    // MARK: - Plugin Lifecycle
+    var connectionTimeoutWorkItem: DispatchWorkItem?
+    var customTimeoutMs: Double = 30000.0 // Default to 30 seconds
+    var isOmronDeviceFoundDuringScan = false
     
     override func pluginInitialize() {
-        super.pluginInitialize()
-        print("🟢 Omron Plugin Initialized")
-        // Initialize the Bluetooth manager to check its state.
+        print("🟢 Omron pluginInitialize called")
+        // Initialize Bluetooth manager to check its state
         bluetoothManager = CBCentralManager(delegate: self, queue: nil)
-        // Set this class as the delegate for Omron events.
-        OmronBluetoothManager.sharedInstance.delegate = self
+        // The GOQiiSDK's Omron manager should be initialized via the `initializeSDK` call.
     }
 
-    // MARK: - Plugin Actions (Called from JavaScript)
-
-    @objc(initialize:)
-    func initialize(command: CDVInvokedUrlCommand) {
-        print("🔵 initialize called")
-        // The SDK is initialized and a success message is sent back immediately.
-        // Asynchronous initialization status will be sent via the persistent event callback.
-        OmronBluetoothManager.sharedInstance.initaliseBle()
-        
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Omron SDK initialization process started.")
-        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    // MARK: - Event Dispatchers
+    
+    /// Sends a success event to the persistent JavaScript callback.
+    private func sendEvent(data: [String: Any]) {
+        guard let callbackId = self.eventCallbackId else {
+            print("⚠️ ERROR: eventCallbackId is not set. Cannot send event: \(data["code"] ?? "N/A")")
+            return
+        }
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: data)
+        pluginResult?.setKeepCallbackAs(true) // Keep the callback channel open
+        self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
 
+    /// Sends an error event to the persistent JavaScript callback.
+    private func sendErrorEvent(data: [String: Any]) {
+        guard let callbackId = self.eventCallbackId else {
+            print("⚠️ ERROR: eventCallbackId is not set. Cannot send error event: \(data["code"] ?? "N/A")")
+            return
+        }
+        let pluginResult = CDVPluginResult(status: .error, messageAs: data)
+        pluginResult?.setKeepCallbackAs(true) // Keep the callback channel open
+        self.commandDelegate.send(pluginResult, callbackId: callbackId)
+    }
+
+    // MARK: - Cordova Action Handlers
+
+    /// Registers the single persistent callback for all plugin events.
     @objc(registerCallback:)
     func registerCallback(command: CDVInvokedUrlCommand) {
         print("🔵 registerCallback called")
-        // Store the callbackId to be used for all future async events.
-        self.eventCallbackContext = command.callbackId
-
-        // Send a confirmation event to JS to confirm registration.
-        let payload: [String: Any] = [
-            "event": "callbackRegistered",
-            "data": "Successfully registered for events."
-        ]
+        self.eventCallbackId = command.callbackId
         
-        // Use setKeepCallback(true) to keep this channel open.
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: payload)
+        // Send an initial "NO_RESULT" to keep the callback alive.
+        let pluginResult = CDVPluginResult(status: .noResult)
         pluginResult?.setKeepCallbackAs(true)
-        self.commandDelegate.send(pluginResult, callbackId: self.eventCallbackContext)
-    }
-
-    @objc(startScanning:)
-    func startScanning(command: CDVInvokedUrlCommand) {
-        print("🔵 startScanning called")
-        guard isCallbackRegistered(command.callbackId) else { return }
-
-        if bluetoothManager.state == .poweredOn {
-            OmronBluetoothManager.sharedInstance.startScanning()
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Scan command issued.")
-            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
-        } else {
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: "Bluetooth is not enabled.")
-            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
-        }
-    }
-
-    @objc(connectAndSync:)
-    func connectAndSync(command: CDVInvokedUrlCommand) {
-        print("🔵 connectAndSync called")
-        guard isCallbackRegistered(command.callbackId) else { return }
-        
-        OmronBluetoothManager.sharedInstance.connectAndSync()
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Connect & Sync command issued.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
-    @objc(disconnect:)
-    func disconnect(command: CDVInvokedUrlCommand) {
-        print("🔵 disconnect called")
-        OmronBluetoothManager.sharedInstance.disconnect()
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Device disconnected successfully.")
+    /// Initializes the underlying Omron SDK.
+    @objc(initializeSDK:)
+    func initializeSDK(command: CDVInvokedUrlCommand) {
+        print("🟢 initializeSDK called")
+        OmronBluetoothManager.sharedInstance.delegate = self
+        OmronBluetoothManager.sharedInstance.initaliseBle()
+        // The result is sent via the `didInitialize` delegate method.
+        // We can send an immediate acknowledgment if desired.
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: "SDK initialization process started.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
-    @objc(isBloodPressureDeviceLinked:)
-    func isBloodPressureDeviceLinked(command: CDVInvokedUrlCommand) {
-        print("🔵 isBloodPressureDeviceLinked called")
-        let isLinked = OmronBluetoothManager.sharedInstance.isBloodPressureDevicePresent()
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isLinked)
+    /// Checks if an Omron device has been previously paired.
+    @objc(isDevicePaired:)
+    func isDevicePaired(command: CDVInvokedUrlCommand) {
+        let isPaired = OmronBluetoothManager.sharedInstance.isBloodPressureDevicePresent()
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: isPaired)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
-    }
-
-    // This action is removed in the new model. The Android equivalent 'unlink' calls 'disconnect'.
-    // If you need a separate 'unpair' functionality, it should be added to the OmronBluetoothManager.
-    @objc(unlink:)
-    func unlink(command: CDVInvokedUrlCommand) {
-        print("🔵 unlink called (executes disconnect)")
-        OmronBluetoothManager.sharedInstance.disconnect()
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Device unlinked successfully.")
-        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
-    }
-
-    // MARK: - Event & Error Sending Helper Methods
-
-    // Helper to send structured events to JavaScript.
-    private func sendEvent(eventName: String, data: Any) {
-        guard let callbackId = self.eventCallbackContext else {
-            print("❌ Error: Cannot send event '\(eventName)', callback context is not registered.")
-            return
-        }
-        
-        let payload: [String: Any] = ["event": eventName, "data": data]
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: payload)
-        pluginResult?.setKeepCallbackAs(true) // Keep the callback alive
-        self.commandDelegate.send(pluginResult, callbackId: callbackId)
-    }
-
-    // Helper to send structured errors to JavaScript.
-    private func sendError(errorMessage: String) {
-        guard let callbackId = self.eventCallbackContext else {
-            print("❌ Error: Cannot send error '\(errorMessage)', callback context is not registered.")
-            return
-        }
-
-        let payload: [String: Any] = ["event": "error", "data": errorMessage]
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: payload)
-        pluginResult?.setKeepCallbackAs(true) // Keep the callback alive
-        self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
     
-    // Helper to check if the main callback has been set.
-    private func isCallbackRegistered(_ commandCallbackId: String) -> Bool {
-        if self.eventCallbackContext == nil {
-            let errorMessage = "Callback not registered. Call registerCallback() first."
-            print("❌ \(errorMessage)")
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: errorMessage)
-            self.commandDelegate.send(pluginResult, callbackId: commandCallbackId)
-            return false
+    /// Checks the current physical connection state of the device.
+    @objc(isDeviceConnected:)
+    func isDeviceConnected(command: CDVInvokedUrlCommand) {
+        let isConnected = OmronBluetoothManager.sharedInstance.isCurrentlyConnected()
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: isConnected)
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+    /// Starts scanning for Omron devices.
+    @objc(startDeviceDiscovery:)
+    func startDeviceDiscovery(command: CDVInvokedUrlCommand) {
+        print("🔍 startDeviceDiscovery called")
+        
+        guard bluetoothManager.state == .poweredOn else {
+            let result = ["code": "BLUETOOTH_OFF", "msg": "Bluetooth is not enabled."]
+            self.sendErrorEvent(data: result)
+            let pluginResult = CDVPluginResult(status: .error, messageAs: result)
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+            return
         }
-        return true
+        
+        isOmronDeviceFoundDuringScan = false
+        OmronBluetoothManager.sharedInstance.startScanning()
+        startConnectionTimeout(for: "Scan") { [weak self] in
+            guard let self = self, !self.isOmronDeviceFoundDuringScan else { return }
+            print("🛑 Scan timeout: No Omron device found.")
+            OmronBluetoothManager.sharedInstance.stopSearch()
+            self.sendErrorEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": "Scan timed out. No Omron device was found."])
+        }
+        
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Device discovery started.")
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+    /// Initiates pairing with an Omron BPM device.
+    @objc(pairBPM:)
+    func pairBPM(command: CDVInvokedUrlCommand) {
+        print("🔗 pairBPM called")
+        OmronBluetoothManager.sharedInstance.pairBPM()
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Pairing process initiated.")
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+    /// Connects to a known device and syncs data.
+    @objc(connectAndSync:)
+    func connectAndSync(command: CDVInvokedUrlCommand) {
+        print("🔄 connectAndSync called")
+        startConnectionTimeout(for: "Sync") { [weak self] in
+            self?.sendErrorEvent(data: ["code": "TIMEOUT_EXCEEDED", "msg": "Sync timed out. Please ensure your device is on."])
+        }
+        OmronBluetoothManager.sharedInstance.connectAndSync()
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Connection and sync process initiated.")
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+    /// Unlinks (forgets) the paired Omron device.
+    @objc(unlink:)
+    func unlink(command: CDVInvokedUrlCommand) {
+        print("🔌 unlink called")
+        OmronBluetoothManager.sharedInstance.disconnect() // Assuming this also handles unpairing
+        let result = ["code": "UNLINK_SUCCESS", "msg": "Unlink command sent successfully."]
+        sendEvent(data: result)
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: result)
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+    
+    /// Gets the MAC address of the currently paired device.
+    @objc(getCurrentDeviceMacId:)
+    func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
+        let macId = OmronBluetoothManager.sharedInstance.getCurrentDeviceMacId() ?? ""
+        let pluginResult = CDVPluginResult(status: .ok, messageAs: macId)
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
+
+    /// Sets the connection timeout duration.
+    @objc(setConnectionTimeout:)
+    func setConnectionTimeout(command: CDVInvokedUrlCommand) {
+        if let ms = command.argument(at: 0) as? Double {
+            self.customTimeoutMs = ms
+            print("⏱️ Connection timeout set to: \(ms)ms")
+            let pluginResult = CDVPluginResult(status: .ok, messageAs: "Timeout updated.")
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+        } else {
+            let pluginResult = CDVPluginResult(status: .error, messageAs: "Invalid timeout value provided.")
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+        }
+    }
+    
+    // MARK: - Timeout Helpers
+    
+    private func startConnectionTimeout(for operation: String, onTimeout: @escaping () -> Void) {
+        cancelConnectionTimeout() // Cancel any existing timer
+        let workItem = DispatchWorkItem(block: onTimeout)
+        self.connectionTimeoutWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + (self.customTimeoutMs / 1000.0), execute: workItem)
+        print("⏳ Started \(operation) timeout for \(self.customTimeoutMs)ms.")
+    }
+
+    private func cancelConnectionTimeout() {
+        self.connectionTimeoutWorkItem?.cancel()
+        self.connectionTimeoutWorkItem = nil
     }
 }
 
-// MARK: - Omron SDK Delegate Implementation
+// MARK: - CBCentralManagerDelegate
+extension OmronDevicePlugin: CBCentralManagerDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        let state: String
+        switch central.state {
+            case .poweredOn: state = "POWERED_ON"
+            case .poweredOff: state = "POWERED_OFF"
+            default: state = "OTHER"
+        }
+        print("Bluetooth state changed: \(state)")
+        sendEvent(data: ["code": "BLUETOOTH_STATE_CHANGED", "state": state])
+    }
+}
 
+// MARK: - OmronBluetoothManagerDelegate
 extension OmronDevicePlugin: OmronBluetoothManagerDelegate {
-    
+
     func didInitialize(isSuccessfully: Bool) {
-        print("✅ Omron Delegate: didInitialize -> \(isSuccessfully)")
-        // The original `initialize` function now returns immediately.
-        // This delegate method sends the actual result through the persistent callback.
-        sendEvent(eventName: "initializationComplete", data: ["success": isSuccessfully])
+        let result: [String: Any] = [
+            "code": isSuccessfully ? "INITIALIZE_SUCCESS" : "INITIALIZE_FAILURE",
+            "isSuccessfully": isSuccessfully,
+            "msg": "Omron SDK initialization complete."
+        ]
+        sendEvent(data: result)
     }
 
-    func didFindDevice(isSuccessfully: Bool) {
-        print("✅ Omron Delegate: didFindDevice -> \(isSuccessfully)")
-        // NOTE: This delegate seems to only return a boolean. The Android version
-        // returns a list of devices. If your OmronBluetoothManager can provide the
-        // device list, it should be sent here. For now, this fires a generic event.
-        sendEvent(eventName: "scanResult", data: ["foundDevice": isSuccessfully])
+    func didFindDevice(isSuccessfully: Bool, deviceName: String, macId: String, deviceType: String, rssi: Int) {
+        print("📡 didFindDevice delegate: \(deviceName)")
+        cancelConnectionTimeout() // A device was found, so cancel the scan timeout
+        isOmronDeviceFoundDuringScan = true
+        
+        let device: [String: Any] = [
+            "code": "ON_DEVICE_FOUND",
+            "name": deviceName,
+            "macId": macId,
+            "rssi": rssi
+        ]
+        sendEvent(data: device)
+    }
+    
+    func onPairingSuccess() {
+        print("🔗 onPairingSuccess delegate")
+        // This often comes right before or after didConnectDevice
+        sendEvent(data: ["code": "ON_PAIRING_SUCCESS", "isSuccessfully": true, "msg": "Device paired successfully."])
     }
 
     func didConnectDevice(isSuccessfully: Bool, macId: String) {
-        print("✅ Omron Delegate: didConnectDevice -> \(isSuccessfully), MAC: \(macId)")
-        if isSuccessfully {
-            sendEvent(eventName: "connected", data: ["macId": macId, "name": "Omron Blood Pressure Monitor"])
-        } else {
-            sendError(errorMessage: "Failed to connect to device with MAC ID: \(macId)")
-        }
+        print("✅ didConnectDevice delegate: \(isSuccessfully)")
+        cancelConnectionTimeout() // Connection succeeded, cancel any running timeout
+        
+        let result: [String: Any] = [
+            "code": "DEVICE_CONNECTED",
+            "isSuccessfully": isSuccessfully,
+            "macId": macId,
+            "state": "connected"
+        ]
+        sendEvent(data: result)
+    }
+    
+    func didDisconnectDevice(isSuccessfully: Bool) {
+        print("❌ didDisconnectDevice delegate")
+        let result: [String: Any] = [
+            "code": "DEVICE_DISCONNECTED",
+            "isSuccessfully": isSuccessfully,
+            "state": "disconnected"
+        ]
+        sendEvent(data: result)
     }
 
     func didReceiveBloodPressureData(_ data: [String: Any]) {
-        print("✅ Omron Delegate: didReceiveBloodPressureData")
-        // This is a data event, send it through the persistent callback.
-        sendEvent(eventName: "dataSynced", data: data)
-    }
-
-    func didDisconnectDevice(isSuccessfully: Bool) {
-        print("✅ Omron Delegate: didDisconnectDevice -> \(isSuccessfully)")
-        // This is a state change event, send it through the persistent callback.
-        sendEvent(eventName: "disconnected", data: "Device disconnected")
-    }
-}
-
-
-// MARK: - CoreBluetooth State Delegate
-
-extension OmronDevicePlugin: CBCentralManagerDelegate {
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // You can use this to send a bluetooth status event to the JS side if needed.
-        var stateMessage = ""
-        switch central.state {
-        case .poweredOn: stateMessage = "poweredOn"; print("🔵 Bluetooth is ON")
-        case .poweredOff: stateMessage = "poweredOff"; print("❌ Bluetooth is OFF")
-        default: stateMessage = "other"
+        print("🩸 didReceiveBloodPressureData delegate")
+        cancelConnectionTimeout() // Data received, cancel any sync timeout
+        
+        guard !data.isEmpty else {
+            print("⚠️ Received empty data dictionary. No new records to sync.")
+            // Optionally send an event indicating no new data was found
+            sendEvent(data: ["code": "ON_DATA_SYNCED_NO_NEW_RECORDS", "msg": "Sync complete, but no new data was found."])
+            return
         }
-        sendEvent(eventName: "bluetoothStateChanged", data: stateMessage)
+        
+        let result: [String: Any] = [
+            "code": "ON_DATA_RECEIVED",
+            "data": data,
+            "msg": "Blood pressure data received."
+        ]
+        sendEvent(data: result)
+    }
+
+    // This delegate method seems redundant if you have didDisconnectDevice.
+    // If it provides unique information, you can map it to a new event.
+    func didDisconnectOnlyBLEDevice(isSuccessfully: Bool) {
+        print("didDisconnectOnlyBLEDevice called - can often be ignored if using didDisconnectDevice")
+    }
+    
+    // This seems to indicate an auto-reconnect attempt.
+    func didDeviceDisconnectedAndTryingToConnect(isSuccessfully: Bool) {
+        print("Device disconnected and is now auto-reconnecting...")
+        sendEvent(data: ["code": "DEVICE_RECONNECTING", "msg": "Device lost connection and is attempting to reconnect."])
     }
 }

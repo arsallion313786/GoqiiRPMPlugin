@@ -46,6 +46,8 @@
 -(void)unlinkuSccessful:(BOOL)isSuccess;
 -(void)didReceiveSOSHistory:(NSMutableArray*)failSoslist;
 -(void)glucometerData:(NSArray *)results;
+
+- (void)didReceiveCleanedData:(NSArray<NSMutableDictionary *> *)data typeOfData:(NSString *)type;
 @end
 
 typedef void (^JWTTokenCompletionHandler)(NSDictionary * _Nullable response, NSError * _Nullable error);
@@ -246,7 +248,8 @@ typedef void (^DeviceLinkCompletionHandler)(NSDictionary * _Nullable response, N
 -(void)uploadUserLocationForSOS: (NSString *)lat and:(NSString *)lon and:(NSString *)type and:(NSDictionary *)dataDict;
 -(void)unlinkAPIDone:(BOOL)isSuccess;
 -(void)readSOSHistory;
--(void)printSomeData;
+-(void)setApiCallEnable:(BOOL)value;
+- (BOOL)isApiCallEnabled;
 -(void)navigateToWebView:(UIViewController *)vc;
 -(BOOL)isTrakerSupport;
 -(void)setupGlucometer:(UIViewController *)vc;
@@ -268,4 +271,5 @@ typedef void (^DeviceLinkCompletionHandler)(NSDictionary * _Nullable response, N
 -(void)fetchDataGlucose:(NSString *)date AndDays:(NSString *)days;
 -(NSString *)getGlucometerMac;
 -(void)fetchJWTTokenWithEncData:(NSString *)encData completion:(JWTTokenCompletionHandler)completion;
+- (void)setNotificationAndDisplayStateToGOQiiBandV3FromDict:(NSDictionary *)bandDict;
 @end

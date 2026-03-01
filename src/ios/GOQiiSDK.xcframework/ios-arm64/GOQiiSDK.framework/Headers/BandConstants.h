@@ -52,6 +52,7 @@
 #define BAND_CONTINUOUS_HR_SET @"BAND_CONTINUOUS_HR_SET"
 #define USER_ID @"USER_ID"
 #define USER_STEPS_TARGET @"USER_STEPS_TARGET"
+#define IS_API_CALL_AVAILABLE @"IS_API_CALL_AVAILABLE"
 
 #define SAVE_DAILY_DEVICE_ACTIVITY_NOTIFICATION @"SAVE_DAILY_DEVICE_ACTIVITY_NOTIFICATION"
 
@@ -70,18 +71,18 @@
 //#define DOWNLOAD_CERTIFICATE @"https://pinning.goqii.com/ruser/ssl"
 
 
-#define VERIFY @"bajajallianz/verify_otp_v2?"
-#define ADD_DAILY_ACTIVITY @"band/add_daily_activity?"
-#define ADD_MULTIPLE_ACTIVITY @"activity/add_multiple_activity?"
-#define DEVICE_AVAILABLITY @"user/device_availability?"
-#define CALL_SOS @"band/call_sos?"
-#define UPDATE_LASTSYNC_DATE @"user/device_last_syn?"
+#define VERIFY_New @"bajajallianz/verify_otp_v2?"
+#define ADD_DAILY_ACTIVITY_new @"band/add_daily_activity?"
+#define ADD_MULTIPLE_ACTIVITY_new @"activity/add_multiple_activity?"
+#define DEVICE_AVAILABLITY_new @"user/device_availability?"
+#define CALL_SOS_new @"band/call_sos?"
+#define UPDATE_LASTSYNC_DATE_new @"user/device_last_syn?"
 
-#define DOWNLOAD_CERTIFICATE @"https://dev-nikhil-api.goqii.com/rpm/ssl"
-#define LINK_DEVICE @"https://dev-nikhil-api.goqii.com/rpm/link_device?"
-#define UNLINK_DEVICE @"https://dev-nikhil-api.goqii.com/rpm/unlink_device?"
-#define ADD_GLUCOSE @"https://dev-nikhil-api.goqii.com/rpm/add_glucose?"
-#define FETCH_GLUCOSE_RECORD @"https://dev-nikhil-api.goqii.com/rpm/fetch_glucose_record?"
+#define DOWNLOAD_CERTIFICATE_new @"https://dev-nikhil-api.goqii.com/rpm/ssl"
+#define LINK_DEVICE_new @"https://dev-nikhil-api.goqii.com/rpm/link_device?"
+#define UNLINK_DEVICE_new @"https://dev-nikhil-api.goqii.com/rpm/unlink_device?"
+#define ADD_GLUCOSE_new @"https://dev-nikhil-api.goqii.com/rpm/add_glucose?"
+#define FETCH_GLUCOSE_RECORD_new @"https://dev-nikhil-api.goqii.com/rpm/fetch_glucose_record?"
 
 typedef NS_ENUM(NSUInteger, CoreType){
     

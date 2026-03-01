@@ -605,6 +605,70 @@
             ],
             "reqNewWitnessTableEntry": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingSuccess",
+            "printedName": "onPairingSuccess(device:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)GlucoBLEProtocol(im)onPairingSuccessWithDevice:",
+            "mangledName": "$s8GOQiiSDK16GlucoBLEProtocolP16onPairingSuccess6deviceySo12CBPeripheralC_tF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.GlucoBLEProtocol>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.GlucoBLEProtocol>",
+            "protocolReq": true,
+            "objc_name": "onPairingSuccessWithDevice:",
+            "declAttributes": [
+              "Optional",
+              "ObjC"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingFail",
+            "printedName": "onPairingFail(device:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)GlucoBLEProtocol(im)onPairingFailWithDevice:",
+            "mangledName": "$s8GOQiiSDK16GlucoBLEProtocolP13onPairingFail6deviceySo12CBPeripheralC_tF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.GlucoBLEProtocol>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.GlucoBLEProtocol>",
+            "protocolReq": true,
+            "objc_name": "onPairingFailWithDevice:",
+            "declAttributes": [
+              "Optional",
+              "ObjC"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Protocol",
@@ -640,6 +704,99 @@
         "name": "GlucoMeterBLE",
         "printedName": "GlucoMeterBLE",
         "children": [
+          {
+            "kind": "Var",
+            "name": "liveReadingSyncDelay",
+            "printedName": "liveReadingSyncDelay",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoMeterBLE(py)liveReadingSyncDelay",
+            "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC20liveReadingSyncDelaySdvp",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl",
+              "ObjC"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Double",
+                    "printedName": "Swift.Double",
+                    "usr": "s:Sd"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@GOQiiSDK@objc(cs)GlucoMeterBLE(im)liveReadingSyncDelay",
+                "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC20liveReadingSyncDelaySdvg",
+                "moduleName": "GOQiiSDK",
+                "implicit": true,
+                "declAttributes": [
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Double",
+                    "printedName": "Swift.Double",
+                    "usr": "s:Sd"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@GOQiiSDK@objc(cs)GlucoMeterBLE(im)setLiveReadingSyncDelay:",
+                "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC20liveReadingSyncDelaySdvs",
+                "moduleName": "GOQiiSDK",
+                "implicit": true,
+                "declAttributes": [
+                  "ObjC"
+                ],
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:8GOQiiSDK13GlucoMeterBLEC20liveReadingSyncDelaySdvM",
+                "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC20liveReadingSyncDelaySdvM",
+                "moduleName": "GOQiiSDK",
+                "implicit": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
           {
             "kind": "Function",
             "name": "setDelegate",
@@ -712,6 +869,27 @@
           },
           {
             "kind": "Function",
+            "name": "stopScan",
+            "printedName": "stopScan()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoMeterBLE(im)stopScan",
+            "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC8stopScanyyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "scanWithUUID",
             "printedName": "scanWithUUID(_:)",
             "children": [
@@ -734,6 +912,29 @@
             "declAttributes": [
               "AccessControl",
               "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isCurrentlyConnected",
+            "printedName": "isCurrentlyConnected()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoMeterBLE(im)isCurrentlyConnected",
+            "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC20isCurrentlyConnectedSbyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
             ],
             "funcSelfKind": "NonMutating"
           },
@@ -1136,7 +1337,8 @@
             "declAttributes": [
               "Dynamic",
               "ObjC",
-              "AccessControl"
+              "AccessControl",
+              "RawDocComment"
             ],
             "isFromExtension": true,
             "funcSelfKind": "NonMutating"
@@ -1177,6 +1379,57 @@
             "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC10peripheral_19didDiscoverServicesySo12CBPeripheralC_s5Error_pSgtF",
             "moduleName": "GOQiiSDK",
             "objc_name": "peripheral:didDiscoverServices:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "peripheral",
+            "printedName": "peripheral(_:didUpdateNotificationStateFor:error:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCharacteristic",
+                "printedName": "CoreBluetooth.CBCharacteristic",
+                "usr": "c:objc(cs)CBCharacteristic"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "(any Swift.Error)?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Error",
+                    "printedName": "any Swift.Error",
+                    "usr": "s:s5ErrorP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@GOQiiSDK@objc(cs)GlucoMeterBLE(im)peripheral:didUpdateNotificationStateForCharacteristic:error:",
+            "mangledName": "$s8GOQiiSDK13GlucoMeterBLEC10peripheral_29didUpdateNotificationStateFor5errorySo12CBPeripheralC_So16CBCharacteristicCs5Error_pSgtF",
+            "moduleName": "GOQiiSDK",
+            "objc_name": "peripheral:didUpdateNotificationStateForCharacteristic:error:",
             "declAttributes": [
               "Dynamic",
               "ObjC",
@@ -2954,7 +3207,7 @@
           {
             "kind": "Function",
             "name": "didFindDevice",
-            "printedName": "didFindDevice(isSuccessfully:)",
+            "printedName": "didFindDevice(isSuccessfully:deviceName:macId:deviceType:rssi:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -2966,11 +3219,35 @@
                 "name": "Bool",
                 "printedName": "Swift.Bool",
                 "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
               }
             ],
             "declKind": "Func",
-            "usr": "c:@M@GOQiiSDK@objc(pl)OmronBluetoothManagerDelegate(im)didFindDeviceWithIsSuccessfully:",
-            "mangledName": "$s8GOQiiSDK29OmronBluetoothManagerDelegateP13didFindDevice14isSuccessfullyySb_tF",
+            "usr": "c:@M@GOQiiSDK@objc(pl)OmronBluetoothManagerDelegate(im)didFindDeviceWithIsSuccessfully:deviceName:macId:deviceType:rssi:",
+            "mangledName": "$s8GOQiiSDK29OmronBluetoothManagerDelegateP13didFindDevice14isSuccessfully10deviceName5macId0L4Type4rssiySb_S3SSitF",
             "moduleName": "GOQiiSDK",
             "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.OmronBluetoothManagerDelegate>",
             "sugared_genericSig": "<Self where Self : GOQiiSDK.OmronBluetoothManagerDelegate>",
@@ -3080,6 +3357,90 @@
             "declKind": "Func",
             "usr": "c:@M@GOQiiSDK@objc(pl)OmronBluetoothManagerDelegate(im)didReceiveBloodPressureData:",
             "mangledName": "$s8GOQiiSDK29OmronBluetoothManagerDelegateP27didReceiveBloodPressureDatayySDySSypGF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.OmronBluetoothManagerDelegate>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.OmronBluetoothManagerDelegate>",
+            "protocolReq": true,
+            "declAttributes": [
+              "ObjC"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "didDisconnectOnlyBLEDevice",
+            "printedName": "didDisconnectOnlyBLEDevice(isSuccessfully:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)OmronBluetoothManagerDelegate(im)didDisconnectOnlyBLEDeviceWithIsSuccessfully:",
+            "mangledName": "$s8GOQiiSDK29OmronBluetoothManagerDelegateP26didDisconnectOnlyBLEDevice14isSuccessfullyySb_tF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.OmronBluetoothManagerDelegate>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.OmronBluetoothManagerDelegate>",
+            "protocolReq": true,
+            "declAttributes": [
+              "ObjC"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "didDeviceDisconnectedAndTryingToConnect",
+            "printedName": "didDeviceDisconnectedAndTryingToConnect(isSuccessfully:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)OmronBluetoothManagerDelegate(im)didDeviceDisconnectedAndTryingToConnectWithIsSuccessfully:",
+            "mangledName": "$s8GOQiiSDK29OmronBluetoothManagerDelegateP39didDeviceDisconnectedAndTryingToConnect14isSuccessfullyySb_tF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.OmronBluetoothManagerDelegate>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.OmronBluetoothManagerDelegate>",
+            "protocolReq": true,
+            "declAttributes": [
+              "ObjC"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingSuccess",
+            "printedName": "onPairingSuccess()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)OmronBluetoothManagerDelegate(im)onPairingSuccess",
+            "mangledName": "$s8GOQiiSDK29OmronBluetoothManagerDelegateP16onPairingSuccessyyF",
             "moduleName": "GOQiiSDK",
             "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.OmronBluetoothManagerDelegate>",
             "sugared_genericSig": "<Self where Self : GOQiiSDK.OmronBluetoothManagerDelegate>",
@@ -3366,6 +3727,71 @@
           },
           {
             "kind": "Function",
+            "name": "stopSearch",
+            "printedName": "stopSearch()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)OmronBluetoothManager(im)stopSearch",
+            "mangledName": "$s8GOQiiSDK21OmronBluetoothManagerC10stopSearchyyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "pairBPM",
+            "printedName": "pairBPM()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)OmronBluetoothManager(im)pairBPM",
+            "mangledName": "$s8GOQiiSDK21OmronBluetoothManagerC7pairBPMyyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isCurrentlyConnected",
+            "printedName": "isCurrentlyConnected()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)OmronBluetoothManager(im)isCurrentlyConnected",
+            "mangledName": "$s8GOQiiSDK21OmronBluetoothManagerC20isCurrentlyConnectedSbyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "connectAndSync",
             "printedName": "connectAndSync()",
             "children": [
@@ -3378,6 +3804,27 @@
             "declKind": "Func",
             "usr": "c:@M@GOQiiSDK@objc(cs)OmronBluetoothManager(im)connectAndSync",
             "mangledName": "$s8GOQiiSDK21OmronBluetoothManagerC14connectAndSyncyyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "disconnectOnlyBLE",
+            "printedName": "disconnectOnlyBLE()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)OmronBluetoothManager(im)disconnectOnlyBLE",
+            "mangledName": "$s8GOQiiSDK21OmronBluetoothManagerC17disconnectOnlyBLEyyF",
             "moduleName": "GOQiiSDK",
             "declAttributes": [
               "AccessControl",
@@ -3706,6 +4153,36 @@
               "ObjC",
               "AccessControl",
               "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "getCurrentDeviceMacId",
+            "printedName": "getCurrentDeviceMacId()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)OmronBluetoothManager(im)getCurrentDeviceMacId",
+            "mangledName": "$s8GOQiiSDK21OmronBluetoothManagerC21getCurrentDeviceMacIdSSSgyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
             ],
             "funcSelfKind": "NonMutating"
           }
@@ -6576,6 +7053,71 @@
             ],
             "reqNewWitnessTableEntry": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingSuccess",
+            "printedName": "onPairingSuccess(device:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)GlucoBLEManagerProtocol(im)onPairingSuccessWithDevice:",
+            "mangledName": "$s8GOQiiSDK23GlucoBLEManagerProtocolP16onPairingSuccess6deviceySo12CBPeripheralC_tF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.GlucoBLEManagerProtocol>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.GlucoBLEManagerProtocol>",
+            "protocolReq": true,
+            "objc_name": "onPairingSuccessWithDevice:",
+            "declAttributes": [
+              "Optional",
+              "ObjC",
+              "RawDocComment"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingFail",
+            "printedName": "onPairingFail(device:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(pl)GlucoBLEManagerProtocol(im)onPairingFailWithDevice:",
+            "mangledName": "$s8GOQiiSDK23GlucoBLEManagerProtocolP13onPairingFail6deviceySo12CBPeripheralC_tF",
+            "moduleName": "GOQiiSDK",
+            "genericSig": "<τ_0_0 where τ_0_0 : GOQiiSDK.GlucoBLEManagerProtocol>",
+            "sugared_genericSig": "<Self where Self : GOQiiSDK.GlucoBLEManagerProtocol>",
+            "protocolReq": true,
+            "objc_name": "onPairingFailWithDevice:",
+            "declAttributes": [
+              "Optional",
+              "ObjC"
+            ],
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Protocol",
@@ -6837,6 +7379,34 @@
           },
           {
             "kind": "Function",
+            "name": "updateLiveReadingDelay",
+            "printedName": "updateLiveReadingDelay(seconds:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoBLEManager(im)updateLiveReadingDelayWithSeconds:",
+            "mangledName": "$s8GOQiiSDK15GlucoBLEManagerC22updateLiveReadingDelay7secondsySd_tF",
+            "moduleName": "GOQiiSDK",
+            "objc_name": "updateLiveReadingDelayWithSeconds:",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "BLEfoundPeripheral",
             "printedName": "BLEfoundPeripheral(device:rssi:mac:)",
             "children": [
@@ -6869,6 +7439,84 @@
             "mangledName": "$s8GOQiiSDK15GlucoBLEManagerC18BLEfoundPeripheral6device4rssi3macySo12CBPeripheralC_SiSStF",
             "moduleName": "GOQiiSDK",
             "objc_name": "BLEfoundPeripheralWithDevice:rssi:mac:",
+            "declAttributes": [
+              "ObjC",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isCurrentlyConnected",
+            "printedName": "isCurrentlyConnected()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoBLEManager(im)isCurrentlyConnected",
+            "mangledName": "$s8GOQiiSDK15GlucoBLEManagerC20isCurrentlyConnectedSbyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingSuccess",
+            "printedName": "onPairingSuccess(device:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoBLEManager(im)onPairingSuccessWithDevice:",
+            "mangledName": "$s8GOQiiSDK15GlucoBLEManagerC16onPairingSuccess6deviceySo12CBPeripheralC_tF",
+            "moduleName": "GOQiiSDK",
+            "objc_name": "onPairingSuccessWithDevice:",
+            "declAttributes": [
+              "ObjC",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onPairingFail",
+            "printedName": "onPairingFail(device:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoBLEManager(im)onPairingFailWithDevice:",
+            "mangledName": "$s8GOQiiSDK15GlucoBLEManagerC13onPairingFail6deviceySo12CBPeripheralC_tF",
+            "moduleName": "GOQiiSDK",
+            "objc_name": "onPairingFailWithDevice:",
             "declAttributes": [
               "ObjC",
               "AccessControl"
@@ -7050,6 +7698,27 @@
               "AccessControl",
               "ObjC",
               "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "stopSearch",
+            "printedName": "stopSearch()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@GOQiiSDK@objc(cs)GlucoBLEManager(im)stopSearch",
+            "mangledName": "$s8GOQiiSDK15GlucoBLEManagerC10stopSearchyyF",
+            "moduleName": "GOQiiSDK",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
             ],
             "funcSelfKind": "NonMutating"
           },
@@ -115619,44 +116288,51 @@
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
       "kind": "Array",
-      "offset": 1157,
+      "offset": 1285,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
       "kind": "StringLiteral",
-      "offset": 1319,
+      "offset": 1447,
       "length": 8,
       "value": "\"0x1808\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
+      "kind": "FloatLiteral",
+      "offset": 1509,
+      "length": 4,
+      "value": "20.0"
+    },
+    {
+      "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
       "kind": "StringLiteral",
-      "offset": 1406,
+      "offset": 1586,
       "length": 8,
       "value": "\"0x2A18\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
       "kind": "StringLiteral",
-      "offset": 1495,
+      "offset": 1675,
       "length": 8,
       "value": "\"0x2A34\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
       "kind": "StringLiteral",
-      "offset": 1573,
+      "offset": 1763,
       "length": 8,
-      "value": "\"0x2A51\""
+      "value": "\"0x2A52\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/Utils\/GlucoMeterBLE.swift",
       "kind": "StringLiteral",
-      "offset": 1661,
+      "offset": 1842,
       "length": 8,
-      "value": "\"0x2A52\""
+      "value": "\"0x2A51\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/BodyTemperatureViewModel.swift",
@@ -115864,44 +116540,51 @@
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
       "kind": "StringLiteral",
-      "offset": 767,
+      "offset": 995,
       "length": 38,
       "value": "\"00001810-0000-1000-8000-00805F9B34FB\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
       "kind": "StringLiteral",
-      "offset": 877,
+      "offset": 1105,
       "length": 38,
       "value": "\"0000180F-0000-1000-8000-00805F9B34FB\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
       "kind": "StringLiteral",
-      "offset": 998,
+      "offset": 1226,
       "length": 6,
       "value": "\"2A35\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
       "kind": "StringLiteral",
-      "offset": 1092,
+      "offset": 1320,
       "length": 6,
       "value": "\"2A19\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
       "kind": "StringLiteral",
-      "offset": 1176,
+      "offset": 1404,
       "length": 6,
       "value": "\"2A49\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
       "kind": "StringLiteral",
-      "offset": 1284,
+      "offset": 1512,
       "length": 6,
       "value": "\"2A52\""
+    },
+    {
+      "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/OmronDevice\/OmronBluetoothManager.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1763,
+      "length": 5,
+      "value": "false"
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/GoqiiNetworkManager\/TrackerRouter.swift",
@@ -116060,14 +116743,14 @@
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/GlucoBLEManager.swift",
       "kind": "StringLiteral",
-      "offset": 998,
+      "offset": 1131,
       "length": 9,
       "value": "\"contour\""
     },
     {
       "filePath": "\/Users\/azimnadaf\/Documents\/GOQiiSDK\/GOQiiSDK\/Framework Files\/Glucometer\/GlucoBLEManager.swift",
       "kind": "StringLiteral",
-      "offset": 1063,
+      "offset": 1196,
       "length": 7,
       "value": "\"meter\""
     },

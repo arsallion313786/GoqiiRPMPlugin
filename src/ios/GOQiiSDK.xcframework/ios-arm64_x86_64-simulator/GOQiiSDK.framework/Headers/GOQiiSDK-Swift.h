@@ -1391,6 +1391,8 @@ SWIFT_PROTOCOL("_TtP8GOQiiSDK16GlucoBLEProtocol_")
 - (void)glucoMeterDisconnected;
 - (void)glucoMeterConnectErrorWithErrorStr:(NSString * _Nonnull)errorStr;
 - (void)removeprevRequestDevice;
+- (void)onPairingSuccessWithDevice:(CBPeripheral * _Nonnull)device;
+- (void)onPairingFailWithDevice:(CBPeripheral * _Nonnull)device;
 @end
 
 @protocol GlucoBLEManagerProtocol;
@@ -1402,7 +1404,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) GlucoBLEMana
 @property (nonatomic, strong) id <GlucoBLEManagerProtocol> _Nullable glucoBleManagerDelegate;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (void)BLEactivatedWithState:(BOOL)state;
+- (void)updateLiveReadingDelayWithSeconds:(double)seconds;
 - (void)BLEfoundPeripheralWithDevice:(CBPeripheral * _Nonnull)device rssi:(NSInteger)rssi mac:(NSString * _Nonnull)mac;
+- (BOOL)isCurrentlyConnected SWIFT_WARN_UNUSED_RESULT;
+- (void)onPairingSuccessWithDevice:(CBPeripheral * _Nonnull)device;
+- (void)onPairingFailWithDevice:(CBPeripheral * _Nonnull)device;
 - (void)BLEreadyWithRACPcharacteristic:(CBCharacteristic * _Nonnull)RACPcharacteristic;
 - (void)BLESyncCompleted;
 - (void)connectWithPeripheral:(CBPeripheral * _Nonnull)peripheral;
@@ -1410,6 +1416,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) GlucoBLEMana
 - (void)glucoMeterConnectedWithDevice:(CBPeripheral * _Nonnull)device;
 - (void)glucoMeterDisconnected;
 - (void)startScanning;
+- (void)stopSearch;
 - (void)startBLE;
 - (void)connectToSavedGlucometerDevice;
 - (void)connectAndSaveGlucometerDevice:(NSString * _Nonnull)uuidString;
@@ -1431,18 +1438,23 @@ SWIFT_PROTOCOL("_TtP8GOQiiSDK23GlucoBLEManagerProtocol_")
 - (void)glucoMeterData:(NSArray * _Nonnull)data;
 - (void)glucoMeterConnectErrorWithErrorStr:(NSString * _Nonnull)errorStr;
 - (void)removeprevRequestDevice;
+- (void)onPairingSuccessWithDevice:(CBPeripheral * _Nonnull)device;
+- (void)onPairingFailWithDevice:(CBPeripheral * _Nonnull)device;
 @end
 
 
 
 SWIFT_CLASS("_TtC8GOQiiSDK13GlucoMeterBLE")
 @interface GlucoMeterBLE : NSObject
+@property (nonatomic) double liveReadingSyncDelay;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 - (void)setDelegateWithDelegate:(id <GlucoBLEProtocol> _Nonnull)delegate;
 - (void)startBLE;
 - (void)scan;
+- (void)stopScan;
 - (void)scanWithUUID:(NSString * _Nonnull)glucometerUUID;
+- (BOOL)isCurrentlyConnected SWIFT_WARN_UNUSED_RESULT;
 - (void)connectWithPeripheral:(CBPeripheral * _Nonnull)peripheral;
 - (void)doWriteWithPeripheral:(CBPeripheral * _Nonnull)peripheral characteristic:(CBCharacteristic * _Nonnull)characteristic message:(NSArray<NSNumber *> * _Nonnull)message;
 - (void)syncWithSeq:(NSInteger)seq glucometer:(CBPeripheral * _Nonnull)glucometer RACP:(CBCharacteristic * _Nonnull)RACP;
@@ -1453,6 +1465,7 @@ SWIFT_CLASS("_TtC8GOQiiSDK13GlucoMeterBLE")
 
 @interface GlucoMeterBLE (SWIFT_EXTENSION(GOQiiSDK)) <CBPeripheralDelegate>
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverServices:(NSError * _Nullable)error;
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverCharacteristicsForService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
 @end
@@ -1868,7 +1881,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OmronBluetoo
 - (void)centralManagerDidUpdateState:(CBCentralManager * _Nonnull)central;
 - (void)initaliseBle;
 - (void)startScanning;
+- (void)stopSearch;
+- (void)pairBPM;
+- (BOOL)isCurrentlyConnected SWIFT_WARN_UNUSED_RESULT;
 - (void)connectAndSync;
+- (void)disconnectOnlyBLE;
 - (void)disconnect;
 - (void)centralManager:(CBCentralManager * _Nonnull)central didDiscoverPeripheral:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *, id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI;
 - (void)centralManager:(CBCentralManager * _Nonnull)central didConnectPeripheral:(CBPeripheral * _Nonnull)peripheral;
@@ -1876,16 +1893,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OmronBluetoo
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverServices:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverCharacteristicsForService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
+- (NSString * _Nullable)getCurrentDeviceMacId SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 SWIFT_PROTOCOL("_TtP8GOQiiSDK29OmronBluetoothManagerDelegate_")
 @protocol OmronBluetoothManagerDelegate
 - (void)didInitializeWithIsSuccessfully:(BOOL)isSuccessfully;
-- (void)didFindDeviceWithIsSuccessfully:(BOOL)isSuccessfully;
+- (void)didFindDeviceWithIsSuccessfully:(BOOL)isSuccessfully deviceName:(NSString * _Nonnull)deviceName macId:(NSString * _Nonnull)macId deviceType:(NSString * _Nonnull)deviceType rssi:(NSInteger)rssi;
 - (void)didConnectDeviceWithIsSuccessfully:(BOOL)isSuccessfully macId:(NSString * _Nonnull)macId;
 - (void)didDisconnectDeviceWithIsSuccessfully:(BOOL)isSuccessfully;
 - (void)didReceiveBloodPressureData:(NSDictionary<NSString *, id> * _Nonnull)data;
+- (void)didDisconnectOnlyBLEDeviceWithIsSuccessfully:(BOOL)isSuccessfully;
+- (void)didDeviceDisconnectedAndTryingToConnectWithIsSuccessfully:(BOOL)isSuccessfully;
+- (void)onPairingSuccess;
 @end
 
 
@@ -4195,6 +4216,8 @@ SWIFT_PROTOCOL("_TtP8GOQiiSDK16GlucoBLEProtocol_")
 - (void)glucoMeterDisconnected;
 - (void)glucoMeterConnectErrorWithErrorStr:(NSString * _Nonnull)errorStr;
 - (void)removeprevRequestDevice;
+- (void)onPairingSuccessWithDevice:(CBPeripheral * _Nonnull)device;
+- (void)onPairingFailWithDevice:(CBPeripheral * _Nonnull)device;
 @end
 
 @protocol GlucoBLEManagerProtocol;
@@ -4206,7 +4229,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) GlucoBLEMana
 @property (nonatomic, strong) id <GlucoBLEManagerProtocol> _Nullable glucoBleManagerDelegate;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (void)BLEactivatedWithState:(BOOL)state;
+- (void)updateLiveReadingDelayWithSeconds:(double)seconds;
 - (void)BLEfoundPeripheralWithDevice:(CBPeripheral * _Nonnull)device rssi:(NSInteger)rssi mac:(NSString * _Nonnull)mac;
+- (BOOL)isCurrentlyConnected SWIFT_WARN_UNUSED_RESULT;
+- (void)onPairingSuccessWithDevice:(CBPeripheral * _Nonnull)device;
+- (void)onPairingFailWithDevice:(CBPeripheral * _Nonnull)device;
 - (void)BLEreadyWithRACPcharacteristic:(CBCharacteristic * _Nonnull)RACPcharacteristic;
 - (void)BLESyncCompleted;
 - (void)connectWithPeripheral:(CBPeripheral * _Nonnull)peripheral;
@@ -4214,6 +4241,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) GlucoBLEMana
 - (void)glucoMeterConnectedWithDevice:(CBPeripheral * _Nonnull)device;
 - (void)glucoMeterDisconnected;
 - (void)startScanning;
+- (void)stopSearch;
 - (void)startBLE;
 - (void)connectToSavedGlucometerDevice;
 - (void)connectAndSaveGlucometerDevice:(NSString * _Nonnull)uuidString;
@@ -4235,18 +4263,23 @@ SWIFT_PROTOCOL("_TtP8GOQiiSDK23GlucoBLEManagerProtocol_")
 - (void)glucoMeterData:(NSArray * _Nonnull)data;
 - (void)glucoMeterConnectErrorWithErrorStr:(NSString * _Nonnull)errorStr;
 - (void)removeprevRequestDevice;
+- (void)onPairingSuccessWithDevice:(CBPeripheral * _Nonnull)device;
+- (void)onPairingFailWithDevice:(CBPeripheral * _Nonnull)device;
 @end
 
 
 
 SWIFT_CLASS("_TtC8GOQiiSDK13GlucoMeterBLE")
 @interface GlucoMeterBLE : NSObject
+@property (nonatomic) double liveReadingSyncDelay;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 - (void)setDelegateWithDelegate:(id <GlucoBLEProtocol> _Nonnull)delegate;
 - (void)startBLE;
 - (void)scan;
+- (void)stopScan;
 - (void)scanWithUUID:(NSString * _Nonnull)glucometerUUID;
+- (BOOL)isCurrentlyConnected SWIFT_WARN_UNUSED_RESULT;
 - (void)connectWithPeripheral:(CBPeripheral * _Nonnull)peripheral;
 - (void)doWriteWithPeripheral:(CBPeripheral * _Nonnull)peripheral characteristic:(CBCharacteristic * _Nonnull)characteristic message:(NSArray<NSNumber *> * _Nonnull)message;
 - (void)syncWithSeq:(NSInteger)seq glucometer:(CBPeripheral * _Nonnull)glucometer RACP:(CBCharacteristic * _Nonnull)RACP;
@@ -4257,6 +4290,7 @@ SWIFT_CLASS("_TtC8GOQiiSDK13GlucoMeterBLE")
 
 @interface GlucoMeterBLE (SWIFT_EXTENSION(GOQiiSDK)) <CBPeripheralDelegate>
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverServices:(NSError * _Nullable)error;
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverCharacteristicsForService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
 @end
@@ -4672,7 +4706,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OmronBluetoo
 - (void)centralManagerDidUpdateState:(CBCentralManager * _Nonnull)central;
 - (void)initaliseBle;
 - (void)startScanning;
+- (void)stopSearch;
+- (void)pairBPM;
+- (BOOL)isCurrentlyConnected SWIFT_WARN_UNUSED_RESULT;
 - (void)connectAndSync;
+- (void)disconnectOnlyBLE;
 - (void)disconnect;
 - (void)centralManager:(CBCentralManager * _Nonnull)central didDiscoverPeripheral:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *, id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI;
 - (void)centralManager:(CBCentralManager * _Nonnull)central didConnectPeripheral:(CBPeripheral * _Nonnull)peripheral;
@@ -4680,16 +4718,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OmronBluetoo
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverServices:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverCharacteristicsForService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
 - (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
+- (NSString * _Nullable)getCurrentDeviceMacId SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 SWIFT_PROTOCOL("_TtP8GOQiiSDK29OmronBluetoothManagerDelegate_")
 @protocol OmronBluetoothManagerDelegate
 - (void)didInitializeWithIsSuccessfully:(BOOL)isSuccessfully;
-- (void)didFindDeviceWithIsSuccessfully:(BOOL)isSuccessfully;
+- (void)didFindDeviceWithIsSuccessfully:(BOOL)isSuccessfully deviceName:(NSString * _Nonnull)deviceName macId:(NSString * _Nonnull)macId deviceType:(NSString * _Nonnull)deviceType rssi:(NSInteger)rssi;
 - (void)didConnectDeviceWithIsSuccessfully:(BOOL)isSuccessfully macId:(NSString * _Nonnull)macId;
 - (void)didDisconnectDeviceWithIsSuccessfully:(BOOL)isSuccessfully;
 - (void)didReceiveBloodPressureData:(NSDictionary<NSString *, id> * _Nonnull)data;
+- (void)didDisconnectOnlyBLEDeviceWithIsSuccessfully:(BOOL)isSuccessfully;
+- (void)didDeviceDisconnectedAndTryingToConnectWithIsSuccessfully:(BOOL)isSuccessfully;
+- (void)onPairingSuccess;
 @end
 
 
