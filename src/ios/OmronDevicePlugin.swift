@@ -28,7 +28,7 @@ import CoreBluetooth
             print("⚠️ ERROR: eventCallbackId is not set. Cannot send event: \(data["code"] ?? "N/A")")
             return
         }
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: data)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: data)
         pluginResult?.setKeepCallbackAs(true) // Keep the callback channel open
         self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
@@ -39,7 +39,7 @@ import CoreBluetooth
             print("⚠️ ERROR: eventCallbackId is not set. Cannot send error event: \(data["code"] ?? "N/A")")
             return
         }
-        let pluginResult = CDVPluginResult(status: .error, messageAs: data)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: data)
         pluginResult?.setKeepCallbackAs(true) // Keep the callback channel open
         self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
@@ -66,7 +66,7 @@ import CoreBluetooth
         OmronBluetoothManager.sharedInstance.initaliseBle()
         // The result is sent via the `didInitialize` delegate method.
         // We can send an immediate acknowledgment if desired.
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "SDK initialization process started.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "SDK initialization process started.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -74,7 +74,7 @@ import CoreBluetooth
     @objc(isDevicePaired:)
     func isDevicePaired(command: CDVInvokedUrlCommand) {
         let isPaired = OmronBluetoothManager.sharedInstance.isBloodPressureDevicePresent()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: isPaired)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isPaired)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
     
@@ -82,7 +82,7 @@ import CoreBluetooth
     @objc(isDeviceConnected:)
     func isDeviceConnected(command: CDVInvokedUrlCommand) {
         let isConnected = OmronBluetoothManager.sharedInstance.isCurrentlyConnected()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: isConnected)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isConnected)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -94,7 +94,7 @@ import CoreBluetooth
         guard bluetoothManager.state == .poweredOn else {
             let result = ["code": "BLUETOOTH_OFF", "msg": "Bluetooth is not enabled."]
             self.sendErrorEvent(data: result)
-            let pluginResult = CDVPluginResult(status: .error, messageAs: result)
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: result)
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
             return
         }
@@ -108,7 +108,7 @@ import CoreBluetooth
             self.sendErrorEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": "Scan timed out. No Omron device was found."])
         }
         
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Device discovery started.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Device discovery started.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -117,7 +117,7 @@ import CoreBluetooth
     func pairBPM(command: CDVInvokedUrlCommand) {
         print("🔗 pairBPM called")
         OmronBluetoothManager.sharedInstance.pairBPM()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Pairing process initiated.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Pairing process initiated.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -129,7 +129,7 @@ import CoreBluetooth
             self?.sendErrorEvent(data: ["code": "TIMEOUT_EXCEEDED", "msg": "Sync timed out. Please ensure your device is on."])
         }
         OmronBluetoothManager.sharedInstance.connectAndSync()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: "Connection and sync process initiated.")
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Connection and sync process initiated.")
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -140,7 +140,7 @@ import CoreBluetooth
         OmronBluetoothManager.sharedInstance.disconnect() // Assuming this also handles unpairing
         let result = ["code": "UNLINK_SUCCESS", "msg": "Unlink command sent successfully."]
         sendEvent(data: result)
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: result)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: result)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
     
@@ -148,7 +148,7 @@ import CoreBluetooth
     @objc(getCurrentDeviceMacId:)
     func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         let macId = OmronBluetoothManager.sharedInstance.getCurrentDeviceMacId() ?? ""
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: macId)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: macId)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -158,10 +158,10 @@ import CoreBluetooth
         if let ms = command.argument(at: 0) as? Double {
             self.customTimeoutMs = ms
             print("⏱️ Connection timeout set to: \(ms)ms")
-            let pluginResult = CDVPluginResult(status: .ok, messageAs: "Timeout updated.")
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Timeout updated.")
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
         } else {
-            let pluginResult = CDVPluginResult(status: .error, messageAs: "Invalid timeout value provided.")
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: "Invalid timeout value provided.")
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
         }
     }

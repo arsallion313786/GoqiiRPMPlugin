@@ -33,7 +33,7 @@ import CoreBluetooth
             print("⚠️ ERROR: eventCallbackId is not set. Cannot send event: \(data["code"] ?? "N/A")")
             return
         }
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: data)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: data)
         pluginResult?.setKeepCallbackAs(true) // Keep the callback channel open
         self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
@@ -44,7 +44,7 @@ import CoreBluetooth
             print("⚠️ ERROR: eventCallbackId is not set. Cannot send error event: \(data["code"] ?? "N/A")")
             return
         }
-        let pluginResult = CDVPluginResult(status: .error, messageAs: data)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: data)
         pluginResult?.setKeepCallbackAs(true) // Keep the callback channel open
         self.commandDelegate.send(pluginResult, callbackId: callbackId)
     }
@@ -73,13 +73,13 @@ import CoreBluetooth
         
         switch bluetoothManager.state {
         case .poweredOn:
-            status = .ok
+            status = CDVCommandStatus.ok
             result = ["code": "BLUETOOTH_ON", "msg": "Bluetooth is enabled."]
         case .poweredOff, .unsupported, .unauthorized:
-            status = .error
+            status = CDVCommandStatus.error
             result = ["code": "BLUETOOTH_OFF", "msg": "Bluetooth is not enabled."]
         default: // .unknown, .resetting
-            status = .ok // Acknowledge the call; the final state will be sent as an event
+            status = CDVCommandStatus.ok // Acknowledge the call; the final state will be sent as an event
             result = ["code": "BLUETOOTH_INITIALIZING", "msg": "Bluetooth state is initializing."]
         }
         
@@ -91,7 +91,7 @@ import CoreBluetooth
     @objc(isDevicePaired:)
     func isDevicePaired(command: CDVInvokedUrlCommand) {
         let isPaired = BLE.sharedInstance().isGlucoMeterConnected()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: isPaired)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isPaired)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -99,7 +99,7 @@ import CoreBluetooth
     @objc(isDeviceConnected:)
     func isDeviceConnected(command: CDVInvokedUrlCommand) {
         let isConnected = GlucoBLEManager.shared.isCurrentlyConnected()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: isConnected)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isConnected)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -107,7 +107,7 @@ import CoreBluetooth
     @objc(getCurrentDeviceMacId:)
     func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         let macId = GlucoBLEManager.shared.getGlucoUUID()
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: macId)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: macId)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -116,12 +116,12 @@ import CoreBluetooth
     func startBGMDiscovery(command: CDVInvokedUrlCommand) {
         print("🔍 startBGMDiscovery called")
         guard bluetoothManager.state == .poweredOn else {
-            self.commandDelegate.send(CDVPluginResult(status: .error, messageAs: "Bluetooth is off."), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.error, messageAs: "Bluetooth is off."), callbackId: command.callbackId)
             sendErrorEvent(data: ["code": "BLUETOOTH_OFF", "msg": "Cannot scan, Bluetooth is not enabled."])
             return
         }
         GlucoBLEManager.shared.startBLE()
-        self.commandDelegate.send(CDVPluginResult(status: .ok, messageAs: "Scan started."), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Scan started."), callbackId: command.callbackId)
     }
     
     /// Initiates pairing with the most recently discovered peripheral.
@@ -131,13 +131,13 @@ import CoreBluetooth
         self.isNewPairingProcess = true
         guard let peripheralToConnect = self.peripheral else {
             let errorMsg = "No peripheral found to pair. Please scan first."
-            self.commandDelegate.send(CDVPluginResult(status: .error, messageAs: errorMsg), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.error, messageAs: errorMsg), callbackId: command.callbackId)
             sendErrorEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": errorMsg])
             return
         }
         print("🔗 Connecting to Glucometer: \(peripheralToConnect.name ?? "Unknown")")
         GlucoBLEManager.shared.connect(peripheral: peripheralToConnect)
-        self.commandDelegate.send(CDVPluginResult(status: .ok, messageAs: "Pairing process initiated."), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Pairing process initiated."), callbackId: command.callbackId)
     }
 
     /// Connects to a previously stored device to sync data.
@@ -149,7 +149,7 @@ import CoreBluetooth
 
         guard BLE.sharedInstance().isGlucoMeterConnected() else {
             let errorMsg = "No stored device to connect to. Please pair a device first."
-            self.commandDelegate.send(CDVPluginResult(status: .error, messageAs: errorMsg), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.error, messageAs: errorMsg), callbackId: command.callbackId)
             sendErrorEvent(data: ["code": "NO_PAIRED_DEVICE", "msg": errorMsg])
             return
         }
@@ -159,7 +159,7 @@ import CoreBluetooth
         }
         
         GlucoBLEManager.shared.connectToSavedGlucometerDevice()
-        self.commandDelegate.send(CDVPluginResult(status: .ok, messageAs: "Sync process initiated."), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Sync process initiated."), callbackId: command.callbackId)
     }
 
     /// Unlinks the stored glucometer.
@@ -170,18 +170,18 @@ import CoreBluetooth
         UserDefaults.standard.removeObject(forKey: "SyncedGlucoLogDates")
         UserDefaults.standard.synchronize()
         sendEvent(data: ["code": "UNLINK_SUCCESS", "msg": "Device unlinked and sync history cleared."])
-        self.commandDelegate.send(CDVPluginResult(status: .ok, messageAs: "Unlink successful."), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Unlink successful."), callbackId: command.callbackId)
     }
 
     /// Explicitly sets the MAC ID to connect to.
     @objc(setGlucometerMacId:)
     func setGlucometerMacId(command: CDVInvokedUrlCommand) {
         guard let macId = command.argument(at: 0) as? String, !macId.isEmpty else {
-            self.commandDelegate.send(CDVPluginResult(status: .error, messageAs: "Invalid MAC ID provided."), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.error, messageAs: "Invalid MAC ID provided."), callbackId: command.callbackId)
             return
         }
         GlucoBLEManager.shared.connectAndSaveGlucometerDevice(macId)
-        self.commandDelegate.send(CDVPluginResult(status: .ok, messageAs: "Attempting to connect with provided MAC ID."), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Attempting to connect with provided MAC ID."), callbackId: command.callbackId)
     }
 
     /// Sets a flag to sync all historical records on the next sync.
@@ -190,7 +190,7 @@ import CoreBluetooth
         if let flag = command.argument(at: 0) as? Bool {
             self.shouldSyncAllRecords = flag
             print("⚙️ shouldSyncAllRecords flag set to: \(flag)")
-            self.commandDelegate.send(CDVPluginResult(status: .ok, messageAs: "Flag updated."), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Flag updated."), callbackId: command.callbackId)
         }
     }
     
