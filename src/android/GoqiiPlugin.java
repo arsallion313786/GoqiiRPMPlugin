@@ -111,7 +111,7 @@ public class GoqiiPlugin extends CordovaPlugin {
             case "isDeviceConnected":
                 if (glucometerManager != null) {
                     String mac = glucometerManager.getGlucometerMac();
-                    if(Boolean.toString(!TextUtils.isEmpty(mac))){
+                    if(!TextUtils.isEmpty(mac)){
                         boolean isConnected = glucometerManager.isDeviceConnected();
                         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isConnected));
                     }

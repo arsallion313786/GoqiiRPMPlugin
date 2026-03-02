@@ -123,7 +123,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             case "isDevicePaired":
                 if (omronDeviceWrapper != null) {
                     String mac = omronDeviceWrapper.getOmronMac();
-                    callbackContext.success(Boolean.toString(!TextUtils.isEmpty(mac)));
+                    callbackContext.success(!TextUtils.isEmpty(mac));
                 } else {
                     callbackContext.error("Plugin is not initialized. Call initializeSDK first.");
                 }
@@ -134,7 +134,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 if (omronDeviceWrapper != null) {
                     try {
                         String mac = omronDeviceWrapper.getOmronMac();
-                        if(Boolean.toString(!TextUtils.isEmpty(mac))){
+                        if(!TextUtils.isEmpty(mac)){
                             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isConnected));
                         }
                         else{
