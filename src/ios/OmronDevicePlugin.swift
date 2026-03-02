@@ -264,7 +264,7 @@ extension OmronDevicePlugin: OmronBluetoothManagerDelegate {
         
         let result: [String: Any] = [
             "code": "ON_DATA_RECEIVED",
-            "data": data,
+            "data": [data],
             "msg": "Blood pressure data received."
         ]
         sendEvent(data: result)

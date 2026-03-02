@@ -85,6 +85,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 }
                 startConnectionTimeout();
                 omronDeviceWrapper.startScanning();
+
                 callbackContext.success();
                 return true;
 

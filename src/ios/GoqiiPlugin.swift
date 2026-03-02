@@ -122,6 +122,9 @@ import CoreBluetooth
         }
         GlucoBLEManager.shared.startBLE()
         self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Scan started."), callbackId: command.callbackId)
+        startConnectionTimeout(for: "Sync") { [weak self] in
+            self?.sendErrorEvent(data: ["code": "TIMEOUT_EXCEEDED", "msg": "Scanning timed out. Please ensure your device is on."])
+        }
     }
     
     /// Initiates pairing with the most recently discovered peripheral.

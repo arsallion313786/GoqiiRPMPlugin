@@ -124,7 +124,7 @@ public class GoqiiPlugin extends CordovaPlugin {
                 }
                 return true;
             case "setSyncAllRecords":
-                shouldSyncAllRecords = true;
+                shouldSyncAllRecords = args.getBoolean(0);
                 callbackContext.success("Flag to sync all records has been set.");
                 return true;
             default:
@@ -321,7 +321,7 @@ public class GoqiiPlugin extends CordovaPlugin {
                 cancelSyncTimeout();
                 try {
                     JSONObject result = new JSONObject();
-                    result.put("code", "DEVICE_NOT_PAIRED");
+                    result.put("code", "NO_PAIRED_DEVICE");
                     result.put("msg", "Device is not paired. Please pair the device first.");
                     sendErrorEvent(result);
                 } catch (Exception e) {
