@@ -142,10 +142,13 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                             callbackContext.error("Device is not paired");
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
 
                         PluginResult result = new PluginResult(PluginResult.Status.ERROR, e.getLocalizedMessage());
                         callbackContext.sendPluginResult(result);
+                    }
+                    finally {
+                        return  true;
                     }
                 }
 
@@ -208,7 +211,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 deviceInfo.put("macId", mac);
                 sendEvent(deviceInfo);
             } catch (JSONException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -230,7 +233,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 deviceObj.put("code", "ON_DEVICE_FOUND");
                 sendEvent(deviceObj);
             } catch (JSONException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -337,14 +340,14 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             prefs.edit().putLong(KEY_LAST_SYNC_TIME, newSyncTime).apply();
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             try {
                 JSONObject errorData = new JSONObject();
                 errorData.put("code", "ERROR");
                 errorData.put("msg", "Error parsing session data");
                 sendErrorEvent(errorData);
             } catch (JSONException jsonException) {
-                jsonException.printStackTrace();
+                //jsonException.printStackTrace();
             }
         }
     }
@@ -357,7 +360,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             errorObj.put("code", "ERROR");
             errorObj.put("msg", error);
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         sendErrorEvent(errorObj);
     }
