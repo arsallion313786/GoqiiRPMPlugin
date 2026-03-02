@@ -130,8 +130,25 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
             case "deviceConnectionState":
             case "isDeviceConnected":
-                sendConnectionState();
-                callbackContext.success();
+                if (omronDeviceWrapper != null) {
+                    try {
+                        String mac = omronDeviceWrapper.getOmronMac();
+                        if(Boolean.toString(!TextUtils.isEmpty(mac))){
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isConnected));
+                        }
+                        else{
+                            callbackContext.error("Device is not paired");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+
+                        PluginResult result = new PluginResult(PluginResult.Status.ERROR, e.getLocalizedMessage());
+                        callbackContext.sendPluginResult(result);
+                    }
+                }
+
+//                sendConnectionState();
+//                callbackContext.success();
                 return true;
 
             case "setConnectionTimeout":

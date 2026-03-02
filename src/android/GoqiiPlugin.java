@@ -110,8 +110,15 @@ public class GoqiiPlugin extends CordovaPlugin {
                 return true;
             case "isDeviceConnected":
                 if (glucometerManager != null) {
-                    boolean isConnected = glucometerManager.isDeviceConnected();
-                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isConnected));
+                    String mac = glucometerManager.getGlucometerMac();
+                    if(Boolean.toString(!TextUtils.isEmpty(mac))){
+                        boolean isConnected = glucometerManager.isDeviceConnected();
+                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isConnected));
+                    }
+                    else{
+                        callbackContext.error("Device not paired");
+                    }
+
                 } else {
                     callbackContext.error("SDK not initialized.");
                 }
