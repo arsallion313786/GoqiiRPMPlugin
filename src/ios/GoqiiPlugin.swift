@@ -297,8 +297,16 @@ extension GoqiiPlugin: GlucoBLEManagerProtocol {
     }
     
     // Other delegate methods can be mapped to events as needed
-    func BLEactivated(state: Bool) { print("💡 BLE Activated: \(state)") }
+    func BLEactivated(state: Bool) {
+        print("💡 BLE Activated: \(state)")
+        if state {
+            GlucoBLEManager.shared.startScanning()
+        }
+    }
     func BLEready(RACPcharacteristic: CBCharacteristic) { print("✅ BLEready: Ready for RACP.") }
     func BLESyncCompleted() { print("✅ BLESyncCompleted.") }
-    func glucoMeterConnected(device: CBPeripheral) { print("🔗 Physical link established, waiting for pairing...") }
+    func glucoMeterConnected(device: CBPeripheral) {
+        self.peripheral = device;
+        print("🔗 Physical link established, waiting for pairing...")
+    }
 }
