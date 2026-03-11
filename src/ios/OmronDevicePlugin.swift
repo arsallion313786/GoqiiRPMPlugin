@@ -166,6 +166,12 @@ import CoreBluetooth
         }
     }
     
+    @objc (cancelConnectionTimeoutTimer:)
+    func cancelConnectionTimeoutTimer(command: CDVInvokedUrlCommand) {
+        cancelConnectionTimeout()
+    }
+    
+    
     // MARK: - Timeout Helpers
     
     private func startConnectionTimeout(for operation: String, onTimeout: @escaping () -> Void) {

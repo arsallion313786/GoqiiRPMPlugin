@@ -127,6 +127,9 @@ public class GoqiiPlugin extends CordovaPlugin {
                 shouldSyncAllRecords = args.getBoolean(0);
                 callbackContext.success("Flag to sync all records has been set.");
                 return true;
+            case "cancelConnectionTimeoutTimer":
+                cancelSyncTimeout();
+                return true;    
             default:
                 callbackContext.error("Invalid action: " + action);
                 return false;

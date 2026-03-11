@@ -162,7 +162,9 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                     callbackContext.error("Plugin is not initialized. Call initializeSDK first.");
                 }
                 return true;
-
+            case "cancelConnectionTimeoutTimer":
+                cancelConnectionTimeout();
+                return  true;
             default:
                 callbackContext.error("Invalid action: " + action);
                 return false;
