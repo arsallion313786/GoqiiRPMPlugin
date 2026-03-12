@@ -36,15 +36,15 @@ extension GOQiiSDK.BloodPressureData {
 }
 @objc public protocol GlucoBLEProtocol {
   @objc optional func BLEactivated(state: Swift.Bool)
-  @objc optional func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @objc optional func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String, advData: [Swift.String : Any])
   @objc optional func BLEready(RACPcharacteristic: CoreBluetooth.CBCharacteristic)
   @objc optional func BLESyncCompleted()
   @objc optional func glucoMeterConnected(device: CoreBluetooth.CBPeripheral)
   @objc optional func glucoMeterDisconnected()
   @objc optional func glucoMeterConnectError(errorStr: Swift.String)
   @objc optional func removeprevRequestDevice()
-  @objc optional func onPairingSuccess(device: CoreBluetooth.CBPeripheral)
-  @objc optional func onPairingFail(device: CoreBluetooth.CBPeripheral)
+  @objc optional func onPairingSuccessGlucometer(device: CoreBluetooth.CBPeripheral)
+  @objc optional func onPairingFailGlucometer(device: CoreBluetooth.CBPeripheral)
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class GlucoMeterBLE : ObjectiveC.NSObject {
   @objc public var liveReadingSyncDelay: Swift.Double
@@ -123,7 +123,7 @@ extension CoreData.NSManagedObject {
 }
 @objc public protocol OmronBluetoothManagerDelegate {
   @objc func didInitialize(isSuccessfully: Swift.Bool)
-  @objc func didFindDevice(isSuccessfully: Swift.Bool, deviceName: Swift.String, macId: Swift.String, deviceType: Swift.String, rssi: Swift.Int)
+  @objc func didFindDevice(isSuccessfully: Swift.Bool, deviceName: Swift.String, macId: Swift.String, deviceType: Swift.String, rssi: Swift.Int, advData: [Swift.String : Any])
   @objc func didConnectDevice(isSuccessfully: Swift.Bool, macId: Swift.String)
   @objc func didDisconnectDevice(isSuccessfully: Swift.Bool)
   @objc func didReceiveBloodPressureData(_ data: [Swift.String : Any])
@@ -140,6 +140,7 @@ extension CoreData.NSManagedObject {
   @objc public func stopSearch()
   @objc public func pairBPM()
   @objc public func isCurrentlyConnected() -> Swift.Bool
+  @objc public func connectOmronWithUUID(_ omronUUID: Swift.String)
   @objc public func connectAndSync()
   @objc public func disconnectOnlyBLE()
   @objc public func disconnect()
@@ -267,7 +268,7 @@ public class SmartwatchParser {
 }
 @objc public protocol GlucoBLEManagerProtocol {
   @objc optional func BLEactivated(state: Swift.Bool)
-  @objc optional func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @objc optional func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String, advData: [Swift.String : Any])
   @objc optional func BLEready(RACPcharacteristic: CoreBluetooth.CBCharacteristic)
   @objc optional func BLESyncCompleted()
   @objc optional func glucoMeterConnected(device: CoreBluetooth.CBPeripheral)
@@ -275,8 +276,8 @@ public class SmartwatchParser {
   @objc optional func glucoMeterData(_ data: [Any])
   @objc optional func glucoMeterConnectError(errorStr: Swift.String)
   @objc optional func removeprevRequestDevice()
-  @objc optional func onPairingSuccess(device: CoreBluetooth.CBPeripheral)
-  @objc optional func onPairingFail(device: CoreBluetooth.CBPeripheral)
+  @objc optional func onPairingSuccessGlucometer(device: CoreBluetooth.CBPeripheral)
+  @objc optional func onPairingFailGlucometer(device: CoreBluetooth.CBPeripheral)
 }
 @_inheritsConvenienceInitializers @objc public class GlucoBLEManager : ObjectiveC.NSObject, GOQiiSDK.GlucoBLEProtocol {
   @objc public static let shared: GOQiiSDK.GlucoBLEManager
@@ -284,10 +285,10 @@ public class SmartwatchParser {
   @objc override dynamic public init()
   @objc public func BLEactivated(state: Swift.Bool)
   @objc public func updateLiveReadingDelay(seconds: Swift.Double)
-  @objc public func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @objc public func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String, advData: [Swift.String : Any])
   @objc public func isCurrentlyConnected() -> Swift.Bool
-  @objc public func onPairingSuccess(device: CoreBluetooth.CBPeripheral)
-  @objc public func onPairingFail(device: CoreBluetooth.CBPeripheral)
+  @objc public func onPairingSuccessGlucometer(device: CoreBluetooth.CBPeripheral)
+  @objc public func onPairingFailGlucometer(device: CoreBluetooth.CBPeripheral)
   @objc public func BLEready(RACPcharacteristic: CoreBluetooth.CBCharacteristic)
   @objc public func BLESyncCompleted()
   @objc public func connect(peripheral: CoreBluetooth.CBPeripheral)
@@ -524,7 +525,7 @@ extension GOQiiSDK.ECGData {
 extension GOQiiSDK.GlucoMeterSetupVC : GOQiiSDK.GlucoBLEManagerProtocol {
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func BLEactivated(state: Swift.Bool)
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func BLESyncCompleted()
-  @_Concurrency.MainActor @preconcurrency @objc dynamic public func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public func BLEfoundPeripheral(device: CoreBluetooth.CBPeripheral, rssi: Swift.Int, mac: Swift.String)
   @_Concurrency.MainActor @preconcurrency public func glucoMeterConnected()
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func glucoMeterDisconnected()
 }

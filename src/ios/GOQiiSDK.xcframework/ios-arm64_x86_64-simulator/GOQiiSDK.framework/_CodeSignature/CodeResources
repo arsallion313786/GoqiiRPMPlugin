@@ -6,7 +6,7 @@
 	<dict>
 		<key>Frameworks/CoreData.framework/CoreData</key>
 		<data>
-		oK3c+K9yfNEwyFdFsuvfbf0RGS4=
+		qzV6BYlcDX0UGTqbY/JLGWqXiFM=
 		</data>
 		<key>Frameworks/CoreData.framework/_CodeSignature/CodeResources</key>
 		<data>
@@ -218,7 +218,7 @@
 		</data>
 		<key>Headers/GOQiiSDK-Swift.h</key>
 		<data>
-		dEhZGcsErBGiMCya/TgbZlvi7fo=
+		8IXPzHJE2AwNhoV34NJr/hKme78=
 		</data>
 		<key>Headers/GOQiiSDK.h</key>
 		<data>
@@ -282,11 +282,11 @@
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		mRDcqWVvecnPJaZTuwWNFVisVEI=
+		vgCf0tLu4nZXDkEAv4vSxEwl6nE=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		+PwKeDMD8vpvvTyq2onxqUYRA7U=
+		Kmbsq11MISsMd9CJ9ChfP8CrbQA=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -294,19 +294,19 @@
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		+PwKeDMD8vpvvTyq2onxqUYRA7U=
+		Kmbsq11MISsMd9CJ9ChfP8CrbQA=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		Z6ozAoNbFO3oq0JtM/YYYzsgDpM=
+		Fr3JiGolT14Hqy+8O+2BydUK70c=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		mRDcqWVvecnPJaZTuwWNFVisVEI=
+		vgCf0tLu4nZXDkEAv4vSxEwl6nE=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		dAUqyFpZETIAUb9y5rw8zMKqXxw=
+		xSsFeJDkpTUyHMw/bJh6NerEWGs=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -314,11 +314,11 @@
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		dAUqyFpZETIAUb9y5rw8zMKqXxw=
+		xSsFeJDkpTUyHMw/bJh6NerEWGs=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		TeDYG1EzonzGQce/rB0z5chBXsM=
+		deuEGN+VddGUWYWNrbNh7/bclUI=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -363,7 +363,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			t2phthRMW6aJincMsez1djU7tqoCJquCA0WriGoxMsc=
+			7l4BeD72DEb+wL4PF6lcR7Z9FO685JAp1k7PDTdZP7Y=
 			</data>
 		</dict>
 		<key>Frameworks/CoreData.framework/_CodeSignature/CodeResources</key>
@@ -734,7 +734,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Okt3Pmr6Uxleus4fA0gARF5fPvGz8j91jb2HBQpmDGU=
+			gWmPd/7C8+xxHgA10Vm9o0rUZOx1ZbB+I2UQxaWGC9s=
 			</data>
 		</dict>
 		<key>Headers/GOQiiSDK.h</key>
@@ -839,14 +839,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			zCBgD/dTY4XZOTDriyrAb3WrjvvZ38UXyn/DlRi/Kfs=
+			wm7GbwRc792btWavYKPq6fuRems2uIka0eFRtNNmoXw=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			r6IoHZSulnVw5ZN+eJgYYa1/6Mvj/DXMzZzLH3wDWfM=
+			viVdXqLMu2oAqqNtg8WKt4JV1h/PJ79isVVik1OQezg=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
@@ -860,28 +860,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			r6IoHZSulnVw5ZN+eJgYYa1/6Mvj/DXMzZzLH3wDWfM=
+			viVdXqLMu2oAqqNtg8WKt4JV1h/PJ79isVVik1OQezg=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			kPpBDoltMeKXiE+IT9WrM3BU9e8RQc+aXCKYvOSow2M=
+			CMIuOYAgj9kq82FbhW+CKHe/9Ch4SUJmpTHpZP2ZRoA=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			zCBgD/dTY4XZOTDriyrAb3WrjvvZ38UXyn/DlRi/Kfs=
+			wm7GbwRc792btWavYKPq6fuRems2uIka0eFRtNNmoXw=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			fMgNSFB61rtoqO0mKGwAgoSICVVRYr7OlrtLeDQQw1c=
+			mLvpnFlZ7lnnJVPBODKoxdXqmRi/T/DQL5fRpQV23qM=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -895,14 +895,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			fMgNSFB61rtoqO0mKGwAgoSICVVRYr7OlrtLeDQQw1c=
+			mLvpnFlZ7lnnJVPBODKoxdXqmRi/T/DQL5fRpQV23qM=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4AkdsrKoU6ONbNsAyNYC9g7nRTl9RIp35/2AN80h/Pw=
+			5EA7RYyql4Rwtl02m8HBSMLInegrRJLterZuFEOVHgg=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
