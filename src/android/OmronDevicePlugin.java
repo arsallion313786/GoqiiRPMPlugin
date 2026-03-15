@@ -42,8 +42,8 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.US);
 
     private OmronDeviceWrapper omronDeviceWrapper;
-    // Use a single persistent callback for all async events
-    private CallbackContext eventCallbackContext;
+    private CallbackContext scanCallbackContext;
+    private CallbackContext connectionCallback;
 
     private static long CONNECTION_TIMEOUT_MS = 30_000L;
     private final Handler connectionTimeoutHandler = new Handler(Looper.getMainLooper());
@@ -55,58 +55,86 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if(action.equals("deviceConnectionState")) {
+            this.connectionCallback = callbackContext;
+        } else if (action.equals("initializeSDK") ||
+                   action.equals("startDeviceDiscovery") ||
+                   action.equals("pairBPM") ||
+                   action.equals("pairBPMWithId") ||
+                   action.equals("connectToKnownDevice") ||
+                   action.equals("connectAndSync")) {
+            this.scanCallbackContext = callbackContext;   
+        }
         switch (action) {
             case "initializeSDK":
-                initialize(callbackContext);
+                initialize();
                 return true;
-            case "registerCallback":
-                this.eventCallbackContext = callbackContext;
-                // Send a plugin result to keep the callback alive for future events
-                PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
-                pluginResult.setKeepCallback(true);
-                this.eventCallbackContext.sendPluginResult(pluginResult);
-                return  true;
+
             case "pairBPM":
                 if (omronDeviceWrapper == null) {
-                    callbackContext.error("Plugin not initialized. Call initializeSDK first.");
-                    return true;
+                    initialize();
                 }
                 isPairing = true;
                 startConnectionTimeout();
-                omronDeviceWrapper.connectAndSync();
-                // Send an immediate OK response to the JS caller
-                callbackContext.success();
+                omronDeviceWrapper.connectAndSync("");
                 return true;
-
+            case "pairBPMWithId":
+                if (omronDeviceWrapper == null) {
+                    initialize();
+                }
+                isPairing = true;
+                omronDeviceWrapper.connectAndSync(args.getString(0));
+                startConnectionTimeout();
+                return true;
             case "startDeviceDiscovery":
                 if (omronDeviceWrapper == null) {
-                    callbackContext.error("Plugin not initialized. Call initializeSDK first.");
-                    return true;
+                    initialize();
                 }
                 startConnectionTimeout();
                 omronDeviceWrapper.startScanning();
+                return true;
 
-                callbackContext.success();
+            case "stopDeviceDiscovery":
+                if (omronDeviceWrapper == null) {
+                    initialize();
+                }
+                omronDeviceWrapper.stopScanning();
+                cancelConnectionTimeout();
                 return true;
 
             case "connectToKnownDevice":
             case "connectAndSync":
                 isPairing = false;
                 if (omronDeviceWrapper == null) {
-                    callbackContext.error("Plugin not initialized. Call initializeSDK first.");
-                    return true;
+                    initialize();
                 }
                 startConnectionTimeout();
-                omronDeviceWrapper.connectAndSync();
-                callbackContext.success();
+                omronDeviceWrapper.connectAndSync("");
+                return true;
+
+            case "disconnectOnlyBLE":
+                if (omronDeviceWrapper != null) {
+                    omronDeviceWrapper.disconnectOnlyBLE();
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Device disconnected successfully");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
+                } else {
+                    PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Plugin is not initialized. Call initializeSDK first.");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
+                }
                 return true;
 
             case "disconnect":
                 if (omronDeviceWrapper != null) {
                     omronDeviceWrapper.disconnect();
-                    callbackContext.success("Device disconnected successfully");
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Device disconnected successfully");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 } else {
-                    callbackContext.error("Plugin is not initialized. Call initializeSDK first.");
+                    PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Plugin is not initialized. Call initializeSDK first.");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 }
                 return true;
 
@@ -114,126 +142,136 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 if (omronDeviceWrapper != null) {
                     omronDeviceWrapper.disconnect();
                     omronDeviceWrapper.unpairDevice();
-                    callbackContext.success("Device Unlinked successfully");
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Device Unlinked successfully");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 } else {
-                    callbackContext.error("Plugin is not initialized. Call initializeSDK first.");
+                    PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Plugin is not initialized. Call initializeSDK first.");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 }
                 return true;
 
             case "isDevicePaired":
                 if (omronDeviceWrapper != null) {
-                    String mac = omronDeviceWrapper.getOmronMac();
+                    String mac =  omronDeviceWrapper.getOmronMac();
+
                     PluginResult pResult = new PluginResult(PluginResult.Status.OK, !TextUtils.isEmpty(mac));
-                    callbackContext.sendPluginResult(pResult);
+                    pResult.setKeepCallback(true);
+                    callbackContext.sendPluginResult(pResult); 
                 } else {
-                    callbackContext.error("Plugin is not initialized. Call initializeSDK first.");
+                    PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Plugin is not initialized. Call initializeSDK first.");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 }
                 return true;
-
+                
             case "deviceConnectionState":
-            case "isDeviceConnected":
-                if (omronDeviceWrapper != null) {
-                        String mac = omronDeviceWrapper.getOmronMac();
-                        if(!TextUtils.isEmpty(mac)){
-                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isConnected));
-                        }
-                        else{
-                            callbackContext.error("Device is not paired");
-                        }
-                }
+                sendConnectionState();
+                return true;
 
-//                sendConnectionState();
-//                callbackContext.success();
+            case "isDeviceConnected":
+                PluginResult isConnResult = new PluginResult(PluginResult.Status.OK, isConnected);
+                isConnResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(isConnResult);
                 return true;
 
             case "setConnectionTimeout":
                 if (args.length() > 0) {
                     long timeout = args.getLong(0);
-                    CONNECTION_TIMEOUT_MS = timeout;
+                    CONNECTION_TIMEOUT_MS = timeout;    
                 }
-                callbackContext.success("Connection timeout set successfully");
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "Connection timeout set successfully");
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
                 return true;
 
             case "getCurrentDeviceMacId":
                 if (omronDeviceWrapper != null) {
-                    String mac = omronDeviceWrapper.getOmronMac();
-                    callbackContext.success(mac);
+                    String mac =  omronDeviceWrapper.getOmronMac();
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, mac);
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 } else {
-                    callbackContext.error("Plugin is not initialized. Call initializeSDK first.");
+                    PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Plugin is not initialized. Call initializeSDK first.");
+                    result.setKeepCallback(true);
+                    callbackContext.sendPluginResult(result);
                 }
                 return true;
-            case "cancelConnectionTimeoutTimer":
-                cancelConnectionTimeout();
-                return  true;
+                
             default:
-                callbackContext.error("Invalid action: " + action);
-                return false;
-        }
-    }
-
-    private void sendEvent(JSONObject payload) {
-        if (this.eventCallbackContext != null) {
-            PluginResult result = new PluginResult(PluginResult.Status.OK, payload);
-            result.setKeepCallback(true);
-            this.eventCallbackContext.sendPluginResult(result);
-        } else {
-            Log.w(TAG, "eventCallbackContext is null. Cannot send event.");
-        }
-    }
-
-    private void sendErrorEvent(JSONObject payload) {
-        if (this.eventCallbackContext != null) {
-            PluginResult result = new PluginResult(PluginResult.Status.ERROR, payload);
-            result.setKeepCallback(true);
-            this.eventCallbackContext.sendPluginResult(result);
-        } else {
-            Log.w(TAG, "eventCallbackContext is null. Cannot send error event.");
+                return true;
         }
     }
 
     private void sendConnectionState() {
-        if (omronDeviceWrapper != null) {
-            try {
-                String mac = omronDeviceWrapper.getOmronMac();
+        try {
+                if (omronDeviceWrapper == null) {
+                    initialize();
+                }
+                String mac =  omronDeviceWrapper.getOmronMac();
                 JSONObject deviceInfo = new JSONObject();
                 deviceInfo.put("code", isConnected ? "DEVICE_CONNECTED" : "DEVICE_DISCONNECTED");
                 deviceInfo.put("isSuccessfully", isConnected);
-                deviceInfo.put("state", isConnected ? "connected" : "disconnected");
+                deviceInfo.put("state", isConnected ? "connected" : "disconnected");   
                 deviceInfo.put("msg", isConnected ? "Device connected" : "Device disconnected");
-                deviceInfo.put("macId", mac);
-                sendEvent(deviceInfo);
+                deviceInfo.put("macId", mac );
+                deviceInfo.put("MacID", mac );
+
+                PluginResult connectionResult = new PluginResult(PluginResult.Status.OK, deviceInfo);
+                connectionResult.setKeepCallback(true);
+                if (connectionCallback != null) {
+                    connectionCallback.sendPluginResult(connectionResult);
+                }
+                if (scanCallbackContext != null) {
+                    scanCallbackContext.sendPluginResult(connectionResult);
+                }
             } catch (JSONException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
-        }
     }
 
-    private void initialize(CallbackContext callbackContext) {
+    private void initialize() {
         Context context = cordova.getActivity().getApplicationContext();
         omronDeviceWrapper = new OmronDeviceWrapper(context, this);
-        callbackContext.success("OmronDeviceWrapper initialized successfully");
+
+        PluginResult result = new PluginResult(PluginResult.Status.OK, "OmronDeviceWrapper initialized successfully");
+        result.setKeepCallback(true);
+        scanCallbackContext.sendPluginResult(result);
     }
 
     @Override
-    public void onScanResult(List<DiscoveredDevice> discoveredDevices) {
+    public void onScanResult(JSONArray discoveredDevices) {
         cancelConnectionTimeout();
-        for (DiscoveredDevice device : discoveredDevices) {
-            try {
-                JSONObject deviceObj = new JSONObject();
-                deviceObj.put("macId", device.getAddress());
-                deviceObj.put("name", device.getLocalName());
-                deviceObj.put("code", "ON_DEVICE_FOUND");
-                sendEvent(deviceObj);
-            } catch (JSONException e) {
-                //e.printStackTrace();
-            }
+        omronDeviceWrapper.stopScanning();
+        // JSONArray devices = new JSONArray();
+        JSONObject respObj = new JSONObject();
+        // for (DiscoveredDevice device : discoveredDevices) {
+
+        //     try {
+        //         JSONObject deviceObj = new JSONObject();
+        //         deviceObj.put("id", device.getAddress());
+        //         deviceObj.put("name", device.getLocalName());
+        //         deviceObj.put("rssi", device.getRssi());
+        //         devices.put(deviceObj);
+        //     } catch (JSONException e) {
+        //         e.printStackTrace();
+        //     }
+        // }
+        try {
+            respObj.put("code", "ON_DEVICE_FOUND");
+            respObj.put("data", discoveredDevices);
+        }catch(Exception e){
+            e.printStackTrace();
         }
+        PluginResult result = new PluginResult(PluginResult.Status.OK, respObj);
+        result.setKeepCallback(true);
+        scanCallbackContext.sendPluginResult(result);
     }
 
     @Override
     public void onScanCompleted(OHQCompletionReason reason) {
-        // This can be a separate event if needed, e.g., ON_SCAN_COMPLETE
-        Log.d(TAG, "Scan completed with reason: " + reason.name());
+        // scanCallbackContext.success("Scan completed: " + reason.name());
     }
 
     @Override
@@ -242,32 +280,48 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             Log.d(TAG, "Device connected: " + macId + " isPairing: " + isPairing);
             cancelConnectionTimeout();
             isConnected = true;
-            this.macId = macId;
             JSONObject resultObj = new JSONObject();
             resultObj.put("code", isPairing ? "ON_PAIRING_SUCCESS" : "DEVICE_CONNECTED");
+            resultObj.put("macId", macId);
             resultObj.put("MacID", macId);
             resultObj.put("name", "Omron Blood Pressure Monitor");
             resultObj.put("isSuccessfully", true);
-            resultObj.put("message", isPairing ? "On pairing success" : "Device connected");
-            sendEvent(resultObj);
+            resultObj.put("msg", isPairing ? "On pairing success" : "Device connected");
+            PluginResult result = new PluginResult(PluginResult.Status.OK, resultObj);
+            result.setKeepCallback(true);
+            scanCallbackContext.sendPluginResult(result);
+            Log.d(TAG, "event sent: " + macId + " isPairing: " + isPairing);
             isPairing = false;
         } catch (Exception e) {
-            Log.e(TAG, "Error processing onConnected event", e);
+            Log.d(TAG, "Error sending connection result: " + macId + " isPairing: " + isPairing);
+            e.printStackTrace();
         }
     }
 
+    // ── Timeout helpers ────────────────────────────────────────────────────────
+
     private void startConnectionTimeout() {
         cancelConnectionTimeout();
-        connectionTimeoutRunnable = () -> {
-            if (this.eventCallbackContext != null) {
-                Log.w(TAG, "Connection timeout after " + CONNECTION_TIMEOUT_MS + "ms");
-                try {
-                    JSONObject payload = new JSONObject();
-                    payload.put("code", "TIMEOUT_EXCEEDED");
-                    payload.put("msg", "Operation timed out. Please try again.");
-                    sendErrorEvent(payload);
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error creating timeout JSON", e);
+        connectionTimeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (scanCallbackContext != null) {
+                    Log.w(TAG, "Connection timeout after " + CONNECTION_TIMEOUT_MS + "ms");
+                    try {
+                        JSONObject payload = new JSONObject();
+                        payload.put("code", "TIMEOUT_EXCEEDED");
+                        payload.put("msg", "Operation timed out. Please try again.");
+                        PluginResult timeoutResult = new PluginResult(
+                                PluginResult.Status.ERROR, payload);
+                        timeoutResult.setKeepCallback(true);
+                        scanCallbackContext.sendPluginResult(timeoutResult);
+                    } catch (JSONException e) {
+                        // keepcallback
+                        PluginResult timeoutResult = new PluginResult(
+                                PluginResult.Status.ERROR, "TIMEOUT_EXCEEDED");
+                        timeoutResult.setKeepCallback(true);
+                        scanCallbackContext.sendPluginResult(timeoutResult);
+                    }
                 }
             }
         };
@@ -275,9 +329,13 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
     }
 
     private void cancelConnectionTimeout() {
-        if (connectionTimeoutRunnable != null) {
-            connectionTimeoutHandler.removeCallbacks(connectionTimeoutRunnable);
-            connectionTimeoutRunnable = null;
+        try {
+            if (connectionTimeoutRunnable != null) {
+                connectionTimeoutHandler.removeCallbacks(connectionTimeoutRunnable);
+                connectionTimeoutRunnable = null;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -290,22 +348,33 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
     @Override
     public void onDataSynced(SessionData sessionData) {
         cancelConnectionTimeout();
+        JSONObject dataObj = new JSONObject();
         try {
             LOG.d("cordova sync", sessionData.toString());
 
+            // Retrieve last sync time (0 = first ever sync → return all records)
             SharedPreferences prefs = cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            long lastSyncTime = prefs.getLong(KEY_LAST_SYNC_TIME, 0);
             long newSyncTime = System.currentTimeMillis();
 
             Gson gson = new Gson();
             String jsonString = gson.toJson(sessionData);
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONArray measurementRecordsArray = jsonObject.optJSONArray("measurementRecords");
-            JSONArray filteredRecords = new JSONArray();
 
+            JSONArray measurementRecords = new JSONArray();
             if (measurementRecordsArray != null) {
                 for (int i = 0; i < measurementRecordsArray.length(); i++) {
                     JSONObject record = measurementRecordsArray.getJSONObject(i);
+
+                    // Parse "dd-MM-yyyy hh:mm:ss" → epoch ms for filtering
                     String tsStr = record.optString("TimeStampKey", "");
+                    // long recordTimeMs = parseOmronTimestamp(tsStr);
+
+                    // if (recordTimeMs < lastSyncTime) {
+                    //     // Record is older than the last sync — skip it
+                    //     continue;
+                    // }
 
                     JSONObject parsedRecord = new JSONObject();
                     parsedRecord.put("Unit", record.optString("BloodPressureUnitKey"));
@@ -315,60 +384,70 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                     parsedRecord.put("UserID", record.optInt("UserIndexKey"));
                     parsedRecord.put("MeanArterialPressure", record.optDouble("MeanArterialPressureKey"));
                     parsedRecord.put("Timestamp", tsStr);
-                    filteredRecords.put(parsedRecord);
+
+                    measurementRecords.put(parsedRecord);
                 }
             }
+            Log.d(TAG, "onDataSynced: total=" + (measurementRecordsArray != null ? measurementRecordsArray.length() : 0)
+                    + ", filtered=" + measurementRecords.length()
+                    + ", lastSyncTime=" + lastSyncTime);
 
-            if (!isConnected && filteredRecords.length() == 0) {
-                return;
-            }
-
-            JSONObject dataObj = new JSONObject();
-            dataObj.put("data", filteredRecords);
+            dataObj.put("data", measurementRecords);
             dataObj.put("code", "ON_DATA_RECEIVED");
             dataObj.put("msg", "Data synced successfully");
-            sendEvent(dataObj);
 
+            PluginResult result = new PluginResult(PluginResult.Status.OK, dataObj);
+            result.setKeepCallback(true);
+            scanCallbackContext.sendPluginResult(result);
+
+            // Persist the new sync time only AFTER sending the result
             prefs.edit().putLong(KEY_LAST_SYNC_TIME, newSyncTime).apply();
 
         } catch (JSONException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
+            JSONObject data = new JSONObject();
             try {
-                JSONObject errorData = new JSONObject();
-                errorData.put("code", "ERROR");
-                errorData.put("msg", "Error parsing session data");
-                sendErrorEvent(errorData);
+                data.put("message", "Error parsing session data");
             } catch (JSONException jsonException) {
-                //jsonException.printStackTrace();
+                jsonException.printStackTrace();
             }
+            PluginResult errorResult = new PluginResult(PluginResult.Status.ERROR, data);
+            errorResult.setKeepCallback(true);
+            scanCallbackContext.sendPluginResult(errorResult);
+        }
+    }
+
+    /**
+     * Parses an Omron timestamp string in "dd-MM-yyyy hh:mm:ss" format to epoch milliseconds.
+     * Returns 0 if parsing fails (record will pass the filter and be included).
+     */
+    private long parseOmronTimestamp(String timestamp) {
+        if (timestamp == null || timestamp.isEmpty()) return 0;
+        try {
+            Date date = OMRON_TS_FORMAT.parse(timestamp);
+            return date != null ? date.getTime() : 0;
+        } catch (ParseException e) {
+            Log.e(TAG, "parseOmronTimestamp: failed to parse '" + timestamp + "'", e);
+            return 0;
         }
     }
 
     @Override
     public void onError(String error) {
-        cancelConnectionTimeout();
+        cancelConnectionTimeout(); // also cancel if an SDK error fires before onConnected
         JSONObject errorObj = new JSONObject();
         try {
             errorObj.put("code", "ERROR");
             errorObj.put("msg", error);
         } catch (JSONException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        sendErrorEvent(errorObj);
+        PluginResult errorResult = new PluginResult(PluginResult.Status.ERROR, errorObj);   
+        errorResult.setKeepCallback(true);
+        scanCallbackContext.error(error);
     }
 
     @Override
     public void onConnectionStateChanged(OHQConnectionState state) {
-        Log.d(TAG, "Connection state changed: " + state.name());
-        // You can optionally create a new event here if the JS side needs to know about every state change.
-        // For example:
-        // try {
-        //     JSONObject stateObj = new JSONObject();
-        //     stateObj.put("code", "ON_CONNECTION_STATE_CHANGED");
-        //     stateObj.put("state", state.name());
-        //     sendEvent(stateObj);
-        // } catch (JSONException e) {
-        //     e.printStackTrace();
-        // }
     }
 }
