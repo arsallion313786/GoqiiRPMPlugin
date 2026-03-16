@@ -43,7 +43,6 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
     private OmronDeviceWrapper omronDeviceWrapper;
     private CallbackContext scanCallbackContext;
-    private CallbackContext connectionCallback;
 
     private static long CONNECTION_TIMEOUT_MS = 30_000L;
     private final Handler connectionTimeoutHandler = new Handler(Looper.getMainLooper());
@@ -55,27 +54,23 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if(action.equals("deviceConnectionState")) {
-            this.connectionCallback = callbackContext;
-        } else if (action.equals("initializeSDK") ||
-                   action.equals("startDeviceDiscovery") ||
-                   action.equals("pairBPM") ||
-                   action.equals("pairBPMWithId") ||
-                   action.equals("connectToKnownDevice") ||
-                   action.equals("connectAndSync")) {
-            this.scanCallbackContext = callbackContext;   
-        }
-        switch (action) {
             case "initializeSDK":
                 initialize();
                 return true;
+            case "registerCallback":
+                this.scanCallbackContext = callbackContext;
+                // Send a plugin result to keep the callback alive for future events
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
+                pluginResult.setKeepCallback(true);
+                this.scanCallbackContext.sendPluginResult(pluginResult);
+                return  true;
 
             case "pairBPM":
                 if (omronDeviceWrapper == null) {
                     initialize();
                 }
                 isPairing = true;
-                startConnectionTimeout();
+
                 omronDeviceWrapper.connectAndSync("");
                 return true;
             case "pairBPMWithId":
@@ -84,13 +79,13 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 }
                 isPairing = true;
                 omronDeviceWrapper.connectAndSync(args.getString(0));
-                startConnectionTimeout();
+
                 return true;
             case "startDeviceDiscovery":
                 if (omronDeviceWrapper == null) {
                     initialize();
                 }
-                startConnectionTimeout();
+
                 omronDeviceWrapper.startScanning();
                 return true;
 
@@ -108,7 +103,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 if (omronDeviceWrapper == null) {
                     initialize();
                 }
-                startConnectionTimeout();
+                
                 omronDeviceWrapper.connectAndSync("");
                 return true;
 
@@ -220,9 +215,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
                 PluginResult connectionResult = new PluginResult(PluginResult.Status.OK, deviceInfo);
                 connectionResult.setKeepCallback(true);
-                if (connectionCallback != null) {
-                    connectionCallback.sendPluginResult(connectionResult);
-                }
+
                 if (scanCallbackContext != null) {
                     scanCallbackContext.sendPluginResult(connectionResult);
                 }
