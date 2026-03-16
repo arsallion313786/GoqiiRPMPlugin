@@ -85,6 +85,13 @@ import CoreBluetooth
         DispatchQueue.main.asyncAfter(deadline: .now() + self.customTimeoutMs/1000.0, execute: discoveryTimer!)
         self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
     }
+    
+    
+    @objc(stopDeviceDiscovery:)
+    func stopDeviceDiscovery(command: CDVInvokedUrlCommand){
+        OmronBluetoothManager.sharedInstance.stopSearch()
+        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+    }
 
     @objc(pairBPMWithId:)
     func pairBPMWithId(command: CDVInvokedUrlCommand) {

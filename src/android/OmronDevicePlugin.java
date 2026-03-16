@@ -103,7 +103,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 if (omronDeviceWrapper == null) {
                     initialize();
                 }
-                
+
                 omronDeviceWrapper.connectAndSync("");
                 return true;
 
