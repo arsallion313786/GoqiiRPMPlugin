@@ -513,7 +513,7 @@ func glucoMeterDisconnected() {
             let stateResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: stateInfo)
             
             // CRITICAL: Keep callback true so it stays alive for the next connection!
-            stateResult.setKeepCallbackAs(true) 
+            stateResult?.setKeepCallbackAs(true)
             self.commandDelegate.send(stateResult, callbackId: stateId)
         }
     }
@@ -525,7 +525,7 @@ func glucoMeterDisconnected() {
         if let stateId = connectionStateCallbackId {
             let stateInfo = ["code": "DEVICE_CONNECTED","state": "connected", "msg": "Device connected", "macId": "\(device.identifier.uuidString)", "MacId": "\(device.identifier.uuidString)"]
             let stateResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: stateInfo)
-            stateResult.setKeepCallbackAs(true)
+            stateResult?.setKeepCallbackAs(true)
             self.commandDelegate.send(stateResult, callbackId: stateId)
         }
 
@@ -539,7 +539,7 @@ func glucoMeterDisconnected() {
                     "isSuccessfully": true
                 ]
                 let actionResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: actionInfo)
-                actionResult.setKeepCallbackAs(true)
+                actionResult?.setKeepCallbackAs(true)
                 self.commandDelegate.send(actionResult, callbackId: callbackId)
             }
             self.isNewPairingProcess = false
