@@ -61,9 +61,9 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             case "registerCallback":
                 this.scanCallbackContext = callbackContext;
                 // Send a plugin result to keep the callback alive for future events
-                PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
-                pluginResult.setKeepCallback(true);
-                this.scanCallbackContext.sendPluginResult(pluginResult);
+                PluginResult pluginResultInt = new PluginResult(PluginResult.Status.NO_RESULT);
+                pluginResultInt.setKeepCallback(true);
+                this.scanCallbackContext.sendPluginResult(pluginResultInt);
                 return  true;
 
             case "pairBPM":
