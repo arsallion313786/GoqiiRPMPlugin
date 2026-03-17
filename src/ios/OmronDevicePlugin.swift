@@ -138,6 +138,28 @@ import CoreBluetooth
             self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
         }
     }
+    
+    @objc(isDevicePaired:)
+        func isDevicePaired(command: CDVInvokedUrlCommand) {
+            let isPaired = OmronBluetoothManager.sharedInstance.isBloodPressureDevicePresent()
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isPaired)
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+        }
+    
+    
+    
+    @objc(getCurrentDeviceMacId:)
+       func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
+           let macId = OmronBluetoothManager.sharedInstance.getCurrentDeviceMacId() ?? ""
+           let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: macId)
+           self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+       }
+    @objc(isDeviceConnected:)
+        func isDeviceConnected(command: CDVInvokedUrlCommand) {
+            let isConnected = OmronBluetoothManager.sharedInstance.isCurrentlyConnected()
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isConnected)
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+        }
 }
 
 // MARK: - OmronBluetoothManagerDelegate
