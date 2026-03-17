@@ -54,6 +54,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        switch (action) {
             case "initializeSDK":
                 initialize();
                 return true;
