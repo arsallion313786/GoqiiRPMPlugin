@@ -72,7 +72,12 @@ import CoreBluetooth
             OmronBluetoothManager.sharedInstance.stopSearch()
             
             if self.discoveredDevices.isEmpty {
-                self.sendEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": "No devices found."], status: .error)
+                self.sendEvent(data: [
+                    "code": "DEVICE_NOT_FOUND",
+                    "data": [],
+                    "msg": "Devices Found"
+                ])
+//                self.sendEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": "No devices found."], status: .error)
             } else {
                 self.sendEvent(data: [
                     "code": "ON_DEVICE_FOUND",
