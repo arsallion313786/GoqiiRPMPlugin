@@ -89,6 +89,7 @@ import CoreBluetooth
     
     @objc(stopDeviceDiscovery:)
     func stopDeviceDiscovery(command: CDVInvokedUrlCommand){
+        discoveryTimer?.cancel()
         OmronBluetoothManager.sharedInstance.stopSearch()
         self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
     }
