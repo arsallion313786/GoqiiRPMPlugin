@@ -38,7 +38,7 @@ import CoreBluetooth
             switch bluetoothManager.state {
             case .poweredOn:
                 // Already ON, send success immediately
-                let pluginResult = CDVPluginResult(status: .ok, messageAs: [
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: [
                     "code": "BLUETOOTH_ON",
                     "msg": "Bluetooth is enabled."
                 ])
@@ -51,7 +51,7 @@ import CoreBluetooth
                 
             case .poweredOff, .unsupported, .unauthorized:
                 // Truly disabled or unsupported. Send Standardized Error.
-                let pluginResult = CDVPluginResult(status: .error, messageAs: [
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                     "code": "BLUETOOTH_OFF",
                     "msg": "Bluetooth is not enabled."
                 ])
@@ -69,7 +69,7 @@ import CoreBluetooth
        _ = GlucoBLEManager.shared
        let isConnected = BLE.sharedInstance().isGlucoMeterConnected()
        
-       let pluginResult = CDVPluginResult(status: .ok, messageAs: isConnected)
+       let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isConnected)
        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
    }
    
@@ -82,7 +82,7 @@ import CoreBluetooth
         // Ask the intermediate manager for the true physical connection state
         let isCurrentlyConnected = GlucoBLEManager.shared.isCurrentlyConnected()
         
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: isCurrentlyConnected)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isCurrentlyConnected)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -95,7 +95,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
     let macId = GlucoBLEManager.shared.getGlucoUUID()
     
     // Directly return the raw string to JavaScript
-    let pluginResult = CDVPluginResult(status: .ok, messageAs: macId)
+    let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: macId)
     self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
 }
 
@@ -107,7 +107,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
 
         if bluetoothManager.state != .poweredOn {
             print("⚠️ Bluetooth is OFF. Cannot scan.")
-            let pluginResult = CDVPluginResult(status: .error, messageAs: [
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                 "code": "BLUETOOTH_OFF",
                 "msg": "Bluetooth is not enabled."
             ])
@@ -136,7 +136,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
             if self.discoveredDevices.isEmpty {
                 // If the array is empty after 10 seconds, send DEVICE_NOT_FOUND
                 print("⚠️ Scan finished. No devices found.")
-                let errorResult = CDVPluginResult(status: .error, messageAs: [
+                let errorResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                     "code": "DEVICE_NOT_FOUND",
                     "msg": "No Glucometer device was found in the vicinity."
                 ])
@@ -150,7 +150,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
                     "msg": "Devices Found"
                 ]
                 
-                let pluginResult = CDVPluginResult(status: .ok, messageAs: successPayload)
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: successPayload)
                 pluginResult.setKeepCallbackAs(true)
                 self.commandDelegate.send(pluginResult, callbackId: callbackId)
             }
@@ -167,7 +167,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         discoveryTimer?.cancel()
         GlucoBLEManager.shared.stopSearch()
         
-        let result = CDVPluginResult(status: .ok, messageAs: [
+        let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: [
             "code": "SCAN_STOPPED", 
             "msg": "Glucometer scan explicitly stopped by user."
         ])
@@ -181,7 +181,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         self.isNewPairingProcess = true
         guard let peripheral = self.peripheral else {
             print("⚠️ No glucometer found to connect.")
-             let pluginResult = CDVPluginResult(status: .error, messageAs: [
+             let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                     "code": "DEVICE_NOT_FOUND",
                     "msg": "No Glucometer device was found in the vicinity."
                 ])
@@ -192,7 +192,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         print("🔗 Connecting to Glucometer: \(peripheral.name ?? "Unknown")")
         GlucoBLEManager.shared.connect(peripheral: peripheral)
 
-        // let pluginResult = CDVPluginResult(status: .ok, messageAs: ["code":"MAC_ID","MAC": peripheral.identifier.uuidString,"msg":"Mac is \(peripheral.identifier.uuidString)"])
+        // let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code":"MAC_ID","MAC": peripheral.identifier.uuidString,"msg":"Mac is \(peripheral.identifier.uuidString)"])
         // self.commandDelegate!.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -200,7 +200,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
     func pairBGMWithId(command: CDVInvokedUrlCommand) {
         // 1. Extract the specific MAC ID / UUID passed from JavaScript
         guard let targetMacId = command.argument(at: 0) as? String, !targetMacId.isEmpty else {
-            let errorResult = CDVPluginResult(status: .error, messageAs: [
+            let errorResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                 "code": "INVALID_ARGUMENT",
                 "msg": "You must provide a MAC ID / UUID to pair."
             ])
@@ -235,7 +235,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
             // Standardized Timeout Error
             reconnectionTimer = DispatchWorkItem { [weak self] in
                 guard let self = self, let cid = self.dataCallbackId else { return }
-                let result = CDVPluginResult(status: .error, messageAs: [
+                let result = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                     "code": "TIMEOUT_EXCEEDED",
                     "msg": "We did not receive a response. Please ensure your device is on and try again."
                 ])
@@ -250,7 +250,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
                     DispatchQueue.main.asyncAfter(deadline: .now() + self.customTimeoutMs, execute: timer)
                 }
             } else {
-                let pluginResult = CDVPluginResult(status: .error, messageAs: [
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                     "code": "MAC_NOT_AVAILABLE",
                     "msg": "GlucoMeter not connected. Ensure it is paired."
                 ])
@@ -267,7 +267,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         
         print("🛑 Sync cancelled via software. Device remains physically connected.")
         
-        let result = CDVPluginResult(status: .ok, messageAs: [
+        let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: [
             "code": "SYNC_STOPPED", 
             "msg": "Synchronization cancelled safely without dropping connection."
         ])
@@ -284,7 +284,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         UserDefaults.standard.synchronize() // Force the save immediately
         print("🗑️ Cleared all synced Glucometer log dates from memory.")
 
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: ["code": "UNLINK","msg":"Unlink Glucometer"])
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code": "UNLINK","msg":"Unlink Glucometer"])
         self.commandDelegate!.send(pluginResult, callbackId: command.callbackId)
     }
 
@@ -292,7 +292,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
       @objc(setGlucometerMacId:)
     func setGlucometerMacId(command: CDVInvokedUrlCommand) {
         guard let macId = command.argument(at: 0) as? String, !macId.isEmpty else {
-            let result = CDVPluginResult(status: .error, messageAs: ["code":"MAC_NOT_VALID","msg":"Invalid MAC ID"])
+            let result = CDVPluginResult(status: CDVCommandStatus.error, messageAs: ["code":"MAC_NOT_VALID","msg":"Invalid MAC ID"])
             self.commandDelegate.send(result, callbackId: command.callbackId)
             return
         }
@@ -301,7 +301,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
         
         print("✅ Recived MAC ID: \(macId)")
 
-        let result = CDVPluginResult(status: .ok, messageAs: ["code":"MAC_VALID","msg":"MAC ID Recived and trying to connect"])
+        let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code":"MAC_VALID","msg":"MAC ID Recived and trying to connect"])
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
@@ -310,7 +310,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
             if let ms = command.argument(at: 0) as? Int {
                 self.customTimeoutMs = Double(ms) / 1000.0
                 print("⏱️ Glucometer Timeout set to: \(self.customTimeoutMs)s")
-                let result = CDVPluginResult(status: .ok, messageAs: ["code": "TIMEOUT_TIME_UPDATED","msg":"Timeout time updated"])
+                let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code": "TIMEOUT_TIME_UPDATED","msg":"Timeout time updated"])
                 self.commandDelegate.send(result, callbackId: command.callbackId)
             }
         }
@@ -334,7 +334,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
             
             print("⏱️ Plugin Live Reading Delay set to: \(delaySeconds)s")
             
-            let result = CDVPluginResult(status: .ok, messageAs: [
+            let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: [
                 "code": "LIVE_READING_DELAY_UPDATED",
                 "msg": "Live reading delay updated to \(delaySeconds)s"
             ])
@@ -342,7 +342,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
             
         } else {
             // Fallback if JavaScript forgets to pass the argument
-            let result = CDVPluginResult(status: .error, messageAs: [
+            let result = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                 "code": "INVALID_ARGUMENT",
                 "msg": "Please provide the delay in milliseconds."
             ])
@@ -360,7 +360,7 @@ extension GoqiiPlugin: CBCentralManagerDelegate {
             print("✅ Bluetooth is ON GoqiiPlugin")
             // If initializeSDK was waiting for this, send success now!
             if let callbackId = self.initializeSDKCallbackId {
-                let pluginResult = CDVPluginResult(status: .ok, messageAs: [
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: [
                     "code": "BLUETOOTH_ON",
                     "msg": "Bluetooth is enabled."
                 ])
@@ -370,7 +370,7 @@ extension GoqiiPlugin: CBCentralManagerDelegate {
         case .poweredOff:
             print("❌ Bluetooth is OFF GoqiiPlugin")
             if let callbackId = self.initializeSDKCallbackId {
-                let pluginResult = CDVPluginResult(status: .error, messageAs: [
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                     "code": "BLUETOOTH_OFF",
                     "msg": "Bluetooth is not enabled."
                 ])
@@ -411,7 +411,7 @@ func onPairingFailGlucometer(device: CBPeripheral){
                 "msg": "On pairing fail"
             ]
             
-            let pluginResult = CDVPluginResult(status: .ok, messageAs: result)
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: result)
             pluginResult.setKeepCallbackAs(true) 
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
             
@@ -492,7 +492,7 @@ func glucoMeterConnected(device: CBPeripheral) {
         //         "state": "connecting", 
         //         "msg": "Physical link established, waiting for secure pairing..."
         //     ]
-        //     let pluginResult = CDVPluginResult(status: .ok, messageAs: deviceInfo)
+        //     let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: deviceInfo)
         //     pluginResult.setKeepCallbackAs(true)
         //     self.commandDelegate.send(pluginResult, callbackId: stateId)
         // }
@@ -510,7 +510,7 @@ func glucoMeterDisconnected() {
                 "state": "disconnected",
                 "msg": "Device physically disconnected."
             ]
-            let stateResult = CDVPluginResult(status: .ok, messageAs: stateInfo)
+            let stateResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: stateInfo)
             
             // CRITICAL: Keep callback true so it stays alive for the next connection!
             stateResult.setKeepCallbackAs(true) 
@@ -524,7 +524,7 @@ func glucoMeterDisconnected() {
         // A. Send DEVICE_CONNECTED to the State Listener (Turns the dot Green!)
         if let stateId = connectionStateCallbackId {
             let stateInfo = ["code": "DEVICE_CONNECTED","state": "connected", "msg": "Device connected", "macId": "\(device.identifier.uuidString)", "MacId": "\(device.identifier.uuidString)"]
-            let stateResult = CDVPluginResult(status: .ok, messageAs: stateInfo)
+            let stateResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: stateInfo)
             stateResult.setKeepCallbackAs(true)
             self.commandDelegate.send(stateResult, callbackId: stateId)
         }
@@ -538,7 +538,7 @@ func glucoMeterDisconnected() {
                     "msg": "Pairing successful",
                     "isSuccessfully": true
                 ]
-                let actionResult = CDVPluginResult(status: .ok, messageAs: actionInfo)
+                let actionResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: actionInfo)
                 actionResult.setKeepCallbackAs(true)
                 self.commandDelegate.send(actionResult, callbackId: callbackId)
             }
@@ -552,7 +552,7 @@ func glucoMeterDisconnected() {
             self.shouldSyncAllRecords = flag
             print("⚙️ setSyncAllRecords flag updated to: \(flag)")
             
-            let pluginResult = CDVPluginResult(status: .ok, messageAs: ["code": "FLAG_UPDATED", "msg": "Sync all records set to \(flag)"])
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code": "FLAG_UPDATED", "msg": "Sync all records set to \(flag)"])
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
         }
     }
@@ -626,7 +626,7 @@ func glucoMeterData(_ data: [Any]) {
             "msg": "Glucose Data Received Successfully!"
         ]
         
-        let pluginResult = CDVPluginResult(status: .ok, messageAs: payload)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: payload)
         pluginResult.setKeepCallbackAs(true)
         self.commandDelegate!.send(pluginResult, callbackId: callbackId)
     }
@@ -645,7 +645,7 @@ func glucoMeterConnectError(errorStr: String) {
         return
         }
 
-            let pluginResult = CDVPluginResult(status: .error, messageAs: [
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.error, messageAs: [
                 "code": "DEVICE_CONNECTION_ERROR",
                 "msg": "Device is connection error."
             ])

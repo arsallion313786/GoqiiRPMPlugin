@@ -23,7 +23,7 @@ import CoreBluetooth
 
     // MARK: - Event Dispatchers
     
-    private func sendEvent(data: [String: Any], status: CDVCommandStatus = .ok) {
+    private func sendEvent(data: [String: Any], status: CDVCommandStatus = CDVCommandStatus.ok) {
         guard let callbackId = self.eventCallbackId else {
             print("⚠️ ERROR: No persistent callback registered.")
             return
@@ -50,7 +50,7 @@ import CoreBluetooth
         OmronBluetoothManager.sharedInstance.initaliseBle()
         
         // Immediate ACK
-        let result = CDVPluginResult(status: .ok, messageAs: "Initialization started")
+        let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: "Initialization started")
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
@@ -58,8 +58,8 @@ import CoreBluetooth
     func startDeviceDiscovery(command: CDVInvokedUrlCommand) {
         guard bluetoothManager.state == .poweredOn else {
             let error = ["code": "BLUETOOTH_OFF", "msg": "Bluetooth is disabled."]
-            sendEvent(data: error, status: .error)
-            self.commandDelegate.send(CDVPluginResult(status: .error, messageAs: error), callbackId: command.callbackId)
+            sendEvent(data: error, status: CDVCommandStatus.error)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.error, messageAs: error), callbackId: command.callbackId)
             return
         }
 
@@ -77,7 +77,7 @@ import CoreBluetooth
                     "data": [],
                     "msg": "Devices Found"
                 ])
-//                self.sendEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": "No devices found."], status: .error)
+//                self.sendEvent(data: ["code": "DEVICE_NOT_FOUND", "msg": "No devices found."], status: CDVCommandStatus.error)
             } else {
                 self.sendEvent(data: [
                     "code": "ON_DEVICE_FOUND",
@@ -88,7 +88,7 @@ import CoreBluetooth
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + self.customTimeoutMs/1000.0, execute: discoveryTimer!)
-        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
     }
     
     
@@ -96,46 +96,46 @@ import CoreBluetooth
     func stopDeviceDiscovery(command: CDVInvokedUrlCommand){
         discoveryTimer?.cancel()
         OmronBluetoothManager.sharedInstance.stopSearch()
-        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
     }
 
     @objc(pairBPMWithId:)
     func pairBPMWithId(command: CDVInvokedUrlCommand) {
         guard let targetMacId = command.argument(at: 0) as? String, !targetMacId.isEmpty else {
-            self.commandDelegate.send(CDVPluginResult(status: .error, messageAs: "Missing MAC ID"), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.error, messageAs: "Missing MAC ID"), callbackId: command.callbackId)
             return
         }
         
         hasNotifiedPairingSuccess = false
         OmronBluetoothManager.sharedInstance.stopSearch()
         OmronBluetoothManager.sharedInstance.connectOmronWithUUID(targetMacId)
-        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
     }
 
     @objc(connectAndSync:)
     func connectAndSync(command: CDVInvokedUrlCommand) {
         OmronBluetoothManager.sharedInstance.connectAndSync()
-        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
     }
 
     @objc(disconnectOnlyBLE:)
     func disconnectOnlyBLE(command: CDVInvokedUrlCommand) {
         OmronBluetoothManager.sharedInstance.disconnectOnlyBLE()
-        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
     }
 
     @objc(unlink:)
     func unlink(command: CDVInvokedUrlCommand) {
         OmronBluetoothManager.sharedInstance.disconnect()
         sendEvent(data: ["code": "UNLINK", "msg": "Unlinked device"])
-        self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+        self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
     }
     
     @objc(setConnectionTimeout:)
     func setConnectionTimeout(command: CDVInvokedUrlCommand) {
         if let ms = command.argument(at: 0) as? Double {
             self.customTimeoutMs = ms
-            self.commandDelegate.send(CDVPluginResult(status: .ok), callbackId: command.callbackId)
+            self.commandDelegate.send(CDVPluginResult(status: CDVCommandStatus.ok), callbackId: command.callbackId)
         }
     }
 }
