@@ -42,7 +42,7 @@ import CoreBluetooth
                     "code": "BLUETOOTH_ON",
                     "msg": "Bluetooth is enabled."
                 ])
-                pluginResult.setKeepCallbackAs(true)
+                pluginResult?.setKeepCallbackAs(true)
                 self.commandDelegate!.send(pluginResult, callbackId: command.callbackId)
                 
             case .unknown, .resetting:
@@ -151,7 +151,7 @@ func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
                 ]
                 
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: successPayload)
-                pluginResult.setKeepCallbackAs(true)
+                pluginResult?.setKeepCallbackAs(true)
                 self.commandDelegate.send(pluginResult, callbackId: callbackId)
             }
             
@@ -364,7 +364,7 @@ extension GoqiiPlugin: CBCentralManagerDelegate {
                     "code": "BLUETOOTH_ON",
                     "msg": "Bluetooth is enabled."
                 ])
-                pluginResult.setKeepCallbackAs(true)
+                pluginResult?.setKeepCallbackAs(true)
                 self.commandDelegate!.send(pluginResult, callbackId: callbackId)
             }
         case .poweredOff:
@@ -412,7 +412,7 @@ func onPairingFailGlucometer(device: CBPeripheral){
             ]
             
             let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: result)
-            pluginResult.setKeepCallbackAs(true) 
+            pluginResult?.setKeepCallbackAs(true) 
             self.commandDelegate!.send(pluginResult, callbackId: callbackId)
             
             print("✅ Sent ON_PAIRING_FAIL to JavaScript.")
@@ -627,7 +627,7 @@ func glucoMeterData(_ data: [Any]) {
         ]
         
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: payload)
-        pluginResult.setKeepCallbackAs(true)
+        pluginResult?.setKeepCallbackAs(true)
         self.commandDelegate!.send(pluginResult, callbackId: callbackId)
     }
 
@@ -649,7 +649,7 @@ func glucoMeterConnectError(errorStr: String) {
                 "code": "DEVICE_CONNECTION_ERROR",
                 "msg": "Device is connection error."
             ])
-        pluginResult.setKeepCallbackAs(true)
+        pluginResult?.setKeepCallbackAs(true)
     self.commandDelegate?.send(pluginResult, callbackId: callbackId)
     }
 }
