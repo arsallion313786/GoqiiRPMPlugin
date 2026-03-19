@@ -86,7 +86,7 @@ import CoreBluetooth
             GlucoBLEManager.shared.stopSearch()
             
             if self.discoveredDevices.isEmpty {
-                self.sendErrorEvent(code: "DEVICE_NOT_FOUND", msg: "No devices found.")
+                self.sendEvent(code: "DEVICE_NOT_FOUND", msg: "No devices found.", data:[])
             } else {
                 self.sendEvent(code: "ON_DEVICE_FOUND", msg: "Devices Found", data: self.discoveredDevices)
             }
