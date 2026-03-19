@@ -106,6 +106,8 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                 }
 
                 omronDeviceWrapper.connectAndSync("");
+                PluginResult pluginResultConnectSync = new PluginResult(PluginResult.Status.OK, true);
+                callbackContext.sendPluginResult(pluginResultConnectSync);
                 return true;
 
             case "disconnectOnlyBLE":
