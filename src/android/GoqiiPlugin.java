@@ -4,484 +4,284 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.goqii.goqiisdk.GlucometerManager;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.goqii.goqiisdk.GlucometerManager;
-import android.text.TextUtils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class GoqiiPlugin extends CordovaPlugin {
     private static final String TAG = "GoqiiPlugin";
     private static final String PREFS_NAME = "GoqiiPluginPrefs";
-    private static final String KEY_LAST_SYNC_TIME = "lastGlucometerSyncTime";
     private static final String KEY_LAST_RESULT_STR = "lastGlucometerResultStr";
+
     private GlucometerManager glucometerManager;
-    private CallbackContext lastCommandCallback;
+    private CallbackContext eventCallbackContext;
 
     private static long CONNECTION_TIMEOUT_MS = 10_000L;
-    private final Handler connectionTimeoutHandler = new Handler(Looper.getMainLooper());
-    private Runnable connectionTimeoutRunnable;
-    private volatile boolean syncAcknowledged = false;
-    private CallbackContext isDeviceConnectedCallback;
-    private boolean shouldSyncAllRecords = false;
+    private final Handler timeoutHandler = new Handler(Looper.getMainLooper());
+    private Runnable timeoutRunnable;
 
-    private static final long RESYNC_DELAY_MS = 20_000L;
     private final Handler resyncHandler = new Handler(Looper.getMainLooper());
     private Runnable resyncRunnable;
-    private boolean stopBGMSync = false;
+    private static final long RESYNC_DELAY_MS = 20_000L;
+
+    private volatile boolean syncAcknowledged = false;
+    private boolean shouldSyncAllRecords = false;
     private boolean shouldScheduleResync = false;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Log.d(TAG, "execute: action = " + action);
-        // if(action != null && !action.equals("isDevicePaired") && !action.equals("getCurrentDeviceMacId")){
-        // lastCommandCallback = callbackContext;
-        // }
+        Log.d(TAG, "execute: " + action);
 
-        if (action.equals("isDeviceConnected")) {
-            isDeviceConnectedCallback = callbackContext;
-        } else if (action.equals("initializeSDK") ||
-                   action.equals("startBGMDiscovery") ||
-                   action.equals("pairBGMWithId") ||
-                   action.equals("connectToKnownDevice")
-                )  {
-            lastCommandCallback = callbackContext;
-        }
-        if (action.equals("setConnectionTimeout")){
-            CONNECTION_TIMEOUT_MS = args.getLong(0);
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, "Connection timeout set successfully");
-            pResult.setKeepCallback(true);
-            callbackContext.sendPluginResult(pResult);
-            return true;
-        } else if (action.equals("initializeSDK")) {
-            initializeGlucometer();
-            return true;
-        } else if (action.equals("startBGMDiscovery")) {
-            glucometerManager.startScan(CONNECTION_TIMEOUT_MS);
-            return true;
-        } else if (action.equals("stopBGMDiscovery")) {
-            glucometerManager.stopScan();
-            return true;
-        } else if (action.equals("unlinkGlucometer")) {
-            cancelResync();
-            glucometerManager.unpairDevice();
-            cordova.getActivity()
-                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                    .edit().remove(KEY_LAST_RESULT_STR).remove(KEY_LAST_SYNC_TIME).apply();
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, "Device Unlinked successfully");
-            pResult.setKeepCallback(true);
-            callbackContext.sendPluginResult(pResult);
-            return true;
-        } else if (action.equals("connectToKnownDevice")) {
-            syncAcknowledged = false;
-            shouldScheduleResync = true;
-            startSyncTimeout();
-            glucometerManager.syncGlucometer();
-            return true;
-        } else if(action.equals("stopSync")){
-            stopBGMSync = true;
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, "Sync Stopped");
-            pResult.setKeepCallback(true);
-            callbackContext.sendPluginResult(pResult);
-            return true;
-        } else if (action.equals("pairBGMWithId")) {
-            glucometerManager.linkDeviceWithMacId(args.getString(0));
-            return true;
-        }else /*if (action.equals("pairBGM")) {
-            glucometerManager.linkDevice();
-            return true;
-        }else*/ if (action.equals("isDevicePaired")) {
-            String mac = glucometerManager.getGlucometerMac();
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, !TextUtils.isEmpty(mac));
-            pResult.setKeepCallback(true);
-            callbackContext.sendPluginResult(pResult);
-            return true;
-        }else if (action.equals("getCurrentDeviceMacId")) {
-            String mac = glucometerManager.getGlucometerMac();
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, mac);
-            pResult.setKeepCallback(true);
-            callbackContext.sendPluginResult(pResult);
-            return true;
-        } else if (action.equals("setGlucometerMacId")) {
-            if (args != null && args.length() != 0) {
-                String localMac = glucometerManager.getGlucometerMac();
-                if (TextUtils.isEmpty(args.getString(0))) {
-                    try {
-                        // JSONObject result = new JSONObject();
-                        // result.put("message", "Pass MAC ID");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, localMac);
-                        pResult.setKeepCallback(true);
-                        callbackContext.sendPluginResult(pResult);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
-                } else if (!TextUtils.isEmpty(localMac) && !localMac.equals(args.getString(0))) {
-                    try {
-                        JSONObject result = new JSONObject();
-                        result.put("msg", "Pass previously linked MAC ID");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        pResult.setKeepCallback(true);
-                        callbackContext.sendPluginResult(pResult);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
-                } else {
-                    glucometerManager.setGlucometerMacId(args.getString(0));
-                    try {
-                        JSONObject result = new JSONObject();
-                        result.put("msg", "MAC ID set successfully");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result.toString());
-                        pResult.setKeepCallback(true);
-                        callbackContext.sendPluginResult(pResult);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
+        switch (action) {
+            case "registerCallback":
+                this.eventCallbackContext = callbackContext;
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
+                return true;
+
+            case "initializeSDK":
+                initializeGlucometer(callbackContext);
+                return true;
+
+            case "setConnectionTimeout":
+                CONNECTION_TIMEOUT_MS = args.getLong(0);
+                callbackContext.success("Timeout updated to " + CONNECTION_TIMEOUT_MS);
+                return true;
+
+            case "startBGMDiscovery":
+                if (ensureSDK(callbackContext)) {
+                    glucometerManager.startScan(CONNECTION_TIMEOUT_MS);
+                    callbackContext.success();
                 }
-            }
-            return true;
-        }else if(action.equals("isDeviceConnected")) {
-            boolean isConnected = glucometerManager.isDeviceConnected();
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, isConnected);
-            pResult.setKeepCallback(true);
-            isDeviceConnectedCallback.sendPluginResult(pResult);
-            return true;
-        } else if(action.equals("setSyncAllRecords")){
-            shouldSyncAllRecords = true;
-            try {
-                JSONObject result = new JSONObject();
-                result.put("code", "FLAG_UPDATED");
-                result.put("msg", "Sync all records set");
-                PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                pResult.setKeepCallback(true);
-                lastCommandCallback.sendPluginResult(pResult);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return true;
+                return true;
+
+            case "stopBGMDiscovery":
+                if (ensureSDK(callbackContext)) {
+                    glucometerManager.stopScan();
+                    callbackContext.success();
+                }
+                return true;
+
+            case "connectToKnownDevice":
+                if (ensureSDK(callbackContext)) {
+                    syncAcknowledged = false;
+                    shouldScheduleResync = true;
+                    //startSyncTimeout();
+                    glucometerManager.syncGlucometer();
+                    callbackContext.success();
+                }
+                return true;
+
+            case "pairBGMWithId":
+                if (ensureSDK(callbackContext)) {
+                    glucometerManager.linkDeviceWithMacId(args.getString(0));
+                    callbackContext.success();
+                }
+                return true;
+
+            case "unlinkGlucometer":
+                if (ensureSDK(callbackContext)) {
+                    cancelResync();
+                    glucometerManager.unpairDevice();
+                    clearLocalCache();
+                    callbackContext.success();
+                }
+                return true;
+
+            case "isDevicePaired":
+                if (ensureSDK(callbackContext)) {
+                    String mac = glucometerManager.getGlucometerMac();
+                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, !TextUtils.isEmpty(mac)));
+                }
+                return true;
+
+            case "isDeviceConnected":
+                if (ensureSDK(callbackContext)) {
+                    boolean connected = glucometerManager.isDeviceConnected();
+                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, connected));
+                }
+                return true;
+
+            case "setSyncAllRecords":
+                shouldSyncAllRecords = args.optBoolean(0, false);
+                callbackContext.success("SyncAllRecords set to: " + shouldSyncAllRecords);
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    private boolean ensureSDK(CallbackContext callback) {
+        if (glucometerManager == null) {
+            callback.error("SDK Not Initialized");
+            return false;
         }
         return true;
     }
 
-    /*
-     * Initialize the Glucometer SDK
-     */
-    public void initializeGlucometer() {
-        Context context = cordova.getActivity();
-        if(glucometerManager == null) {
-            glucometerManager = new GlucometerManager(context, new GlucometerManager.GlucometerListener() {
-                @Override
-                public void onDeviceLinked(String macId, String deviceName) {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "ON_PAIRING_SUCCESS");
-                        result.put("macId", macId);
-                        result.put("MacID", macId);
-                        result.put("msg", "Device Linked");
-                        result.put("name", deviceName);
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
+    private void clearLocalCache() {
+        cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .edit().remove(KEY_LAST_RESULT_STR).apply();
+    }
 
-                @Override
-                public void onDeviceUnlinked(String macId) {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("msg", "Device Unlinked");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onDeviceLinkFailed() {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "ON_PAIRING_FAILED");
-                        result.put("msg", "Device Link Failed");                    
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onDeviceUnlinkFailed() {
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "ON_UNPAIRING_FAILED");
-                        result.put("msg", "Device Unlink Failed");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onSyncComplete(String resultStr) {
-                    // Cancel timeout — data arrived in time
-                    cancelSyncTimeout();
-                    syncAcknowledged = true;
-                    if(stopBGMSync){
-                        stopBGMSync = false;
-                        return;
-                    }
-                    try {
-                        SharedPreferences prefs = cordova.getActivity()
-                                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-                        // Load the previous raw result string (empty on first sync)
-                        String lastResultStr = prefs.getString(KEY_LAST_RESULT_STR, "");
-
-                        JSONObject jsonObject = new JSONObject(resultStr);
-                        JSONArray allRecords = jsonObject.getJSONArray("data");
-
-                        // Build a Set of unique keys from the PREVIOUS result
-                        java.util.Set<String> previousKeys = new java.util.HashSet<>();
-                        if (!lastResultStr.isEmpty()) {
-                            try {
-                                JSONObject prevJson = new JSONObject(lastResultStr);
-                                JSONArray prevRecords = prevJson.getJSONArray("data");
-                                for (int i = 0; i < prevRecords.length(); i++) {
-                                    JSONObject rec = prevRecords.getJSONObject(i);
-                                    // Use logDate as a unique fingerprint per record
-                                    String key = rec.optString("logDate", "");
-                                    previousKeys.add(key);
-                                }
-                            } catch (Exception exc) {exc.printStackTrace();}
-                        }
-
-                        // Only keep records NOT present in the previous result
-                        JSONArray newRecords = new JSONArray();
-                        for (int i = 0; i < allRecords.length(); i++) {
-                            JSONObject record = allRecords.getJSONObject(i);
-                            String key = record.optString("logDate", "");
-                            if (!previousKeys.contains(key) || shouldSyncAllRecords) {
-                                newRecords.put(record);
-                            }
-                        }
-
-                        Log.d(TAG, "onSyncComplete: total=" + allRecords.length()
-                                + ", new=" + newRecords.length()
-                                + ", previousKnown=" + previousKeys.size());
-
-                        JSONObject result = new JSONObject();
-                        result.put("code", "ON_DATA_RECEIVED");
-                        result.put("data", newRecords);
-                        result.put("msg", "Glucose data received successfully");
-                        PluginResult pResult = new PluginResult(
-                                PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult);
-
-                        // Save the current raw result as the new baseline
-                        prefs.edit().putString(KEY_LAST_RESULT_STR, resultStr).apply();
-
-                        // Schedule a resync after 20 seconds
-                    } catch (Exception e) {
-                        Log.e(TAG, "onSyncComplete: error processing result", e);
-                        // Fall back to sending raw result so the caller still gets data
-                        try {
-                            JSONObject result = new JSONObject();
-                            result.put("code", "DEVICE_CONNECTION_ERROR");
-                            result.put("msg", "Device is connection error.");
-                            PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result);
-                            pResult.setKeepCallback(true);
-                            lastCommandCallback.sendPluginResult(pResult);
-                        } catch(Exception ex){
-                            ex.printStackTrace();
-                        }
-                    } finally {
-                        shouldSyncAllRecords = false;
-                        scheduleResync();
-                    }
-                }
-
-                @Override
-                public void deviceNotFound() {
-                    cancelSyncTimeout(); // SDK determined no device — cancel timeout
-                    try {
-                        JSONObject result = new JSONObject();
-                        result.put("code", "DEVICE_NOT_FOUND");
-                        result.put("msg", "Device Not Found");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                
-                @Override
-                public void onDevicesFound(JSONArray devices){
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "ON_DEVICE_FOUND");
-                        result.put("data", devices);
-                        result.put("msg", "Devices Found");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                // @Override
-                // public void onDeviceFound(String macId, String deviceName) {
-                //     try{
-                //         JSONObject result = new JSONObject();
-                //         result.put("code", "ON_DEVICE_FOUND");
-                //         result.put("macId", macId);
-                //         result.put("name", deviceName);
-                //         result.put("msg", "Device Found");
-                //         // lastCommandCallback.success(result.toString());
-            
-                //         PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                //         pResult.setKeepCallback(true);
-                //         lastCommandCallback.sendPluginResult(pResult); 
-                //     }catch(Exception e){
-                //         e.printStackTrace();
-                //     }
-                // }
-
-                @Override
-                public void deviceNotPaired() {
-                    cancelSyncTimeout(); // SDK error — cancel timeout
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "DEVICE_CONNECTION_ERROR");
-                        result.put("msg", "Error pairing");    
-                        PluginResult pResult = new PluginResult(PluginResult.Status.ERROR, result.toString());
-                        pResult.setKeepCallback(true);
-                        lastCommandCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onDeviceConnected() {
-                    if (isDeviceConnectedCallback == null)
-                        return;
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "DEVICE_CONNECTED");
-                        result.put("msg", "Device connected successfully");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        isDeviceConnectedCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onDeviceDisconnected() {
-                    if (isDeviceConnectedCallback == null)
-                        return;
-                    try{
-                        JSONObject result = new JSONObject();
-                        result.put("code", "DEVICE_DISCONNECTED");
-                        result.put("msg", "Device disconnected successfully");
-                        PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-                        pResult.setKeepCallback(true);
-                        isDeviceConnectedCallback.sendPluginResult(pResult); 
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-                
-            });
+    private void initializeGlucometer(CallbackContext callback) {
+        if (glucometerManager != null) {
+            callback.success("Already initialized");
+            return;
         }
 
-        try{
-            JSONObject result = new JSONObject();
-            boolean isBluetoothEnabled = glucometerManager.isBluetoothEnabled();
-            result.put("code", isBluetoothEnabled ? "BLUETOOTH_ON" : "BLUETOOTH_OFF");
-            result.put("msg", isBluetoothEnabled ? "Bluetooth is enabled." : "Bluetooth is not enabled.");
+        glucometerManager = new GlucometerManager(cordova.getActivity(), new GlucometerManager.GlucometerListener() {
+            @Override
+            public void onDeviceLinked(String macId, String name) {
+                sendNotification("ON_PAIRING_SUCCESS", "Device Linked", macId, name, null);
+            }
 
-            PluginResult pResult = new PluginResult(PluginResult.Status.OK, result);
-            pResult.setKeepCallback(true);
-            lastCommandCallback.sendPluginResult(pResult);
-        }catch(Exception e){
-            e.printStackTrace();
+            @Override
+            public void onSyncComplete(String resultStr) {
+                cancelSyncTimeout();
+                syncAcknowledged = true;
+                processSyncData(resultStr);
+            }
+
+            @Override
+            public void deviceNotFound() {
+                cancelSyncTimeout();
+                sendErrorNotification("DEVICE_NOT_FOUND", "Device Not Found");
+            }
+
+            @Override
+            public void onDevicesFound(JSONArray devices) {
+                sendNotification("ON_DEVICE_FOUND", "Discovery Update", null, null, devices);
+            }
+
+            @Override
+            public void onDeviceConnected() {
+                sendNotification("DEVICE_CONNECTED", "Connected", null, null, null);
+            }
+
+            @Override
+            public void onDeviceDisconnected() {
+                sendNotification("DEVICE_DISCONNECTED", "Disconnected", null, null, null);
+            }
+
+            @Override
+            public void onDeviceLinkFailed() { sendErrorNotification("ON_PAIRING_FAILED", "Link Failed"); }
+            @Override
+            public void onDeviceUnlinked(String mac) { sendNotification("ON_UNLINK_SUCCESS", "Unlinked", mac, null, null); }
+            @Override
+            public void deviceNotPaired() { sendErrorNotification("DEVICE_NOT_PAIRED", "Not Paired"); }
+            @Override
+            public void onDeviceUnlinkFailed() { sendErrorNotification("ON_UNPAIRING_FAILED", "Unlink Failed"); }
+        });
+
+        callback.success("SDK Initialized");
+    }
+
+    private void processSyncData(String rawJson) {
+        try {
+            SharedPreferences prefs = cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String lastData = prefs.getString(KEY_LAST_RESULT_STR, "");
+
+            JSONObject currentObj = new JSONObject(rawJson);
+            JSONArray currentRecords = currentObj.getJSONArray("data");
+
+            Set<String> seenKeys = new HashSet<>();
+            if (!lastData.isEmpty()) {
+                JSONArray lastRecords = new JSONObject(lastData).getJSONArray("data");
+                for (int i = 0; i < lastRecords.length(); i++) {
+                    seenKeys.add(lastRecords.getJSONObject(i).optString("logDate"));
+                }
+            }
+
+            JSONArray filtered = new JSONArray();
+            for (int i = 0; i < currentRecords.length(); i++) {
+                JSONObject rec = currentRecords.getJSONObject(i);
+                if (shouldSyncAllRecords || !seenKeys.contains(rec.optString("logDate"))) {
+                    filtered.put(rec);
+                }
+            }
+
+            prefs.edit().putString(KEY_LAST_RESULT_STR, rawJson).apply();
+            sendNotification("ON_DATA_RECEIVED", "Data Synced", null, null, filtered);
+
+        } catch (Exception e) {
+            sendErrorNotification("SYNC_PROCESSING_ERROR", e.getMessage());
+        } finally {
+            shouldSyncAllRecords = false;
+            //scheduleResync();
         }
     }
 
-    // ── Timeout helpers ────────────────────────────────────────────────────────
+    // --- Helpers ---
+
+    private void sendNotification(String code, String msg, String mac, String name, Object data) {
+        if (eventCallbackContext == null) return;
+        try {
+            JSONObject res = new JSONObject();
+            res.put("code", code);
+            res.put("msg", msg);
+            if (mac != null) res.put("macId", mac);
+            if (name != null) res.put("name", name);
+            if (data != null) res.put("data", data);
+
+            PluginResult result = new PluginResult(PluginResult.Status.OK, res);
+            result.setKeepCallback(true);
+            eventCallbackContext.sendPluginResult(result);
+        } catch (JSONException e) { e.printStackTrace(); }
+    }
+
+    private void sendErrorNotification(String code, String msg) {
+        if (eventCallbackContext == null) return;
+        try {
+            JSONObject res = new JSONObject();
+            res.put("code", code);
+            res.put("msg", msg);
+            PluginResult result = new PluginResult(PluginResult.Status.ERROR, res);
+            result.setKeepCallback(true);
+            eventCallbackContext.sendPluginResult(result);
+        } catch (JSONException e) { e.printStackTrace(); }
+    }
 
     private void startSyncTimeout() {
-        cancelSyncTimeout(); // clear any stale runnable
-        connectionTimeoutRunnable = () -> {
-            if (!syncAcknowledged && lastCommandCallback != null) {
-                Log.w(TAG, "Glucometer sync timeout after " + CONNECTION_TIMEOUT_MS + "ms");
-                try {
-                    JSONObject payload = new JSONObject();
-                    payload.put("code", "TIMEOUT_EXCEEDED");
-                    payload.put("msg", "We did not receive a response. Please ensure your device is on and try again.");
-                    PluginResult timeoutResult = new PluginResult(
-                            PluginResult.Status.ERROR, payload.toString());
-                    timeoutResult.setKeepCallback(true);
-                    lastCommandCallback.sendPluginResult(timeoutResult);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        cancelSyncTimeout();
+        timeoutRunnable = () -> {
+            if (!syncAcknowledged) {
+                sendErrorNotification("TIMEOUT_EXCEEDED", "No response from device.");
             }
         };
-        connectionTimeoutHandler.postDelayed(connectionTimeoutRunnable, CONNECTION_TIMEOUT_MS);
+        timeoutHandler.postDelayed(timeoutRunnable, CONNECTION_TIMEOUT_MS);
     }
 
     private void cancelSyncTimeout() {
-        if (connectionTimeoutRunnable != null) {
-            connectionTimeoutHandler.removeCallbacks(connectionTimeoutRunnable);
-            connectionTimeoutRunnable = null;
-        }
+        if (timeoutRunnable != null) timeoutHandler.removeCallbacks(timeoutRunnable);
     }
 
     private void scheduleResync() {
-        if (!shouldScheduleResync) {
-            Log.d(TAG, "Resync skipped — not triggered by startSync");
-            return;
-        }
-        shouldScheduleResync = false; // consume the flag so only one resync fires
+        if (!shouldScheduleResync) return;
+        shouldScheduleResync = false;
         cancelResync();
         resyncRunnable = () -> {
-            if (lastCommandCallback != null) {
-                Log.d(TAG, "Auto-resync triggered after " + RESYNC_DELAY_MS + "ms");
-                syncAcknowledged = false;
-                shouldSyncAllRecords = false;
-                startSyncTimeout();
-                glucometerManager.syncGlucometer();
-            }
+            syncAcknowledged = false;
+            startSyncTimeout();
+            if (glucometerManager != null) glucometerManager.syncGlucometer();
         };
         resyncHandler.postDelayed(resyncRunnable, RESYNC_DELAY_MS);
-        Log.d(TAG, "Resync scheduled in " + RESYNC_DELAY_MS + "ms");
     }
 
     private void cancelResync() {
-        if (resyncRunnable != null) {
-            resyncHandler.removeCallbacks(resyncRunnable);
-            resyncRunnable = null;
-            Log.d(TAG, "Resync cancelled");
-        }
+        if (resyncRunnable != null) resyncHandler.removeCallbacks(resyncRunnable);
     }
 }
