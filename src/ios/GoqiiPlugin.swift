@@ -147,7 +147,7 @@ import CoreBluetooth
             discoveryTimer?.cancel()
             GlucoBLEManager.shared.stopSearch()
             
-            let result = CDVPluginResult(status: .ok, messageAs: [
+            let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: [
                 "code": "SCAN_STOPPED",
                 "msg": "Glucometer scan explicitly stopped by user."
             ])
@@ -159,7 +159,7 @@ import CoreBluetooth
             if let ms = command.argument(at: 0) as? Int {
                 self.customTimeoutMs = Double(ms) / 1000.0
                 print("⏱️ Glucometer Timeout set to: \(self.customTimeoutMs)s")
-                let result = CDVPluginResult(status: .ok, messageAs: ["code": "TIMEOUT_TIME_UPDATED","msg":"Timeout time updated"])
+                let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code": "TIMEOUT_TIME_UPDATED","msg":"Timeout time updated"])
                 self.commandDelegate.send(result, callbackId: command.callbackId)
             }
         }
@@ -169,7 +169,7 @@ import CoreBluetooth
        _ = GlucoBLEManager.shared
        let isConnected = BLE.sharedInstance().isGlucoMeterConnected()
        
-       let pluginResult = CDVPluginResult(status: .ok, messageAs: isConnected)
+       let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isConnected)
        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
    }
     
@@ -180,7 +180,7 @@ import CoreBluetooth
             // Ask the intermediate manager for the true physical connection state
             let isCurrentlyConnected = GlucoBLEManager.shared.isCurrentlyConnected()
             
-            let pluginResult = CDVPluginResult(status: .ok, messageAs: isCurrentlyConnected)
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: isCurrentlyConnected)
             self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
         }
     
@@ -190,7 +190,7 @@ import CoreBluetooth
                 self.shouldSyncAllRecords = flag
                 print("⚙️ setSyncAllRecords flag updated to: \(flag)")
                 
-                let pluginResult = CDVPluginResult(status: .ok, messageAs: ["code": "FLAG_UPDATED", "msg": "Sync all records set to \(flag)"])
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code": "FLAG_UPDATED", "msg": "Sync all records set to \(flag)"])
                 self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
             }
         }
