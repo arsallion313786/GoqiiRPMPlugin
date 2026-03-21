@@ -65,7 +65,7 @@ import CoreBluetooth
     @objc(initializeSDK:)
     func initializeSDK(command: CDVInvokedUrlCommand) {
         // Just an ACK for the command; results flow through centralManagerDidUpdateState
-        let result = CDVPluginResult(status: .ok)
+        let result = CDVPluginResult(status: CDVCommandStatus.ok)
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
@@ -93,14 +93,14 @@ import CoreBluetooth
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + self.customTimeoutMs, execute: discoveryTimer!)
         
-        let result = CDVPluginResult(status: .ok)
+        let result = CDVPluginResult(status: CDVCommandStatus.ok)
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
     @objc(pairBGMWithId:)
     func pairBGMWithId(command: CDVInvokedUrlCommand) {
         guard let targetMacId = command.argument(at: 0) as? String, !targetMacId.isEmpty else {
-            let error = CDVPluginResult(status: .error, messageAsString: "Missing MAC ID")
+            let error = CDVPluginResult(status: CDVCommandStatus.error, messageAsString: "Missing MAC ID")
             self.commandDelegate.send(error, callbackId: command.callbackId)
             return
         }
@@ -109,7 +109,7 @@ import CoreBluetooth
         GlucoBLEManager.shared.stopSearch()
         GlucoBLEManager.shared.connectAndSaveGlucometerDevice(targetMacId)
         
-        let result = CDVPluginResult(status: .ok)
+        let result = CDVPluginResult(status: CDVCommandStatus.ok)
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 
@@ -127,7 +127,7 @@ import CoreBluetooth
             GlucoBLEManager.shared.connectToSavedGlucometerDevice()
             DispatchQueue.main.asyncAfter(deadline: .now() + self.customTimeoutMs, execute: reconnectionTimer!)
         } else {
-            let error = CDVPluginResult(status: .error, messageAs: ["code": "MAC_NOT_AVAILABLE"])
+            let error = CDVPluginResult(status: CDVCommandStatus.error, messageAs: ["code": "MAC_NOT_AVAILABLE"])
             self.commandDelegate.send(error, callbackId: command.callbackId)
         }
     }
@@ -138,7 +138,7 @@ import CoreBluetooth
         UserDefaults.standard.removeObject(forKey: "SyncedGlucoLogDates")
         UserDefaults.standard.synchronize()
         
-        let result = CDVPluginResult(status: .ok, messageAs: ["code": "UNLINK"])
+        let result = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: ["code": "UNLINK"])
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
 }
