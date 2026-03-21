@@ -182,7 +182,7 @@ public class GoqiiPlugin extends CordovaPlugin {
             @Override
             public void onDeviceUnlinked(String mac) { sendNotification("ON_UNLINK_SUCCESS", "Unlinked", mac, null, null); }
             @Override
-            public void deviceNotPaired() { sendErrorNotification("DEVICE_NOT_PAIRED", "Not Paired"); }
+            public void deviceNotPaired() { sendErrorNotification("NO_PAIRED_DEVICE", "Not Paired"); }
             @Override
             public void onDeviceUnlinkFailed() { sendErrorNotification("ON_UNPAIRING_FAILED", "Unlink Failed"); }
         });
@@ -218,7 +218,7 @@ public class GoqiiPlugin extends CordovaPlugin {
             sendNotification("ON_DATA_RECEIVED", "Data Synced", null, null, filtered);
 
         } catch (Exception e) {
-            sendErrorNotification("SYNC_PROCESSING_ERROR", e.getMessage());
+            sendErrorNotification("DATA_PROCESSING_ERROR", e.getMessage());
         } finally {
             shouldSyncAllRecords = false;
             //scheduleResync();
