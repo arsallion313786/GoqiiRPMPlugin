@@ -155,6 +155,7 @@ extension GoqiiPlugin: CBCentralManagerDelegate, GlucoBLEManagerProtocol {
     }
 
     func BLEfoundPeripheral(device: CBPeripheral, rssi: Int, mac: String, advData: [String: Any]) {
+        let connectedMACID = GlucoBLEManager.shared.getGlucoUUID()
         if self.peripheral == nil,
            BLE.sharedInstance().isGlucoMeterConnected(),
            connectedMACID == mac {
