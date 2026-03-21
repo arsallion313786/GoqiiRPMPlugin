@@ -99,15 +99,18 @@ import CoreBluetooth
 
     @objc(pairBGMWithId:)
     func pairBGMWithId(command: CDVInvokedUrlCommand) {
-        guard let targetMacId = command.argument(at: 0) as? String, !targetMacId.isEmpty else {
-            let error = CDVPluginResult(status: CDVCommandStatus.error, messageAsString: "Missing MAC ID")
-            self.commandDelegate.send(error, callbackId: command.callbackId)
-            return
-        }
+        
+        let targetMacId = command.argument(at: 0) as? String
+        
+//        guard let targetMacId = command.argument(at: 0) as? String, !targetMacId.isEmpty else {
+//            let error = CDVPluginResult(status: CDVCommandStatus.error, messageAsString: "Missing MAC ID")
+//            self.commandDelegate.send(error, callbackId: command.callbackId)
+//            return
+//        }
         
         self.isNewPairingProcess = true
         GlucoBLEManager.shared.stopSearch()
-        GlucoBLEManager.shared.connectAndSaveGlucometerDevice(targetMacId)
+        GlucoBLEManager.shared.connectAndSaveGlucometerDevice(targetMacId ?? "")
         
         let result = CDVPluginResult(status: CDVCommandStatus.ok)
         self.commandDelegate.send(result, callbackId: command.callbackId)
