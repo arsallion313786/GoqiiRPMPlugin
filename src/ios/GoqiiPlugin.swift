@@ -197,6 +197,18 @@ import CoreBluetooth
                 self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
             }
         }
+    
+    @objc(getCurrentDeviceMacId:)
+    func getCurrentDeviceMacId(command: CDVInvokedUrlCommand) {
+        print("🔍 getCurrentDeviceMacId called...GoqiiPlugin")
+        
+        
+        let macId = GlucoBLEManager.shared.getGlucoUUID()
+        
+        
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: macId)
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
 }
 
 // MARK: - Bluetooth & SDK Delegates (Updated to use sendEvent)
