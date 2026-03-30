@@ -118,6 +118,12 @@ public class GoqiiPlugin extends CordovaPlugin {
                 shouldSyncAllRecords = args.optBoolean(0, false);
                 callbackContext.success("SyncAllRecords set to: " + shouldSyncAllRecords);
                 return true;
+            case "getCurrentDeviceMacId":
+                String mac = glucometerManager.getGlucometerMac();
+                PluginResult pResult = new PluginResult(PluginResult.Status.OK, mac);
+                pResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pResult);
+                return  true;
 
             default:
                 return false;
