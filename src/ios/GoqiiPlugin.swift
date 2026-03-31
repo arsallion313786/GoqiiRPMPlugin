@@ -24,8 +24,7 @@ import CoreBluetooth
         print("🟢 GoqiiPlugin (New SDK) pluginInitialize called")
         bluetoothManager = CBCentralManager(delegate: self, queue: nil)
         _ = GlucoBLEManager.shared
-        // Set the delegate immediately for the new SDK manager
-        GlucoBLEManager.shared.glucoBleManagerDelegate = self
+        
     }
 
     // MARK: - Event Dispatchers (Your Core Architecture)
@@ -65,6 +64,7 @@ import CoreBluetooth
     @objc(initializeSDK:)
     func initializeSDK(command: CDVInvokedUrlCommand) {
         // Just an ACK for the command; results flow through centralManagerDidUpdateState
+        GlucoBLEManager.shared.glucoBleManagerDelegate = self
         let result = CDVPluginResult(status: CDVCommandStatus.ok)
         self.commandDelegate.send(result, callbackId: command.callbackId)
     }
@@ -272,28 +272,28 @@ extension GoqiiPlugin: CBCentralManagerDelegate, GlucoBLEManagerProtocol {
     }
 
     func glucoMeterData(_ data: [Any]) {
-        // reconnectionTimer?.cancel()
+         reconnectionTimer?.cancel()
         
-        // if self.isSyncCancelled {
-        //     self.isSyncCancelled = false
-        //     return
-        // }
+         if self.isSyncCancelled {
+             self.isSyncCancelled = false
+             return
+         }
 
-        // // Filter and Deduplicate logic
-        // var syncedDates = UserDefaults.standard.stringArray(forKey: "SyncedGlucoLogDates") ?? []
-        // let filtered = data.compactMap { item -> [String: Any]? in
-        //     guard let dict = item as? [String: Any], let date = dict["logDate"] as? String else { return nil }
-        //     if !syncedDates.contains(date) {
-        //         syncedDates.append(date)
-        //         return dict
-        //     }
-        //     return nil
-        // }
+         // Filter and Deduplicate logic
+         var syncedDates = UserDefaults.standard.stringArray(forKey: "SyncedGlucoLogDates") ?? []
+         let filtered = data.compactMap { item -> [String: Any]? in
+             guard let dict = item as? [String: Any], let date = dict["logDate"] as? String else { return nil }
+             if !syncedDates.contains(date) {
+                 syncedDates.append(date)
+                 return dict
+             }
+             return nil
+         }
 
-        // if !filtered.isEmpty {
-        //     UserDefaults.standard.set(syncedDates, forKey: "SyncedGlucoLogDates")
-        //     sendEvent(code: "ON_DATA_RECEIVED", msg: "Glucose Data Received", data: filtered)
-        // }
+         if !filtered.isEmpty {
+             UserDefaults.standard.set(syncedDates, forKey: "SyncedGlucoLogDates")
+             sendEvent(code: "ON_DATA_RECEIVED", msg: "Glucose Data Received", data: filtered)
+         }
     }
     
     func BLEactivated(state: Bool) {
