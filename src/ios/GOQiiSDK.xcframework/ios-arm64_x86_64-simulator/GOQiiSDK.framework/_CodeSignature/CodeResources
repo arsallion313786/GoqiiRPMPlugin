@@ -4,33 +4,25 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Frameworks/CoreData.framework/CoreData</key>
-		<data>
-		qzV6BYlcDX0UGTqbY/JLGWqXiFM=
-		</data>
-		<key>Frameworks/CoreData.framework/_CodeSignature/CodeResources</key>
-		<data>
-		HK2c3QmhpcYSZRgkvpUe5YHi6gA=
-		</data>
 		<key>GOQiiNativeCoreData.momd/CoreDataDemo.mom</key>
 		<data>
-		4wh+2LSiFtywcV6iKxfSFHeUa+k=
+		pX5twlv/di16pqRWP9NWoINlKgA=
 		</data>
 		<key>GOQiiNativeCoreData.momd/CoreDataDemo_v2.mom</key>
 		<data>
-		iHY4BRNBK0Y6U+yrMuApneE3qds=
+		sI2LMqNZc75l4v3fK2Ce0awpM9I=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v10.mom</key>
 		<data>
-		CNDqPOPt3TGLBBBupD51Alr18SE=
+		AROlf7H734ZkVeEZv3Zkt947XOM=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v11.mom</key>
 		<data>
-		Fge+d/+5li6pRcovPGWpjhFG5Sw=
+		Yj/p2AK4uipVfnYKsowWSk4prr0=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v12.mom</key>
 		<data>
-		VvM/JxytiVrkZ8KvaddCn91+jh4=
+		b2dp0z4M8U+N1KpJ7/KGR+Bm7+o=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v12.omo</key>
 		<data>
@@ -38,35 +30,35 @@
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v2.mom</key>
 		<data>
-		tn8Tcf1pjzPAe8LB7X1AiyktUbY=
+		2GfWtBgUhinICT3R0NLxgV0gN6U=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v3.mom</key>
 		<data>
-		HXTCg96BVSRD8gIqjb0rOqjLUgM=
+		g3/fCImYHyJJ5bqzawI0jIUaYUc=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v4.mom</key>
 		<data>
-		m3XKXsJMFRTxmQpK/bWWWb1HnTc=
+		qeMGQcp7e3WE2oCpYSwi3+DU9i8=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v5.mom</key>
 		<data>
-		dRvt38Y+2mbCgIEpKJbARQmSk2c=
+		wD60jTfwrVVXMSbym7yP9eBfX94=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v6.mom</key>
 		<data>
-		CXESIo8Yb+gsLjbRFyXSklenjeU=
+		CNoFTgRRxDuijPxXS+MVUgW/6j0=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v7.mom</key>
 		<data>
-		SsuJZO0kcB19BXkU3YNfMUUwRG4=
+		NyjkvOe+xUP237nKHDZdrrfaUL8=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v8.mom</key>
 		<data>
-		+ke1UpT7+EFya/LBp90NFKzErP4=
+		acgYVKhlFvTsU+AqqoEypD/y3AQ=
 		</data>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v9.mom</key>
 		<data>
-		/deKIoDngbCu4JmvQKQ6QowJxUE=
+		hhOwXSqp3ZjCiEgTSTB/kARY10A=
 		</data>
 		<key>GOQiiNativeCoreData.momd/VersionInfo.plist</key>
 		<data>
@@ -86,11 +78,11 @@
 		</data>
 		<key>GlucoMeterMakeSureCell.nib</key>
 		<data>
-		2fjQlDLHaVACDci4pAc0A+5KyZM=
+		Nb4p+OJ5L09amxViwK1u7699AUY=
 		</data>
 		<key>GlucoMeterSetupVC.nib</key>
 		<data>
-		NCeghZ02mFx7y7zWrPw7Ji4ObqU=
+		ygeW78D+YKeHpzPRCRN9L+xPpGs=
 		</data>
 		<key>Headers/ACMacros.h</key>
 		<data>
@@ -218,7 +210,7 @@
 		</data>
 		<key>Headers/GOQiiSDK-Swift.h</key>
 		<data>
-		8IXPzHJE2AwNhoV34NJr/hKme78=
+		kZE7XG0zzvzxuKwGMYTlUZxPAbo=
 		</data>
 		<key>Headers/GOQiiSDK.h</key>
 		<data>
@@ -278,47 +270,47 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		GMe/XsP6JL3TIRwiBtujj+ZAX7E=
+		PNNIZ0oZpxoQnr89R6maJKYZHmY=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		vgCf0tLu4nZXDkEAv4vSxEwl6nE=
+		rF1OyGZv4fpjkPjE8e+QRaUG3RE=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		Kmbsq11MISsMd9CJ9ChfP8CrbQA=
+		fJ72n9CqDzc9BWfAOvaY4QGaUGo=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		CBNZgVJKuBC/tsDG9qEmHisJqEU=
+		+2bFRptXqzEIe4aVx3vM5aEH6kY=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		Kmbsq11MISsMd9CJ9ChfP8CrbQA=
+		fJ72n9CqDzc9BWfAOvaY4QGaUGo=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		Fr3JiGolT14Hqy+8O+2BydUK70c=
+		zN1pNsup1SdPIcJeIaxkVBQhrjs=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		vgCf0tLu4nZXDkEAv4vSxEwl6nE=
+		rF1OyGZv4fpjkPjE8e+QRaUG3RE=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		xSsFeJDkpTUyHMw/bJh6NerEWGs=
+		aHb4KcrDAfdVm+m++9OMStHv0SA=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		vdIvufBQ8vV6QPrEZ6J3lSbW3vU=
+		7OLF7inez6LDLuKsW1IimtxoLSs=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		xSsFeJDkpTUyHMw/bJh6NerEWGs=
+		aHb4KcrDAfdVm+m++9OMStHv0SA=
 		</data>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		deuEGN+VddGUWYWNrbNh7/bclUI=
+		DEl8KQvCPko3EViK2eMJyC4Wn9k=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -359,53 +351,39 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Frameworks/CoreData.framework/CoreData</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			7l4BeD72DEb+wL4PF6lcR7Z9FO685JAp1k7PDTdZP7Y=
-			</data>
-		</dict>
-		<key>Frameworks/CoreData.framework/_CodeSignature/CodeResources</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			PentQquS9mssYDO1nM+kQbHQUMMZ2u61V1UbTaUTFH4=
-			</data>
-		</dict>
 		<key>GOQiiNativeCoreData.momd/CoreDataDemo.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Z5SKgboOQNc1uolhLcIaPs/OczHVEPHydSVF2pagI3o=
+			+LXNqByNbLXfCskJtruFUvVc/0SmE2sEhi/CGD8moRA=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/CoreDataDemo_v2.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			v85LvlhPbJUvxX6KTc8TQyiqJ7v8r51YZEMamP4RTyk=
+			bW8auOoXaA4R53Im297VAExjwmAZbSK5rMeSJZRvWak=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v10.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			aEF0GNpxmp1ewob5/pq8YPDk5qfIh3WOwU4XqL/fecY=
+			M0BvS3qXbLYtpR0NDsWg6PGFinWM3MggOfjlhj4T6zU=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v11.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+nVWT8ib+OL50FRfae7ATSPlB/vcWLinKq/ej0AzMzM=
+			XIDkTKB6dUGjD/3XJR840fSyiUVP/eA/BxdtgizWvI8=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v12.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bHtSfiKAIe3WFz3rvAjtQ8F03MW8v1wL8vjVsUntmO8=
+			9E9iPmiv0gTBOq4cLQ+F/avAwpnwin6X/OXZwe1qgNw=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v12.omo</key>
@@ -419,56 +397,56 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2ZTfcr9nNixNSv6aNW9AXqeZCaYwEXiHQFJ0q0vDWYU=
+			nPXnyXPCo0uVZZfhJnSvlAi0tDYYkB3+Bse0OioUDHk=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v3.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JMKGZNYUqStC7itdqg+PPOQ2iolBDi+aQaPVh401j+4=
+			CEzZ1hfjvvK+3Y67crUNEYGqQNXEA0jxZ7XW5OLdIlU=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v4.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OGwDCoUisjwCp7vhL1TIniy3lwadRe1rvaudd4swHHg=
+			26xTrAd1A3edMm/BJvKFEobVr8HrPWVU74Fro+ZKgpk=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v5.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			2x2iy4NEvAITBYOjLjRfGfIpXZRv0wpEJU49ss4V9YQ=
+			uruKNBnR/p6DceXosPrG9T57P0k0ZIEPlAAEGFm2mOM=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v6.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			1SFOzDJX+ic3ajOboZV6hQlEXziaQsYGDSd88ZvwOs8=
+			GoPYFeUMssPM8o+6qsPlXH3CBSfw0SRSj8yswaVRB5U=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v7.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			UtctOF0d8WjgEDsRXMsL0DfEvnZ+ILVGN01HtitRmAU=
+			tWpzw0LHs4p/LF077VUTQQU6XSdoVR4XVNGnZx5PEJc=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v8.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			WFJmuSmLFHs7aidhj9Kpo1hfutuTyW4wqFvEXhDds78=
+			k3fN/lAzLYn1aSjtXJGF4pIaOqvaZAZFzgaqRXVvf/s=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/GOQiiNative_v9.mom</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			f73HgKO1VJHfqWVltxs/XdoTSFBKMjyRHjEZ//QlGGU=
+			W4V6EGEMw+6z2kAAKFfhP50+/qKtYMMesLI0al3CC80=
 			</data>
 		</dict>
 		<key>GOQiiNativeCoreData.momd/VersionInfo.plist</key>
@@ -503,14 +481,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8rKtfzxlB/mQLYCM0riPLaUNiPLFiIc+t3POY4wgeTM=
+			P21GBv4SVpwJIlq/yOxhKWkYGkVoXxfulot1zcAWLVA=
 			</data>
 		</dict>
 		<key>GlucoMeterSetupVC.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			s3uOG1e2b5gJDkV45R/zzBrFmRtqalNUZZursDsyGWw=
+			0tyh/4VtSNebLiwKkydRBt3GSzX8+0+90msgGPRN11A=
 			</data>
 		</dict>
 		<key>Headers/ACMacros.h</key>
@@ -734,7 +712,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			gWmPd/7C8+xxHgA10Vm9o0rUZOx1ZbB+I2UQxaWGC9s=
+			MtpVznZNR+cHlr2Gjmr0h5o7Q3Q+3zfoFiMn+HJCip8=
 			</data>
 		</dict>
 		<key>Headers/GOQiiSDK.h</key>
@@ -839,70 +817,70 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			wm7GbwRc792btWavYKPq6fuRems2uIka0eFRtNNmoXw=
+			rS83ye/31mII1CbCKY16Gwr06w3g9UiivbbnDfn1ico=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			viVdXqLMu2oAqqNtg8WKt4JV1h/PJ79isVVik1OQezg=
+			WD4nDfr7PwnhqHN/4ATCcK3cmy9NFp5ZMh8B3bgp7Ww=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			k1mcLLoNU4ixL6bsq/sZYtJ2HRMBk36tL5xpowO+3t4=
+			4t4qsAI05DGx5BX28dfZbeHuZRA72bSCl1+Ghkpcle0=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			viVdXqLMu2oAqqNtg8WKt4JV1h/PJ79isVVik1OQezg=
+			WD4nDfr7PwnhqHN/4ATCcK3cmy9NFp5ZMh8B3bgp7Ww=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			CMIuOYAgj9kq82FbhW+CKHe/9Ch4SUJmpTHpZP2ZRoA=
+			7Hw2CEfwZYSUCSemkopube4hmXSkdsWkIbOOVDcP2kQ=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			wm7GbwRc792btWavYKPq6fuRems2uIka0eFRtNNmoXw=
+			rS83ye/31mII1CbCKY16Gwr06w3g9UiivbbnDfn1ico=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mLvpnFlZ7lnnJVPBODKoxdXqmRi/T/DQL5fRpQV23qM=
+			e7oXFhwB53O7vQUEsqUN7hN5CS5mv9McF+td7aoW4iA=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			1G+YZuFBHztXtVM9qpxPXxZwnpFJmj963AgkenkuLMU=
+			r0ZkODqV5Ib0VOoOmj5TVwf9nDSq408D28jlSxApoVI=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mLvpnFlZ7lnnJVPBODKoxdXqmRi/T/DQL5fRpQV23qM=
+			e7oXFhwB53O7vQUEsqUN7hN5CS5mv9McF+td7aoW4iA=
 			</data>
 		</dict>
 		<key>Modules/GOQiiSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5EA7RYyql4Rwtl02m8HBSMLInegrRJLterZuFEOVHgg=
+			tfwiXSdhMvsUipJE9kYUJoziyzuCls8GrSfcwvS2H2c=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

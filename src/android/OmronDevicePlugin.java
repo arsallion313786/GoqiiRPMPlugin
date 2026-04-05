@@ -156,14 +156,14 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
                     PluginResult pResult = new PluginResult(PluginResult.Status.OK, !TextUtils.isEmpty(mac));
                     pResult.setKeepCallback(true);
-                    callbackContext.sendPluginResult(pResult); 
+                    callbackContext.sendPluginResult(pResult);
                 } else {
                     PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Plugin is not initialized. Call initializeSDK first.");
                     result.setKeepCallback(true);
                     callbackContext.sendPluginResult(result);
                 }
                 return true;
-                
+
             case "deviceConnectionState":
                 sendConnectionState();
                 return true;
@@ -177,7 +177,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
             case "setConnectionTimeout":
                 if (args.length() > 0) {
                     long timeout = args.getLong(0);
-                    CONNECTION_TIMEOUT_MS = timeout;    
+                    CONNECTION_TIMEOUT_MS = timeout;
                 }
                 PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "Connection timeout set successfully");
                 pluginResult.setKeepCallback(true);
@@ -196,7 +196,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
                     callbackContext.sendPluginResult(result);
                 }
                 return true;
-                
+
             default:
                 return true;
         }
@@ -204,27 +204,27 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
 
     private void sendConnectionState() {
         try {
-                if (omronDeviceWrapper == null) {
-                    initialize();
-                }
-                String mac =  omronDeviceWrapper.getOmronMac();
-                JSONObject deviceInfo = new JSONObject();
-                deviceInfo.put("code", isConnected ? "DEVICE_CONNECTED" : "DEVICE_DISCONNECTED");
-                deviceInfo.put("isSuccessfully", isConnected);
-                deviceInfo.put("state", isConnected ? "connected" : "disconnected");   
-                deviceInfo.put("msg", isConnected ? "Device connected" : "Device disconnected");
-                deviceInfo.put("macId", mac );
-                deviceInfo.put("MacID", mac );
-
-                PluginResult connectionResult = new PluginResult(PluginResult.Status.OK, deviceInfo);
-                connectionResult.setKeepCallback(true);
-
-                if (scanCallbackContext != null) {
-                    scanCallbackContext.sendPluginResult(connectionResult);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (omronDeviceWrapper == null) {
+                initialize();
             }
+            String mac =  omronDeviceWrapper.getOmronMac();
+            JSONObject deviceInfo = new JSONObject();
+            deviceInfo.put("code", isConnected ? "DEVICE_CONNECTED" : "DEVICE_DISCONNECTED");
+            deviceInfo.put("isSuccessfully", isConnected);
+            deviceInfo.put("state", isConnected ? "connected" : "disconnected");
+            deviceInfo.put("msg", isConnected ? "Device connected" : "Device disconnected");
+            deviceInfo.put("macId", mac );
+            deviceInfo.put("MacID", mac );
+
+            PluginResult connectionResult = new PluginResult(PluginResult.Status.OK, deviceInfo);
+            connectionResult.setKeepCallback(true);
+
+            if (scanCallbackContext != null) {
+                scanCallbackContext.sendPluginResult(connectionResult);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initialize() {
@@ -438,7 +438,7 @@ public class OmronDevicePlugin extends CordovaPlugin implements OmronDeviceWrapp
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        PluginResult errorResult = new PluginResult(PluginResult.Status.ERROR, errorObj);   
+        PluginResult errorResult = new PluginResult(PluginResult.Status.ERROR, errorObj);
         errorResult.setKeepCallback(true);
         scanCallbackContext.error(error);
     }
