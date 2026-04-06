@@ -280,11 +280,18 @@ extension GoqiiPlugin: CBCentralManagerDelegate, GlucoBLEManagerProtocol {
          }
 
          // Filter and Deduplicate logic
+        
+        let isFirstTimeUser = UserDefaults.standard.object(forKey: "SyncedGlucoLogDates") == nil
+        if isFirstTimeUser {
+            UserDefaults.standard.set([], forKey: "SyncedGlucoLogDates")
+        }
+        
          var syncedDates = UserDefaults.standard.stringArray(forKey: "SyncedGlucoLogDates") ?? []
          let filtered = data.compactMap { item -> [String: Any]? in
              guard let dict = item as? [String: Any], let date = dict["logDate"] as? String else { return nil }
              if !syncedDates.contains(date) {
                  syncedDates.append(date)
+                 dict["isFirstTimeUser"] = isFirstTimeUser;
                  return dict
              }
              return nil

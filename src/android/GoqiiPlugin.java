@@ -198,7 +198,11 @@ public class GoqiiPlugin extends CordovaPlugin {
 
     private void processSyncData(String rawJson) {
         try {
+            boolean isFirstTimeUser = false;
             SharedPreferences prefs = cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            if (!prefs.contains(KEY_LAST_RESULT_STR)) {
+                isFirstTimeUser = true;
+            }
             String lastData = prefs.getString(KEY_LAST_RESULT_STR, "");
 
             JSONObject currentObj = new JSONObject(rawJson);
@@ -216,6 +220,7 @@ public class GoqiiPlugin extends CordovaPlugin {
             for (int i = 0; i < currentRecords.length(); i++) {
                 JSONObject rec = currentRecords.getJSONObject(i);
                 if (shouldSyncAllRecords || !seenKeys.contains(rec.optString("logDate"))) {
+                    rec.put("isFirstTimeUser", isFirstTimeUser);
                     filtered.put(rec);
                 }
             }
