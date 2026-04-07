@@ -15,10 +15,12 @@ import CoreBluetooth
     
     var discoveredDevices: [[String: Any]] = []
     var customTimeoutMs: Double = 10.0
+    var pollingTime: Double = 15000.0 // millisec
     var isNewPairingProcess: Bool = false
     var shouldSyncAllRecords: Bool = false
     var isSyncCancelled: Bool = false
     var isSyncCancelledCounter: Int = 0
+    var isStopeedSilentPolling: Bool = true
 
     override func pluginInitialize() {
         print("🟢 GoqiiPlugin (New SDK) pluginInitialize called")
@@ -209,6 +211,25 @@ import CoreBluetooth
         let pluginResult = CDVPluginResult(status: CDVCommandStatus.ok, messageAs: macId)
         self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     }
+    
+    @objc(startSilentBackgroundPolling:)
+        func startSilentBackgroundPolling(command: CDVInvokedUrlCommand) {
+            print("🔄 JS triggered startSilentBackgroundPolling...")
+            self.pollingTime = command.argument(at: 0) as? Double ?? 15000.0 // time is millisec
+            
+            // 1. Immediately return success to JS so it knows the loop started
+            let pluginResult = CDVPluginResult(status: .ok, messageAs: ["code": "POLLING_STARTED", "msg": "Background polling initiated."])
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+            
+            // 2. Start the native background loop
+            self.isStopeedSilentPolling = false;
+            self.triggerSilentBackgroundSync()
+        }
+    
+    @objc(stopSilentBackgroundPolling:)
+    func stopilentBackgroundPolling(command: CDVInvokedUrlCommand) {
+        self.isStopeedSilentPolling = true;
+    }
 }
 
 // MARK: - Bluetooth & SDK Delegates (Updated to use sendEvent)
@@ -280,18 +301,11 @@ extension GoqiiPlugin: CBCentralManagerDelegate, GlucoBLEManagerProtocol {
          }
 
          // Filter and Deduplicate logic
-        
-        let isFirstTimeUser = UserDefaults.standard.object(forKey: "SyncedGlucoLogDates") == nil
-        if isFirstTimeUser {
-            UserDefaults.standard.set([], forKey: "SyncedGlucoLogDates")
-        }
-        
          var syncedDates = UserDefaults.standard.stringArray(forKey: "SyncedGlucoLogDates") ?? []
          let filtered = data.compactMap { item -> [String: Any]? in
              guard let dict = item as? [String: Any], let date = dict["logDate"] as? String else { return nil }
              if !syncedDates.contains(date) {
                  syncedDates.append(date)
-                 dict["isFirstTimeUser"] = isFirstTimeUser;
                  return dict
              }
              return nil
@@ -322,3 +336,31 @@ extension GoqiiPlugin: CBCentralManagerDelegate, GlucoBLEManagerProtocol {
         sendErrorEvent(code: "DEVICE_CONNECTION_ERROR", msg: errorStr)
     }
 }
+
+
+extension GoqiiPlugin {
+    func triggerSilentBackgroundSync() {
+        
+        GlucoBLEManager.shared.removeprevRequestDevice()
+        
+        // 1. SAFETY EXIT: If the user turns off the device, stop the loop instantly so we don't drain the phone's battery!
+        guard BLE.sharedInstance().isGlucoMeterConnected() && self.isStopeedSilentPolling == false else {
+            self.isStopeedSilentPolling = true
+            self.sendEvent(code: "POLLING_STOPPED", msg: "Background polling Cancelled.")
+            return
+        }
+        
+        print("🔄 Device is still physically connected. Silently asking for new blood sugar readings...")
+        
+        // 2. Ask the hardware for data
+        GlucoBLEManager.shared.connectToSavedGlucometerDevice()
+        
+        // 3. Queue up the next silent check (e.g., check again in 15 seconds)
+        // This creates a safe loop that only exists in native memory, far away from Cordova!
+        DispatchQueue.main.asyncAfter(deadline: .now() + self.pollingTime/1000.0) { [weak self] in
+            self?.triggerSilentBackgroundSync()
+        }
+    }
+
+}
+

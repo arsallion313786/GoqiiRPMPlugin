@@ -33,7 +33,7 @@ public class GoqiiPlugin extends CordovaPlugin {
 
     private final Handler resyncHandler = new Handler(Looper.getMainLooper());
     private Runnable resyncRunnable;
-    private static final long RESYNC_DELAY_MS = 20_000L;
+    private  long RESYNC_DELAY_MS = 15_000L;
 
     private volatile boolean syncAcknowledged = false;
     private boolean shouldSyncAllRecords = false;
@@ -77,7 +77,7 @@ public class GoqiiPlugin extends CordovaPlugin {
             case "connectToKnownDevice":
                 if (ensureSDK(callbackContext)) {
                     syncAcknowledged = false;
-                    shouldScheduleResync = true;
+                    //shouldScheduleResync = true;
                     //startSyncTimeout();
                     glucometerManager.syncGlucometer();
                     callbackContext.success();
@@ -124,7 +124,21 @@ public class GoqiiPlugin extends CordovaPlugin {
                 pResult.setKeepCallback(true);
                 callbackContext.sendPluginResult(pResult);
                 return  true;
-
+            case "startSilentBackgroundPolling":
+                long resyncDelayMs = 15_000L;
+                // Your default value
+                if (!args.isNull(0)) {
+                    double passedValue = args.optDouble(0, 15000.0);
+                    resyncDelayMs = (long) passedValue;
+                }
+                RESYNC_DELAY_MS = resyncDelayMs;
+                shouldScheduleResync = true;
+                scheduleResync();
+                return  true;
+            case "stopSilentBackgroundPolling":
+                shouldScheduleResync = false;
+                cancelResync();
+                return true;
             default:
                 return false;
         }
@@ -198,11 +212,7 @@ public class GoqiiPlugin extends CordovaPlugin {
 
     private void processSyncData(String rawJson) {
         try {
-            boolean isFirstTimeUser = false;
             SharedPreferences prefs = cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            if (!prefs.contains(KEY_LAST_RESULT_STR)) {
-                isFirstTimeUser = true;
-            }
             String lastData = prefs.getString(KEY_LAST_RESULT_STR, "");
 
             JSONObject currentObj = new JSONObject(rawJson);
@@ -220,7 +230,6 @@ public class GoqiiPlugin extends CordovaPlugin {
             for (int i = 0; i < currentRecords.length(); i++) {
                 JSONObject rec = currentRecords.getJSONObject(i);
                 if (shouldSyncAllRecords || !seenKeys.contains(rec.optString("logDate"))) {
-                    rec.put("isFirstTimeUser", isFirstTimeUser);
                     filtered.put(rec);
                 }
             }
@@ -281,18 +290,27 @@ public class GoqiiPlugin extends CordovaPlugin {
     }
 
     private void scheduleResync() {
-        if (!shouldScheduleResync) return;
-        shouldScheduleResync = false;
         cancelResync();
         resyncRunnable = () -> {
-            syncAcknowledged = false;
-            startSyncTimeout();
-            if (glucometerManager != null) glucometerManager.syncGlucometer();
+            String mac = glucometerManager.getGlucometerMac();
+
+            if (eventCallbackContext != null && !TextUtils.isEmpty(mac) && shouldScheduleResync) {
+                Log.d(TAG, "Auto-resync triggered after " + RESYNC_DELAY_MS + "ms");
+                // syncAcknowledged = false;
+                shouldSyncAllRecords = false;
+                glucometerManager.syncGlucometer();
+                scheduleResync();
+            }
         };
         resyncHandler.postDelayed(resyncRunnable, RESYNC_DELAY_MS);
+        Log.d(TAG, "Resync scheduled in " + RESYNC_DELAY_MS + "ms");
     }
 
     private void cancelResync() {
-        if (resyncRunnable != null) resyncHandler.removeCallbacks(resyncRunnable);
+        if (resyncRunnable != null) {
+            resyncHandler.removeCallbacks(resyncRunnable);
+            resyncRunnable = null;
+            Log.d(TAG, "Resync cancelled");
+        }
     }
 }
