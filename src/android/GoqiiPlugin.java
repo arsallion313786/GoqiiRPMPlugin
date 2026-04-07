@@ -134,10 +134,17 @@ public class GoqiiPlugin extends CordovaPlugin {
                 RESYNC_DELAY_MS = resyncDelayMs;
                 shouldScheduleResync = true;
                 scheduleResync();
+                JSONObject res = new JSONObject();
+                res.put("code", "POLLING_STARTED");
+                res.put("msg", "Background polling initiated.");
+                PluginResult resultSilentPolling = new PluginResult(PluginResult.Status.OK, res);
+                callbackContext.sendPluginResult(resultSilentPolling);
+
                 return  true;
             case "stopSilentBackgroundPolling":
                 shouldScheduleResync = false;
                 cancelResync();
+                this.sendNotification("POLLING_STOPPED", "Background polling stopped.",null,null,null);
                 return true;
             default:
                 return false;
@@ -300,6 +307,9 @@ public class GoqiiPlugin extends CordovaPlugin {
                 shouldSyncAllRecords = false;
                 glucometerManager.syncGlucometer();
                 scheduleResync();
+            }
+            else{
+                this.sendNotification("POLLING_STOPPED", "Background polling stopped.",null,null,null);
             }
         };
         resyncHandler.postDelayed(resyncRunnable, RESYNC_DELAY_MS);
