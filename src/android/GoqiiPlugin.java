@@ -128,8 +128,7 @@ public class GoqiiPlugin extends CordovaPlugin {
                 long resyncDelayMs = 15_000L;
                 // Your default value
                 if (!args.isNull(0)) {
-                    double passedValue = args.optDouble(0, 15000.0);
-                    resyncDelayMs = (long) passedValue;
+                     resyncDelayMs = args.optLong(0, 15000L);
                 }
                 RESYNC_DELAY_MS = resyncDelayMs;
                 shouldScheduleResync = true;

@@ -330,7 +330,7 @@ extension GoqiiPlugin: CBCentralManagerDelegate, GlucoBLEManagerProtocol {
       }
     func BLESyncCompleted() {}
     func onPairingFailGlucometer(device: CBPeripheral) {
-        sendErrorEvent(code: "ON_PAIRING_FAIL", msg: "Pairing failed.")
+        sendErrorEvent(code: "ON_PAIRING_FAILED", msg: "Link Failed")
     }
     func glucoMeterConnectError(errorStr: String) {
         sendErrorEvent(code: "DEVICE_CONNECTION_ERROR", msg: errorStr)
