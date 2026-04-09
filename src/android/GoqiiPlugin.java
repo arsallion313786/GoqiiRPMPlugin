@@ -219,36 +219,91 @@ public class GoqiiPlugin extends CordovaPlugin {
     private void processSyncData(String rawJson) {
         try {
             SharedPreferences prefs = cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String lastData = prefs.getString(KEY_LAST_RESULT_STR, "");
+
+            // 1. Get previously synced dates. SharedPreferences supports Set<String> natively!
+            // We wrap it in a new HashSet because the returned Set from SharedPreferences should not be modified directly.
+            Set<String> syncedDatesSet = new HashSet<>(prefs.getStringSet("SyncedGlucoLogDates", new HashSet<>()));
+            boolean newlyDiscoveredDates = false;
 
             JSONObject currentObj = new JSONObject(rawJson);
             JSONArray currentRecords = currentObj.getJSONArray("data");
-
-            Set<String> seenKeys = new HashSet<>();
-            if (!lastData.isEmpty()) {
-                JSONArray lastRecords = new JSONObject(lastData).getJSONArray("data");
-                for (int i = 0; i < lastRecords.length(); i++) {
-                    seenKeys.add(lastRecords.getJSONObject(i).optString("logDate"));
-                }
-            }
-
             JSONArray filtered = new JSONArray();
+
+            // 2. Filter data
             for (int i = 0; i < currentRecords.length(); i++) {
                 JSONObject rec = currentRecords.getJSONObject(i);
-                if (shouldSyncAllRecords || !seenKeys.contains(rec.optString("logDate"))) {
+                String dateString = rec.optString("logDate");
+
+                // Skip if logDate is missing (equivalent to your Swift guard let)
+                if (dateString.isEmpty()) continue;
+
+                boolean isAlreadySynced = syncedDatesSet.contains(dateString);
+
+                // If we have never seen this exact timestamp before, track it!
+                if (!isAlreadySynced) {
+                    syncedDatesSet.add(dateString);
+                    newlyDiscoveredDates = true;
+                }
+
+                // Keep if the JS flag says "Sync All", OR if it's a newly discovered record
+                if (shouldSyncAllRecords || !isAlreadySynced) {
                     filtered.put(rec);
                 }
             }
 
-            prefs.edit().putString(KEY_LAST_RESULT_STR, rawJson).apply();
-            sendNotification("ON_DATA_RECEIVED", "Data Synced", null, null, filtered);
+            // 3. Save the updated list of dates back to SharedPreferences ONLY if we found new ones
+            if (newlyDiscoveredDates) {
+                prefs.edit().putStringSet("SyncedGlucoLogDates", syncedDatesSet).apply();
+            }
+
+            // SAFETY RESET: Reset the flag to false so the next auto-sync defaults back to "New Only"
+            shouldSyncAllRecords = false;
+
+            // 4. Send back to JS
+            sendNotification("ON_DATA_RECEIVED", "Glucose Data Received Successfully!", null, null, filtered);
 
         } catch (Exception e) {
             sendErrorNotification("DATA_PROCESSING_ERROR", e.getMessage());
         } finally {
+            // Ensuring the flag is always reset even if an exception occurs
             shouldSyncAllRecords = false;
-            //scheduleResync();
         }
+
+
+
+
+//        try {
+//            SharedPreferences prefs = cordova.getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+//            String lastData = prefs.getString(KEY_LAST_RESULT_STR, "");
+//
+//            JSONObject currentObj = new JSONObject(rawJson);
+//            JSONArray currentRecords = currentObj.getJSONArray("data");
+//
+//            Set<String> seenKeys = new HashSet<>();
+//            if (!lastData.isEmpty()) {
+//                JSONArray lastRecords = new JSONObject(lastData).getJSONArray("data");
+//                for (int i = 0; i < lastRecords.length(); i++) {
+//                    seenKeys.add(lastRecords.getJSONObject(i).optString("logDate"));
+//                }
+//            }
+//
+//            JSONArray filtered = new JSONArray();
+//            for (int i = 0; i < currentRecords.length(); i++) {
+//                JSONObject rec = currentRecords.getJSONObject(i);
+//                if (shouldSyncAllRecords || !seenKeys.contains(rec.optString("logDate"))) {
+//                    filtered.put(rec);
+//                }
+//            }
+//
+//            prefs.edit().putString(KEY_LAST_RESULT_STR, rawJson).apply();
+//            sendNotification("ON_DATA_RECEIVED", "Data Synced", null, null, filtered);
+//
+//        } catch (Exception e) {
+//            sendErrorNotification("DATA_PROCESSING_ERROR", e.getMessage());
+//        } finally {
+//            shouldSyncAllRecords = false;
+//            //scheduleResync();
+//        }
     }
 
     // --- Helpers ---
